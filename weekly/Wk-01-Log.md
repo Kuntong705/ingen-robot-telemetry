@@ -2,49 +2,46 @@
 
 **Project:** Robot Fleet Telemetry Analytics & Predictive Health  
 **Period:** October 26 – November 1, 2026  
-**Status:** Initial prototype and engineering foundation completed
+**Status:** Engineering prototype and data foundation completed; further validation pending
 
 ## 1. Work Completed
 
-Following the October 26 onboarding, I reviewed the internship requirements and available reference materials, then established the development environment using Python 3.11, PyCharm, GitHub Desktop, and a private GitHub repository.
+I established the Python 3.11 development environment, GitHub repository, and automated testing workflow. I first developed a 24-hour single-rover simulator, then extended it to a configurable fleet. The full-scale run generated 1,728,000 minute-level records across 20 simulated robots and 60 days.
 
-I implemented an initial synthetic telemetry simulator for an outdoor patrol robot. The first version generated 1,440 minute-level observations over 24 hours, including battery state of charge, electrical power, ambient temperature, motor temperature, and vibration measurements.
+The simulator models battery state of charge and health, internal resistance, terrain-dependent power consumption, motor temperature, and vibration. It includes synthetic bearing-wear and cooling-degradation scenarios.
 
-I then extended the simulator to support configurable fleet sizes and simulation durations. A three-robot, two-day test generated 8,640 telemetry records. The extended model includes simplified battery health degradation, internal resistance growth, terrain-dependent loads, and two synthetic fault scenarios: bearing wear and cooling degradation.
+I implemented a Raw-to-Validated-to-Curated pipeline using DuckDB and Parquet, with invalid-record quarantine, daily summaries, and automated quality reporting. The clean full-scale dataset passed validation.
 
-The fleet simulation was subsequently scaled to 20 robots over 60 days, generating 1,728,000 records. I also implemented a Raw-to-Validated-to-Curated Parquet pipeline and tested synthetic network dropouts and gradual temperature-sensor drift. The dropout experiment removed 8,486 records, all of which were accounted for in the pipeline's missing-minute report.
+A separate seeded impairment tool introduces network dropouts and gradual temperature-sensor drift. In one experiment, 8,486 records were removed, and the pipeline identified exactly 8,486 missing minutes.
 
-## 2. Technical Decisions
+All 26 automated pytest tests passed, and the GitHub Actions workflow successfully completed Ruff, mypy, and pytest checks.
 
-I drafted the Week 1 Data Contract defining the initial telemetry schema, validation rules, supporting event tables, and failure-labeling strategy.
+## 2. Failure-Label Decision
 
-Three architectural decisions were proposed:
+I proposed defining the prediction target as **a new qualifying fault onset within the next 72 hours**.
 
-- Use Parquet and DuckDB for efficient local analytical storage.
-- Adopt a wide telemetry table with one row per robot per timestamp.
-- Define a future 72-hour fault prediction target while separating ground-truth fault events from prediction-time features.
+I considered two alternatives: detecting an abnormal condition at the present moment, and predicting the eventual failure time. Present-state detection provides little advance warning, while failure-time labeling depends on a consistent definition of operational failure.
 
-These are proposed design decisions; the complete storage pipeline and prediction-label generation have not yet been implemented.
+The 72-hour onset-based target is intended to give fleet operators time to inspect or replace a robot before its next scheduled patrol.
 
-## 3. Validation and Testing
+I also proposed excluding the first 24 hours following maintenance to avoid misleading post-repair signals. Features must use information available at prediction time, and incomplete future windows should be censored rather than treated as negative examples.
 
-I developed an independent CSV validation module to check required fields, timestamp ordering, numeric ranges, duplicate timestamps, and sampling gaps.
+These choices remain proposed design decisions. Prediction-label generation, maintenance exclusions, and operational suitability still require implementation and review.
 
-I also added corrupted-record tests to confirm that invalid battery values, malformed numerical fields, missing columns, and duplicate timestamps are detected.
+## 3. Architecture Decisions
 
-Currently, 26 automated pytest tests pass. GitHub Actions CI has been configured to execute Ruff linting, mypy type checking, and pytest. The latest workflow completed successfully after resolving initial linting issues.
+I selected DuckDB over local Parquet for reproducible, low-cost analysis and a wide telemetry table to simplify rolling-window feature engineering.
+
+Ground-truth fault labels are maintained separately from prediction-time telemetry to reduce leakage risk.
 
 ## 4. Challenges and Limitations
 
-The main challenge is balancing physical plausibility with the limited availability of approved operational data. All simulation parameters are illustrative rather than calibrated against real hardware.
+All physical parameters are illustrative rather than calibrated against real robot hardware. The current simulator simplifies battery degradation, terrain effects, and fault progression.
 
-The validation module currently reports invalid records but does not yet implement a complete raw-to-validated-to-curated ingestion pipeline.
+Although sensor drift can be injected, the validation pipeline does not yet identify drift that remains within plausible physical ranges.
 
-The current fleet simulation also lacks several planned mechanisms, including communication dropouts and sensor drift.
+Additional work is needed on simulator parameter documentation, physical-model fidelity, schema coverage, and reproducible project packaging.
 
 ## 5. Next Steps
 
-My priorities are to expand simulation coverage, strengthen data-quality reporting, implement Parquet ingestion, and complete the fleet data brief.
-
-I will also review the proposed architecture and outstanding technical requirements during the November 2 progress meeting.
-
+I will finalize the five-platform data brief, document simulation assumptions, strengthen validation rules, and review the proposed failure-label definition during the November 2 meeting.

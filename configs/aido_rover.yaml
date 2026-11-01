@@ -1,0 +1,55 @@
+
+# Aido Rover synthetic simulation profile
+# Version: 0.1
+# All values are illustrative, not real inGen specifications.
+
+platform: aido_rover
+profile_version: "0.1"
+
+simulation:
+  units: 20
+  days: 60
+  sample_interval_seconds: 60
+  seed: 42
+  start_utc: "2026-10-26T00:00:00Z"
+
+battery:
+  nominal_voltage_v: 48.0
+  nominal_capacity_wh: 6000.0
+  initial_soc_pct: 95.0
+  initial_soh_pct: 100.0
+  min_soh_pct: 70.0
+  capacity_fade_pct_per_efc: 0.04
+  base_internal_resistance_ohm: 0.04
+  resistance_growth_fraction_per_efc: 0.001
+
+duty_cycle:
+  patrol_start_hour_utc: 8
+  patrol_end_hour_utc: 16
+  baseline_patrol_power_w: 400.0
+  terrain_extra_power_w: 120.0
+  charging_power_w: 700.0
+
+environment:
+  ambient_mean_c: 24.0
+  diurnal_amplitude_c: 5.0
+  terrain_cycle_minutes: 90
+
+thermal:
+  initial_motor_temp_c: 25.0
+  load_heating_coefficient_c_per_w: 0.028
+  response_time_minutes: 40
+  cooling_fault_extra_heat_c: 14.0
+
+vibration:
+  dock_baseline_g: 0.04
+  patrol_baseline_g: 0.15
+  bearing_fault_max_extra_g: 0.5
+  noise_std_g: 0.01
+
+fault_injection:
+  onset_fraction: 0.40
+  failure_fraction: 0.80
+  network_dropout_probability: 0.005
+  sensor_drift_max_c: 4.0
+  impairment_seed: 43
