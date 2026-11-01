@@ -3,7 +3,6 @@ import csv
 
 from validate_telemetry import validate_csv
 
-
 FIELDS = [
     "timestamp_utc",
     "unit_id",

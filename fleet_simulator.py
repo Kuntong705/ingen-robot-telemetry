@@ -3,13 +3,13 @@ import argparse
 import csv
 import math
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # All parameters are illustrative, not real hardware specifications.
 BASE_CAPACITY_WH = 6000.0
 BASE_RESISTANCE_OHM = 0.04
-START = datetime(2026, 10, 26, tzinfo=timezone.utc)
+START = datetime(2026, 10, 26, tzinfo=UTC)
 
 FIELDS = [
     "timestamp_utc", "unit_id", "mode",

@@ -3,7 +3,7 @@ import csv
 import json
 import math
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 # Synthetic demonstration only — NOT real inGen specifications
@@ -12,7 +12,7 @@ CAPACITY_WH = 6000.0
 MINUTES = 24 * 60
 
 rng = random.Random(SEED)
-start = datetime(2026, 10, 26, tzinfo=timezone.utc)
+start = datetime(2026, 10, 26, tzinfo=UTC)
 
 soc = 95.0
 motor_temp = 25.0

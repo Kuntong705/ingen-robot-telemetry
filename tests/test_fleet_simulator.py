@@ -3,6 +3,7 @@ import csv
 import math
 from collections import defaultdict
 from datetime import datetime, timedelta
+from itertools import pairwise
 
 import pytest
 
@@ -58,7 +59,7 @@ def test_unique_minute_timestamps(fleet_data):
         assert len(set(timestamps)) == len(timestamps)
         assert all(
             b - a == timedelta(minutes=1)
-            for a, b in zip(timestamps, timestamps[1:])
+            for a, b in pairwise(timestamps)
         )
 
 
