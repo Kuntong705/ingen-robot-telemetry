@@ -1,0 +1,16 @@
+{
+  "dataset": "synthetic_fleet_telemetry",
+  "total_rows": 8640,
+  "accepted_rows": 8640,
+  "rejected_rows": 0,
+  "acceptance_rate_pct": 100.0,
+  "timestamp_gap_events": 0,
+  "missing_minutes": 0,
+  "rejection_reasons": {},
+  "quality_passed": true,
+  "notes": [
+    "Synthetic data only",
+    "Physical ranges are illustrative",
+    "Validation does not establish hardware fidelity"
+  ]
+}

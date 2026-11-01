@@ -228,3 +228,8 @@ __marimo__/
 # Local environment and secret files
 .env.*
 !.env.example
+
+/data/raw/
+/data/validated/
+/data/curated/
+/data/quarantine/
