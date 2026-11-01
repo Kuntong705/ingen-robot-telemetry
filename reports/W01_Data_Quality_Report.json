@@ -1,7 +1,7 @@
 {
   "dataset": "synthetic_fleet_telemetry",
-  "total_rows": 8640,
-  "accepted_rows": 8640,
+  "total_rows": 1728000,
+  "accepted_rows": 1728000,
   "rejected_rows": 0,
   "acceptance_rate_pct": 100.0,
   "timestamp_gap_events": 0,

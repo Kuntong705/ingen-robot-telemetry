@@ -12,6 +12,8 @@ I implemented an initial synthetic telemetry simulator for an outdoor patrol rob
 
 I then extended the simulator to support configurable fleet sizes and simulation durations. A three-robot, two-day test generated 8,640 telemetry records. The extended model includes simplified battery health degradation, internal resistance growth, terrain-dependent loads, and two synthetic fault scenarios: bearing wear and cooling degradation.
 
+The fleet simulation was subsequently scaled to 20 robots over 60 days, generating 1,728,000 records. I also implemented a Raw-to-Validated-to-Curated Parquet pipeline and tested synthetic network dropouts and gradual temperature-sensor drift. The dropout experiment removed 8,486 records, all of which were accounted for in the pipeline's missing-minute report.
+
 ## 2. Technical Decisions
 
 I drafted the Week 1 Data Contract defining the initial telemetry schema, validation rules, supporting event tables, and failure-labeling strategy.
@@ -30,7 +32,7 @@ I developed an independent CSV validation module to check required fields, times
 
 I also added corrupted-record tests to confirm that invalid battery values, malformed numerical fields, missing columns, and duplicate timestamps are detected.
 
-Currently, 18 automated pytest tests pass. GitHub Actions CI has been configured to execute Ruff linting, mypy type checking, and pytest. The latest workflow completed successfully after resolving initial linting issues.
+Currently, 26 automated pytest tests pass. GitHub Actions CI has been configured to execute Ruff linting, mypy type checking, and pytest. The latest workflow completed successfully after resolving initial linting issues.
 
 ## 4. Challenges and Limitations
 
@@ -45,3 +47,4 @@ The current fleet simulation also lacks several planned mechanisms, including co
 My priorities are to expand simulation coverage, strengthen data-quality reporting, implement Parquet ingestion, and complete the fleet data brief.
 
 I will also review the proposed architecture and outstanding technical requirements during the November 2 progress meeting.
+
