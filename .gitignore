@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# PyCharm local settings
+.idea/
+
+# Generated synthetic telemetry data
+/data/generated/
+
+# Local environment and secret files
+.env.*
+!.env.example
