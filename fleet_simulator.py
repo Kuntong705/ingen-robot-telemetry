@@ -24,6 +24,7 @@ FIELDS = [
     "motor_temp_c",
     "terrain_factor",
     "vibration_rms_g",
+    "odometer_m",
 ]
 
 
@@ -49,6 +50,9 @@ def simulate_fleet(
     sim = config["simulation"]
     battery = config["battery"]
     duty = config["duty_cycle"]
+    patrol_speed_mps = float(duty["patrol_speed_mps"])
+    if patrol_speed_mps < 0:
+        raise ValueError("Patrol speed must be nonnegative")
     environment = config["environment"]
     thermal = config["thermal"]
     vibration_cfg = config["vibration"]
@@ -147,6 +151,7 @@ def simulate_fleet(
                 thermal["initial_motor_temp_c"]
             )
             equivalent_cycles = 0.0
+            odometer_m = 0.0
 
             fault_type = (
                 "bearing_wear"
@@ -175,6 +180,8 @@ def simulate_fleet(
                     < int(duty["patrol_end_hour_utc"])
                 )
                 mode = "patrol" if patrol else "dock"
+                if patrol:
+                    odometer_m += patrol_speed_mps * interval
 
                 ambient = (
                     float(environment["ambient_mean_c"])
@@ -306,6 +313,7 @@ def simulate_fleet(
                     "motor_temp_c": round(motor_temp, 2),
                     "terrain_factor": round(terrain, 3),
                     "vibration_rms_g": round(vibration, 4),
+                    "odometer_m": round(odometer_m, 3),
                 })
 
     print(

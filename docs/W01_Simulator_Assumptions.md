@@ -118,3 +118,13 @@ These checks confirm expected qualitative behavior under the chosen model assump
 **Known limitation:** Ambient temperature is currently updated using integer-hour time, producing artificial hourly steps. A continuous-time ambient model is recommended for future simulation runs.
 
 Additional validation should directly compare temperature against motor load and examine degradation behavior under different operating conditions.
+
+## 10. Odometer Model
+
+The synthetic Rover includes a cumulative odometer measured in meters.
+
+The baseline patrol speed is assumed to be 1.0 m/s. During patrol, the odometer increases by 60 meters per minute. During docking, it remains unchanged.
+
+The ingestion pipeline enforces nonnegative, non-decreasing odometer values and quarantines records that violate this rule.
+
+This model assumes a constant travel speed and does not yet account for stops, turning, wheel slip, or terrain-dependent speed variation.

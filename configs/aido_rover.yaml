@@ -30,6 +30,8 @@ duty_cycle:
   terrain_extra_power_w: 120.0
   charging_power_w: 700.0
 
+  patrol_speed_mps: 1.0
+
 environment:
   ambient_mean_c: 24.0
   diurnal_amplitude_c: 5.0

@@ -23,7 +23,7 @@ def sql_path(path):
     return str(path.resolve()).replace("\\", "/").replace("'", "''")
 
 
-def check_row(row, last_timestamp):
+def check_row(row, last_timestamp, last_odometer):
     problems = []
     unit = (row.get("unit_id") or "").strip()
 
@@ -67,6 +67,7 @@ def check_row(row, last_timestamp):
         "terrain_factor": (0, 1),
         "vibration_rms_g": (0, float("inf")),
         "internal_resistance_ohm": (0, float("inf")),
+        "odometer_m": (0, float("inf")),
     }
 
     for field, (low, high) in ranges.items():
@@ -96,6 +97,16 @@ def check_row(row, last_timestamp):
             and timestamp <= previous
     ):
         problems.append("duplicate_or_unordered_timestamp")
+
+    odo = values.get("odometer_m")
+    previous_odo = last_odometer.get(unit)
+
+    if (
+            odo is not None
+            and previous_odo is not None
+            and odo < previous_odo
+    ):
+        problems.append("odometer_decreased")
 
     return problems, timestamp, unit
 
@@ -130,6 +141,7 @@ def run_pipeline(source, out_root=None):
     missing_minutes = 0
     reasons = Counter()
     last_timestamp = {}
+    last_odometer = {}
 
     with (
         raw_path.open(newline="", encoding="utf-8") as src,
@@ -163,7 +175,7 @@ def run_pipeline(source, out_root=None):
         for row in reader:
             total += 1
             problems, timestamp, unit = check_row(
-                row, last_timestamp
+                row, last_timestamp, last_odometer
             )
 
             if None in row:
@@ -190,6 +202,7 @@ def run_pipeline(source, out_root=None):
                     ) - 1
 
             last_timestamp[unit] = timestamp
+            last_odometer[unit] = float(row["odometer_m"])
             accepted += 1
 
             good_writer.writerow({

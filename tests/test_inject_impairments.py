@@ -36,6 +36,7 @@ def source_csv(tmp_path):
                     "motor_temp_c": 35,
                     "terrain_factor": 0.5,
                     "vibration_rms_g": 0.15,
+                    "odometer_m": float(minute),
                 })
 
     return path

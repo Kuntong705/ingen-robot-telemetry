@@ -14,7 +14,7 @@ I implemented a Raw-to-Validated-to-Curated pipeline using DuckDB and Parquet, w
 
 A separate seeded impairment tool introduces network dropouts and gradual temperature-sensor drift. In one experiment, 8,486 records were removed, and the pipeline identified exactly 8,486 missing minutes.
 
-All 26 automated pytest tests passed, and the GitHub Actions workflow successfully completed Ruff, mypy, and pytest checks.
+All 30 automated pytest tests passed, and the GitHub Actions workflow successfully completed Ruff, mypy, and pytest checks. I also added a cumulative odometer to the fleet telemetry schema, implemented non-decreasing odometer validation, and verified that records with decreasing odometer values are quarantined.
 
 ## 2. Failure-Label Decision
 

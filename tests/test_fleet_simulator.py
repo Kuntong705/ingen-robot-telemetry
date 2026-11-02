@@ -127,3 +127,25 @@ def test_invalid_simulation_configuration(tmp_path):
             days=2,
             output_dir=tmp_path,
         )
+
+def test_odometer_nondecreasing(fleet_data):
+    rows, _ = fleet_data
+    last = {}
+    moving_units = set()
+
+    for row in rows:
+        unit = row["unit_id"]
+        odometer = float(row["odometer_m"])
+
+        assert odometer >= 0
+
+        if unit in last:
+            assert odometer >= last[unit]
+            if odometer > last[unit]:
+                moving_units.add(unit)
+
+        last[unit] = odometer
+
+    assert moving_units == {
+        "Rover_001", "Rover_002", "Rover_003"
+    }

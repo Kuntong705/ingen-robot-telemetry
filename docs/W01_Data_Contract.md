@@ -1,107 +1,238 @@
 # W01 — Fleet Telemetry Data Contract
 
 **Project:** Robot Fleet Telemetry Analytics & Predictive Health  
-**Version:** 0.1 — Initial Design  
-**Status:** Proposed; not yet fully implemented  
-**Primary platform:** Synthetic outdoor patrol robot (Rover)  
+**Version:** 0.2 — Implemented Prototype  
+**Updated:** November 1, 2026  
+**Primary Platform:** Synthetic Aido Rover  
+**Data Classification:** Synthetic demonstration data; no confidential telemetry
 
 ## 1. Purpose and Scope
 
-This document defines the data structures, validation rules, storage decisions, and failure-labeling strategy for a synthetic robot fleet telemetry pipeline.
+This contract describes the telemetry schema, data validation rules, supporting event tables, storage architecture, and proposed predictive-maintenance labels for the synthetic Rover fleet.
 
-The initial prototype generates one-minute observations for one robot over 24 hours. The target architecture supports multiple units over extended operating periods.
+The baseline simulation contains 20 robots operating over 60 days, generating 1,728,000 minute-level observations.
 
-All data and physical parameters are synthetic or illustrative. No proprietary telemetry or confidential hardware specifications are used.
+The pipeline processes these records through Raw, Validated, and Curated layers using CSV, DuckDB, and Parquet.
+
+All physical parameters are illustrative rather than verified production hardware specifications.
 
 ## 2. Telemetry Schema
 
-The existing prototype generates the following fields.
+Each telemetry record represents one robot at one UTC timestamp.
 
-| Field | Type | Description |
+| Field | Data Type | Unit / Meaning |
 |---|---|---|
-| `timestamp_utc` | datetime | Timezone-aware UTC timestamp |
+| `timestamp_utc` | datetime | Timezone-aware UTC |
 | `unit_id` | string | Unique robot identifier |
-| `mode` | string | Operating mode: patrol or dock |
-| `battery_soc_pct` | float | Battery state of charge, 0–100% |
-| `power_w` | float | Electrical power in watts; positive = discharge, negative = charging |
-| `ambient_temp_c` | float | Ambient temperature in °C |
-| `motor_temp_c` | float | Simulated motor temperature in °C |
-| `vibration_rms_g` | float | Simulated vibration RMS in units of standard gravity |
+| `mode` | string | `patrol` or `dock` |
+| `battery_soc_pct` | float | State of charge, % |
+| `battery_soh_pct` | float | Estimated state of health, % |
+| `battery_voltage_v` | float | Battery voltage, V |
+| `battery_current_a` | float | Battery current, A |
+| `internal_resistance_ohm` | float | Internal resistance, Ω |
+| `power_w` | float | Electrical power, W |
+| `ambient_temp_c` | float | Ambient temperature, °C |
+| `motor_temp_c` | float | Motor temperature, °C |
+| `terrain_factor` | float | Dimensionless load factor |
+| `vibration_rms_g` | float | Vibration RMS, g |
+| `odometer_m` | float | Cumulative distance, m |
 
-Each robot produces one observation per minute. The combination of `unit_id` and `timestamp_utc` must be unique.
+Positive electrical power represents discharge, while negative power represents charging.
 
-Planned extensions include `platform`, `firmware_version`, battery voltage/current, cumulative odometer readings, and sensor status. These fields are not yet implemented.
+Telemetry is sampled once per minute. Each `(unit_id, timestamp_utc)` pair should be unique.
+
+A cumulative odometer is maintained independently for each robot and must never decrease during normal operation.
+
+The schema is currently specific to the synthetic Rover platform. Other inGen platforms will require additional, platform-specific fields.
 
 ## 3. Supporting Data Tables
 
-**Operational Events**
+### 3.1 Fault Events — Implemented
 
-Proposed fields: `event_id`, `unit_id`, `timestamp_utc`, `event_type`, `metadata_json`.
+The simulator produces a separate `fleet_fault_events.csv` table:
 
-Examples: patrol start, charging start, system shutdown, connectivity interruption.
+| Field | Type |
+|---|---|
+| `unit_id` | string |
+| `fault_type` | string |
+| `onset_utc` | datetime |
+| `failure_utc` | datetime |
 
-**Maintenance Records**
+Current synthetic fault types are `bearing_wear` and `cooling_degradation`.
 
-Proposed fields: `maintenance_id`, `unit_id`, `started_at_utc`, `completed_at_utc`, `component`, `action`.
+Each simulated robot receives one fault event. The event records indicate the modeled onset and designated failure time, but the simulator does not force robot shutdown upon reaching that time.
 
-These will support the exclusion of post-repair periods during model training.
+### 3.2 Sensor Impairment Events — Implemented
 
-**Ground-Truth Fault Events**
+The impairment module independently records injected temperature-sensor drift, including affected unit, sensor, onset time, ramp completion time, maximum bias, and ramp shape.
 
-Current prototype fields: `unit_id`, `fault_type`, `onset_utc`, `failure_utc`.
+These ground-truth records are kept separate from prediction-time telemetry.
 
-The prototype injects one synthetic bearing-wear event. Fault onset and failure time are generated labels, not observed failures from physical hardware.
+### 3.3 Operational Events — Proposed
 
-## 4. Data Quality Rules
+Future operational event records should include:
 
-- Timestamps must be valid UTC times and ordered within each robot's data.
-- No duplicate `(unit_id, timestamp_utc)` records.
-- Battery SoC must remain within 0–100%.
-- Motor temperature must remain within configurable physically plausible limits.
-- Vibration magnitude must be nonnegative.
-- Missing records and timestamp gaps must be reported.
-- Invalid records must be rejected or quarantined instead of silently corrected.
+- `event_id`
+- `unit_id`
+- `timestamp_utc`
+- `event_type`
+- `metadata_json`
 
-Currently, only basic output-level checks are implemented. Independent record validation, gap reporting, and corrupted-record rejection remain planned.
+Examples include charging starts, patrol transitions, connectivity interruptions, and system shutdowns.
 
-## 5. ADR-001 — Analytical Storage
+### 3.4 Maintenance Records — Proposed
 
-**Decision:** Use local Parquet files with DuckDB as the initial analytical storage solution.
+Future maintenance records should include:
 
-This approach provides efficient columnar storage and SQL querying without requiring cloud infrastructure. It also enables reviewers to regenerate synthetic datasets locally without cloud credentials or usage costs.
+- `maintenance_id`
+- `unit_id`
+- `started_at_utc`
+- `completed_at_utc`
+- `component`
+- `action`
 
-BigQuery remains a possible future option for larger operational fleets. For the present synthetic prototype, cloud deployment would increase complexity without providing an essential benefit. This decision will be revisited if workload scale or deployment requirements change.
+These records will support maintenance exclusion windows and future predictive-maintenance labels.
 
-## 6. ADR-002 — Table Layout
+## 4. Data Validation Rules
 
-**Decision:** Use a wide telemetry table with one row per robot per timestamp.
+The implemented ingestion pipeline checks:
 
-A wide layout simplifies multi-channel analysis because battery, motor, environmental, and vibration values are available in the same observation. This supports rolling-window feature engineering and downstream machine learning.
+| Rule | Expected condition |
+|---|---|
+| Required columns | All 14 telemetry fields present |
+| Timestamp | Valid timezone-aware UTC |
+| Ordering | Increasing timestamps per robot |
+| Duplicate records | No repeated unit/timestamp combination among accepted records |
+| Battery SoC | 0–100% |
+| Battery SoH | 0–100% |
+| Battery voltage | 30–60 V |
+| Ambient temperature | −60 to 70°C |
+| Motor temperature | −40 to 120°C |
+| Terrain factor | 0–1 |
+| Vibration RMS | Nonnegative |
+| Internal resistance | Positive |
+| Odometer | Nonnegative and non-decreasing |
+| Power/current | Consistent with the baseline nominal 48 V assumption |
+| Sampling gaps | Counted per robot |
 
-A long format would make adding arbitrary sensor channels easier, but would require additional pivoting for many model features. For extended datasets, Parquet files will be partitioned by date and optionally by platform. The partition design will be benchmarked before finalizing.
+All numeric values must be finite.
 
-## 7. ADR-003 — Failure Label Definition
+Invalid records are written to a quarantine CSV with error codes instead of being silently corrected.
 
-**Proposed prediction target:** Whether a new fault begins within the next 72 hours.
+The ranges above are initial engineering assumptions, not production acceptance limits.
 
-For a prediction at time *t*, the target is positive if a qualifying fault onset occurs after *t* and no later than *t + 72 hours*. Features must be computed using information available at or before *t*.
+The pipeline currently uses custom validation logic. Full pandera or Great Expectations schema enforcement and broader unit consistency checks remain outstanding.
 
-A proposed 24-hour exclusion period following completed repairs will prevent transient post-maintenance conditions from contaminating training labels. This duration is an initial assumption requiring evaluation. Observations without a full future prediction window will be excluded or marked censored, not automatically assigned negative labels.
+## 5. Data Processing Architecture
 
-The current 24-hour prototype is insufficient for valid 72-hour labeling or model evaluation. This labeling strategy will be implemented after extending the simulation period.
+The pipeline contains three layers.
 
-## 8. Reproducibility and Data Governance
+**Raw:** Preserve a copy of the incoming synthetic CSV without applying corrections.
 
-- Synthetic data is generated using a fixed random seed.
-- Simulator parameters will be documented in version-controlled configuration files.
-- Generated datasets will not be committed to GitHub.
-- No confidential company documents, customer data, credentials, or API keys will be stored in the repository.
-- Ground-truth labels must remain separate from prediction-time telemetry to prevent target leakage.
+**Validated:** Check schema, timestamps, numeric values, physical ranges, and odometer consistency. Write accepted records to typed Parquet; write rejected records separately to quarantine.
 
-## 9. Implementation Status and Next Steps
+**Curated:** Aggregate accepted observations by robot and UTC date. Produce summary metrics for battery charge, motor temperature, vibration, and record counts.
 
-**Implemented:** Basic telemetry generation, synthetic fault-event output, range checks, six automated tests, and visualization.
+DuckDB performs Parquet conversion and daily aggregation.
 
-**Remaining:** Independent data validation, multi-robot simulation, longer prediction horizons, Parquet ingestion, DuckDB integration, corrupted-record tests, and automated CI.
+The ingestion process generates `reports/W01_Data_Quality_Report.json`, including accepted and rejected counts, rejection reasons, timestamp gap events, missing minutes, and overall quality status.
 
-This document describes an evolving engineering contract. Unimplemented requirements are explicitly identified and must not be presented as completed capabilities.
+The current implementation does not yet provide a complete production-grade data lineage or schema registry.
+
+## 6. Data Quality Experiments
+
+### Baseline Fleet Simulation
+
+The complete clean simulation contains 1,728,000 telemetry observations across 20 robots and 60 days.
+
+The baseline pipeline is intended to accept all valid generated records with no sampling gaps.
+
+### Impaired Fleet Simulation
+
+A separate seeded impairment experiment introduced communication dropouts and progressive motor-temperature sensor bias.
+
+Observed results:
+
+| Metric | Result |
+|---|---:|
+| Original observations | 1,728,000 |
+| Removed observations | 8,486 |
+| Remaining valid observations | 1,719,514 |
+| Timestamp gap events | 8,437 |
+| Missing minutes | 8,486 |
+| Rejected remaining records | 0 |
+
+The quality report correctly indicated failure of the completeness requirement because missing minutes were present.
+
+The present validator does not automatically identify temperature-sensor drift when the affected measurements remain within allowed physical ranges. This requires additional sensor-health analysis.
+
+## 7. ADR-001 — Analytical Storage
+
+**Decision:** Use DuckDB with local Parquet files.
+
+**Rationale:** Parquet supports compressed columnar storage, while DuckDB enables local SQL analysis without requiring a cloud database.
+
+**Alternative considered:** BigQuery or another managed cloud analytical platform.
+
+**Trade-off:** Local analysis is inexpensive and reproducible, but production-scale orchestration, multiuser access, and centralized governance would require additional infrastructure.
+
+## 8. ADR-002 — Telemetry Table Layout
+
+**Decision:** Adopt a wide telemetry table with one row per unit per timestamp.
+
+**Rationale:** Related sensor measurements are available in the same record, simplifying cross-channel comparisons, temporal aggregation, and future feature engineering.
+
+**Alternative considered:** Long-format event/value tables.
+
+**Trade-off:** The wide layout is convenient for the relatively fixed Rover schema but less flexible for heterogeneous high-dimensional robotic platforms.
+
+Platform-specific extension schemas may be needed for future fleet integration.
+
+## 9. ADR-003 — Failure Label Definition
+
+**Proposed target:** A new qualifying fault onset within the next 72 hours.
+
+At prediction time *t*, the binary target is positive if a qualifying fault begins after *t* and on or before *t + 72 hours*.
+
+This choice aims to provide actionable lead time for maintenance teams.
+
+Alternatives considered:
+
+- **Current anomaly detection:** Useful for immediate diagnosis but does not necessarily provide advance warning.
+- **Time-to-failure prediction:** Potentially informative but requires a reliable definition of actual failure and sufficient failure observations.
+- **Onset-based early warning:** Chosen provisionally because it aligns with advance maintenance decisions.
+
+A proposed 24-hour post-maintenance exclusion window will prevent immediate post-repair observations from distorting training labels.
+
+Records without a complete future observation horizon should be censored rather than automatically labeled negative.
+
+Ground-truth events must never be incorporated into features available at prediction time.
+
+**Implementation status:** The 72-hour predictive target and maintenance exclusions are design decisions, not yet implemented as a production-ready labeling pipeline.
+
+## 10. Reproducibility and Governance
+
+The simulation uses a fixed random seed and a version-controlled YAML configuration profile.
+
+Project dependencies are declared in `pyproject.toml` and resolved in `uv.lock`.
+
+Automated tests validate simulator behavior, data ingestion, record quarantine, configuration changes, and selected physical consistency rules.
+
+Thirty local pytest tests passed after adding odometer validation. GitHub Actions runs Ruff, mypy, and pytest, with the latest changes pending cloud verification.
+
+Generated datasets and confidential information must not be committed to the repository. Only synthetic data, code, test results, design documents, and approved artifacts should be shared.
+
+## 11. Remaining Work
+
+The current Week 1 foundation supports configurable synthetic fleet generation, fault injection, record validation, Parquet storage, daily analytical summaries, and automated testing.
+
+Remaining engineering improvements include:
+
+- Strict external schema validation with pandera or Great Expectations
+- Unit consistency driven by the YAML configuration rather than a hard-coded nominal voltage
+- Full operational and maintenance event schemas
+- Sensor drift detection beyond simple physical-range validation
+- Expanded physical modeling and empirical calibration
+- Final repository structure and cross-platform configuration profiles
+
+The prototype is suitable for demonstrating a reproducible synthetic data engineering workflow, but is not a validated digital twin of production hardware.

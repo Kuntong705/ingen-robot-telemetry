@@ -39,6 +39,7 @@ def valid_row(timestamp="2026-10-26T08:00:00+00:00"):
         "motor_temp_c": "35",
         "terrain_factor": "0.5",
         "vibration_rms_g": "0.15",
+        "odometer_m": "120",
     }
 
 
@@ -152,3 +153,25 @@ def test_simulation_reproducible(tmp_path):
     ).read_bytes() == (
         second / "fleet_telemetry.csv"
     ).read_bytes()
+
+def test_reject_decreasing_odometer(tmp_path):
+    rows = [
+        valid_row(),
+        {
+            **valid_row("2026-10-26T08:01:00+00:00"),
+            "odometer_m": "119",
+        },
+        {
+            **valid_row("2026-10-26T08:02:00+00:00"),
+            "odometer_m": "121",
+        },
+    ]
+
+    source = make_csv(tmp_path / "odometer.csv", rows)
+    report = run_pipeline(
+        source, out_root=tmp_path / "processed"
+    )
+
+    assert report["accepted_rows"] == 2
+    assert report["rejected_rows"] == 1
+    assert report["rejection_reasons"]["odometer_decreased"] == 1
