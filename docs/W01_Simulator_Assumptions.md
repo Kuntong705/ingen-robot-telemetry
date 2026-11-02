@@ -104,3 +104,17 @@ Important limitations include simplified battery aging, lack of detailed weather
 Fault-event timestamps are synthetic ground truth; a simulated failure timestamp does not currently force the robot to stop operating.
 
 These limitations must be considered when interpreting future forecasting and predictive-maintenance results.
+
+## 9. Physics Sanity-Check Results
+
+The 20-unit, 60-day baseline simulation was evaluated using `fleet_physics_sanity.png`.
+
+- **Battery SoC:** Decreases during patrol and recovers during docking and charging, consistent with the modeled duty cycle.
+- **Motor temperature:** Increases under patrol load, reaching approximately 42.32°C on the first day, and gradually returns toward ambient temperature after patrol ends.
+- **Battery SoH:** Decreases monotonically, with daily average SoH declining from 99.9878% to 98.5400% over the 60-day simulation.
+
+These checks confirm expected qualitative behavior under the chosen model assumptions. They do not establish calibration against actual robot hardware.
+
+**Known limitation:** Ambient temperature is currently updated using integer-hour time, producing artificial hourly steps. A continuous-time ambient model is recommended for future simulation runs.
+
+Additional validation should directly compare temperature against motor load and examine degradation behavior under different operating conditions.
