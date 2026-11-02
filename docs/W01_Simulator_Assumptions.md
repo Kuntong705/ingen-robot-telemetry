@@ -128,3 +128,18 @@ The baseline patrol speed is assumed to be 1.0 m/s. During patrol, the odometer 
 The ingestion pipeline enforces nonnegative, non-decreasing odometer values and quarantines records that violate this rule.
 
 This model assumes a constant travel speed and does not yet account for stops, turning, wheel slip, or terrain-dependent speed variation.
+
+## Product Reference Review
+
+A preliminary local review of Aido Rover product documentation was performed to assess the synthetic simulation assumptions.
+
+The simulation is intended to demonstrate physically plausible telemetry generation and data engineering, not to reproduce the exact specifications of production hardware.
+
+- **Patrol speed:** The configured speed represents an illustrative patrol scenario. Product reference operating speed and simulated average patrol speed are not necessarily equivalent.
+- **Battery:** Nominal capacity, voltage, charging power, and battery ageing coefficients remain illustrative assumptions. Advertised runtime and external power-supply ratings do not establish battery-pack specifications.
+- **Operating conditions:** The daily patrol schedule, terrain power demand, and thermal response are simplified synthetic models.
+- **Sensors:** Simulated vibration, temperature, and health channels are proposed analytical signals. Their availability in actual hardware or firmware requires confirmation.
+- **Fault injection:** Bearing wear, cooling degradation, sensor drift, and communication loss are synthetic scenarios, not verified production failure rates.
+- **Prediction target:** The proposed 72-hour fault-onset prediction horizon is an analytics design choice and is independent of warranty or service-replacement commitments.
+
+The baseline dataset is retained for reproducibility. Further hardware calibration and platform-specific validation are required before applying the models to operational decisions.
