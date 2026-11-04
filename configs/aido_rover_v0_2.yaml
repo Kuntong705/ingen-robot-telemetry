@@ -1,0 +1,143 @@
+# Aido Rover synthetic simulation profile -- simulator v0.2 (Week 2)
+# All values are illustrative engineering assumptions, NOT InGen specifications.
+# Each parameter states its unit and the basis for the value:
+#   [lit]   = order of magnitude from public Li-ion / motor literature
+#   [ds]    = datasheet-typical range for this class of component
+#   [asm]   = explicit modelling assumption chosen for the experiment
+# v0.1 (configs/aido_rover.yaml, fleet_simulator.py) is kept unchanged as the Week 1 baseline.
+
+platform: aido_rover
+profile_version: "0.2"
+firmware_version: "rover-fw-2.3.1"   # [asm] single firmware build for the whole synthetic fleet
+
+simulation:
+  units: 20                 # default fleet size; Week 2 experiment runs with --units 50
+  days: 60
+  sample_interval_seconds: 60
+  seed: 2026
+  start_utc: "2026-10-26T00:00:00Z"
+
+sites:                      # [asm] three deployment climates; units share weather within a site
+  - {name: site_cool, ambient_mean_c: 12.0, diurnal_amplitude_c: 6.0}
+  - {name: site_mild, ambient_mean_c: 21.0, diurnal_amplitude_c: 5.0}
+  - {name: site_hot,  ambient_mean_c: 30.0, diurnal_amplitude_c: 7.0}
+
+weather:
+  daily_ar1_phi: 0.7        # [asm] day-to-day persistence of the daily mean temperature
+  daily_noise_std_c: 2.5    # [asm] std of the daily mean innovation, deg C
+  minute_noise_std_c: 0.2   # [asm] sensor/microclimate noise, deg C
+  peak_hour_utc: 15.0       # [asm] hour of the diurnal maximum
+
+unit_variation:             # multiplicative unit-to-unit spread (std of a N(1, s) factor)
+  capacity: 0.02            # [ds] pack capacity tolerance ~ +/-2 %
+  fade_rate_log_std: 0.25   # [lit] lognormal spread of cycle-ageing rate between cells
+  base_resistance: 0.10     # [ds] pack resistance tolerance
+  heating_coefficient: 0.08 # [asm] motor/drive thermal resistance spread
+  thermal_time_constant: 0.10
+  vibration_baseline: 0.15  # [asm] mounting / wheel balance spread
+  baseline_power: 0.05      # [asm] drivetrain efficiency spread
+
+duty_cycle:
+  single_shift_hours_utc: [[8, 16]]             # [asm] one 8 h patrol shift
+  double_shift_hours_utc: [[6, 12], [14, 20]]   # [asm] two 6 h shifts with a 2 h charge window
+  double_shift_fraction: 0.35                   # [asm] share of units on the double shift
+  day_off_probability: 0.05                     # [asm] unit idles in dock for a whole day
+  return_to_dock_soc_pct: 12.0                  # [asm] BMS forces a return below this SoC
+  patrol_speed_mps: 1.0                         # [asm] nominal speed on flat asphalt
+  terrain_speed_reduction: 0.3                  # [asm] speed x (1 - 0.3 * terrain_factor)
+  baseline_patrol_power_w: 400.0                # [asm] drive + compute + sensors on flat ground
+  terrain_extra_power_w: 160.0                  # [asm] extra draw at terrain_factor = 1
+  cold_heater_w_per_c: 8.0                      # [asm] pack/compute heating below 10 C
+  cold_heater_threshold_c: 10.0
+  charging_power_w: 700.0                       # [ds] dock charger power
+  charge_taper_start_soc_pct: 85.0              # [lit] CC-CV taper region
+  charge_target_soc_pct: 95.0
+  charge_efficiency: 0.95                       # [lit] round-trip charge efficiency
+
+terrain:
+  segment_minutes: [5, 20]      # [asm] duration range of a route segment
+  surfaces:                     # rolling-resistance-like load index per surface type
+    asphalt: 0.10
+    gravel: 0.50
+    grass: 0.80
+  grade_to_factor_offset: 0.05  # terrain_factor = clip(0.5*surface + 0.5*(grade+0.05)/0.17, 0, 1)
+  grade_to_factor_span: 0.17
+  routes:                       # [asm] route profiles a unit can be assigned to
+    flat_paved: {surface_probs: [0.85, 0.10, 0.05], grade_mean: 0.00, grade_std: 0.02}
+    mixed_park: {surface_probs: [0.40, 0.35, 0.25], grade_mean: 0.02, grade_std: 0.03}
+    hilly_campus: {surface_probs: [0.50, 0.40, 0.10], grade_mean: 0.05, grade_std: 0.04}
+  route_change_fraction: 0.2    # [asm] share of units reassigned to another route mid-run
+  route_change_day_range: [15, 45]
+
+battery:
+  nominal_voltage_v: 48.0             # [ds] 13s-14s Li-ion pack class
+  nominal_capacity_wh: 6000.0         # [asm]
+  initial_soc_pct: 95.0
+  initial_soh_pct: 100.0
+  min_soh_pct: 70.0
+  ocv_soc_slope_v_per_pct: 0.05       # [asm] linearised OCV-SoC slope
+  base_internal_resistance_ohm: 0.04  # [ds]
+  cycle_fade_pct_per_efc: 0.04        # [lit] 0.02-0.06 %/EFC for NMC at moderate stress
+  calendar_fade_pct_per_day: 0.008    # [lit] ~3 %/year at 25 C
+  arrhenius_doubling_c: 10.0          # [lit] ageing rate doubles per +10 C (rule of thumb)
+  low_soc_stress_threshold_pct: 30.0  # [lit] deep discharge accelerates ageing
+  low_soc_stress_factor: 1.5
+  resistance_growth_per_pct_fade: 0.08  # [lit] R rises ~8 % per 1 % capacity lost
+  cold_resistance_per_c: 0.01         # [lit] R rises ~1 %/C below 25 C
+  cold_capacity_loss_per_c: 0.005     # [lit] usable capacity -0.5 %/C below 20 C
+  pack_temp_rise_patrol_c: 3.0        # [asm] pack above ambient while discharging
+  pack_temp_rise_charge_c: 2.0
+  bms_soh_bias_std_pct: 0.3           # [asm] persistent per-unit BMS estimation bias
+  bms_soh_noise_std_pct: 0.3          # [asm] error of each per-charge SoH re-estimate
+
+thermal:
+  initial_motor_temp_c: 22.0
+  load_heating_coefficient_c_per_w: 0.028   # [asm] steady-state rise per W of drive load
+  response_time_minutes: 40.0               # [asm] first-order time constant
+  measurement_noise_std_c: 0.3              # [ds] thermistor + ADC noise
+
+vibration:
+  dock_baseline_g: 0.04
+  patrol_baseline_g: 0.15
+  terrain_gain: 0.6               # [asm] vibration x (1 + 0.6 * terrain_factor)
+  noise_std_g: 0.01
+  bearing_friction_extra_w: 40.0  # [asm] extra drive power at full bearing severity
+
+measurement:
+  voltage_noise_std_v: 0.05       # [ds] BMS voltage resolution / noise
+  current_noise_std_a: 0.02
+
+faults:                           # P-F model: initiation -> qualifying onset -> failure -> repair
+  types: [bearing_wear, cooling_degradation, battery_cell_fault]
+  faults_per_unit_per_60_days: 1.0  # [asm] Poisson mean, scaled to the run length
+  initiation_fraction_range: [0.03, 0.95]  # initiation drawn uniformly over this share of the run
+  precursor_days_range: [2.0, 10.0]   # initiation -> qualifying onset
+  qualifying_severity: 0.3            # label event: severity crosses this level
+  ramp_shapes: [linear, exponential, sigmoid]
+  detection_delay_days_range: [0.5, 4.0]  # qualifying onset -> repair start (field service)
+  repair_hours_range: [6.0, 24.0]
+  failure_to_repair_days: 0.5        # if failure happens first, repair starts 0.5 d later
+  min_gap_after_repair_days: 1.0
+  bearing_max_extra_g: 0.5
+  cooling_max_heating_increase: 0.8  # heating coefficient x (1 + 0.8 * severity)
+  cooling_max_time_constant_increase: 0.3
+  cell_max_resistance_increase: 0.8  # R x (1 + 0.8 * severity)
+  cell_extra_fade_pct_per_day: 0.5   # extra capacity loss at full severity
+
+impairments:
+  dropout_probability: 0.003      # iid record loss
+  burst_probability_per_unit_day: 0.10
+  burst_minutes_range: [5, 60]
+  drift_unit_fraction: 0.10       # temperature-sensor drift, independent of faults
+  drift_peak_c_range: [2.0, 5.0]
+  drift_ramp_days_range: [3.0, 10.0]
+
+labels:
+  horizon_hours: 72
+  prediction_interval_hours: 1
+  history_warmup_hours: 24
+  post_repair_exclusion_hours: 24
+
+alerting:
+  budget_alerts_per_unit_week: 1.0   # default operator budget; change here, not in code
+  refractory_hours: 72

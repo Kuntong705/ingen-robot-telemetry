@@ -91,7 +91,7 @@ Sensor drift within plausible measurement ranges is not yet automatically detect
 
 The simulator uses a fixed random seed. Repeated runs with identical inputs produce identical synthetic CSV outputs, as verified by automated testing.
 
-The current configuration file documents the parameter values but is not yet connected to the simulator runtime.
+The configuration file `configs/aido_rover.yaml` is read by the simulator at runtime (`fleet_simulator.load_config`). *(Corrected in Week 2: an earlier draft said the config was not yet connected.)*
 
 Generated datasets are excluded from Git version control. Source code, tests, model assumptions, and reproducibility instructions are retained.
 
@@ -143,3 +143,8 @@ The simulation is intended to demonstrate physically plausible telemetry generat
 - **Prediction target:** The proposed 72-hour fault-onset prediction horizon is an analytics design choice and is independent of warranty or service-replacement commitments.
 
 The baseline dataset is retained for reproducibility. Further hardware calibration and platform-specific validation are required before applying the models to operational decisions.
+
+
+## 10. Week 2 note — simulator v0.2
+
+The Week 2 audit found that v0.1 gives every unit identical parameters and the same fault onset time. Simulator v0.2 (`src/ingen_fleet_health/simulate/`, `configs/aido_rover_v0_2.yaml`) adds per-unit parameter variation, site climates, route terrain, P-F fault timelines, repairs, BMS estimation noise, sensor drift and dropouts. v0.1 is kept unchanged as the Week 1 baseline.

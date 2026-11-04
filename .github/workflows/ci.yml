@@ -28,7 +28,7 @@ jobs:
         run: uv run --locked ruff check .
 
       - name: Type checking
-        run: uv run --locked mypy --ignore-missing-imports fleet_simulator.py
+        run: uv run --locked mypy src/ fleet_simulator.py
 
       - name: Run automated tests
         run: uv run --locked python -m pytest -q

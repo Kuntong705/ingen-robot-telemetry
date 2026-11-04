@@ -233,3 +233,11 @@ __marimo__/
 /data/validated/
 /data/curated/
 /data/quarantine/
+# Week 2 generated data, external benchmarks and experiment tracking
+/data/w02/
+/data/w02_small/
+/data/external/
+/mlruns/
+/mlartifacts/
+mlflow.db
+/runs/

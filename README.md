@@ -148,6 +148,45 @@ The prediction target is currently a design proposal. A production-ready predict
 
 See `docs/W01_Data_Contract.md` for the full schema and architecture decisions.
 
+## 6a. Week 2 — Features, Leakage-Safe Evaluation and Health Models
+
+Week 2 code lives in the installable package `src/ingen_fleet_health/`. Week 1 scripts above are unchanged.
+
+| Module | Purpose |
+|---|---|
+| `simulate/` | Simulator v0.2: per-unit parameters, site climates, route terrain, P-F fault timelines, repairs, BMS noise, drift, dropouts (`configs/aido_rover_v0_2.yaml`) |
+| `labels.py` | 72 h qualifying-onset labels with active-fault, post-repair and censoring exclusions (ADR-003 rev1) |
+| `features/` | As-of rolling statistics and physics features (R from current steps, energy/km, thermal residual, vibration trend, DoD); registry → `docs/W02_Feature_Registry.md` |
+| `evaluation/` | Unit-grouped walk-forward splits with purge/embargo, fold audit, operator metrics (alert budget, lead time, false alarms per unit-week) |
+| `models/` | SoH: persistence, linear, LightGBM, LSTM. Early warning: no-skill, physics rule, LightGBM (+ calibration), Isolation Forest |
+| `experiments/` | Runners that write `reports/w02/*.json`, figures in `docs/figures/w02/`, and MLflow runs |
+| `benchmarks/cmapss.py` | C-MAPSS FD001 external check (data not downloaded yet) |
+
+Week 2 commands (about 25 minutes end to end on a laptop):
+
+```powershell
+py -3.11 -m uv run python -m ingen_fleet_health.simulate.fleet --out-dir data/w02 --units 50 --days 60
+py -3.11 -m uv run python -c "from ingest_pipeline import run_pipeline; run_pipeline('data/w02/generated/fleet_telemetry.csv', out_root='data/w02')"
+py -3.11 -m uv run python -m ingen_fleet_health.features.build --data-dir data/w02
+py -3.11 -m uv run python -m ingen_fleet_health.experiments.leakage_demo --data-dir data/w02
+py -3.11 -m uv run python -m ingen_fleet_health.experiments.soh_run --data-dir data/w02
+py -3.11 -m uv run python -m ingen_fleet_health.experiments.early_warning_run --data-dir data/w02
+py -3.11 -m uv run python scripts/build_w02_docs.py
+py -3.11 -m uv run mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+
+Week 2 headline results (unseen robots, unit-grouped walk-forward, 72 h embargo; 95 % CIs in `docs/W02_Model_Results.docx`):
+
+| Track | Baselines | Models | Result |
+|---|---|---|---|
+| SoH forecast, MAE (pp) at 1 / 7 / 14 d | persistence 0.34 / 0.44 / 0.67; linear 0.31 / 0.39 / 0.50 | LightGBM 0.26 / 0.31 / 0.41; LSTM 0.27 / 0.40 / 0.52 | LightGBM beats persistence at every horizon and linear at 7 and 14 d; the LSTM does not beat linear |
+| 72 h early warning, PR-AUC (base rate 0.055) | physics rule 0.215 | LightGBM 0.210; Isolation Forest 0.330 | Isolation Forest is best (significant vs both); LightGBM does not beat the physics rule |
+| Leakage demo, PR-AUC | — | same LightGBM | random shuffle 0.999 vs proper protocol 0.261 |
+
+The C-MAPSS external benchmark code is ready, but no result is reported yet (dataset not downloaded).
+
+Deliverables: `docs/W02_Feature_Registry.md`, `docs/W02_Evaluation_Protocol.docx`, `docs/W02_Model_Results.docx`, `docs/adr/0004-evaluation-protocol.md`, `weekly/Wk-02-Log.md`. Progress and hand-over notes: `weekly/W02_Progress.md`.
+
 ## 7. Limitations and Future Work
 
 - Physical parameters are illustrative and have not been calibrated against actual robot hardware.

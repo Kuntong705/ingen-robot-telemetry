@@ -1,0 +1,65 @@
+{
+  "early_warning": {
+    "random_shuffle": {
+      "pr_auc": 0.9986213380810903,
+      "pr_auc_same_period": 0.9987953718687789,
+      "test_rows": 12872,
+      "base_rate": 0.043116842759477934
+    },
+    "time_only_same_units": {
+      "pr_auc": 0.3622401749139889,
+      "test_rows": 41970,
+      "base_rate": 0.054896354538956395
+    },
+    "proper_unit_grouped_walk_forward": {
+      "pr_auc": 0.26087198566950925,
+      "test_rows": 41970,
+      "base_rate": 0.054896354538956395
+    },
+    "audit": {
+      "folds_checked": 20,
+      "max_shared_units": 0,
+      "max_duplicate_keys": 0,
+      "min_embargo_hours": 72.0
+    }
+  },
+  "time_proxy_probe": {
+    "features": [
+      "charge_sessions_cum",
+      "efc_cum_nominal",
+      "odometer_km",
+      "hours_elapsed"
+    ],
+    "random_shuffle": {
+      "pr_auc": 0.8096559966920616,
+      "pr_auc_same_period": 0.8371225165984151,
+      "test_rows": 12872,
+      "base_rate": 0.043116842759477934
+    },
+    "time_only_same_units": {
+      "pr_auc": 0.07082614961240502,
+      "test_rows": 41970,
+      "base_rate": 0.054896354538956395
+    },
+    "proper_unit_grouped_walk_forward": {
+      "pr_auc": 0.05518212504594193,
+      "test_rows": 41970,
+      "base_rate": 0.054896354538956395
+    }
+  },
+  "soh": {
+    "horizon_days": 7,
+    "random_shuffle_mae": 0.1794063977295141,
+    "proper_mae": 0.31270857419583076
+  },
+  "v01_clock_artefact": {
+    "units": 20,
+    "distinct_onset_times": 1,
+    "feature": "hours_elapsed only",
+    "random_shuffle_pr_auc": 0.9998553083740278,
+    "base_rate": 0.13043478260869565
+  },
+  "overstatement_pr_auc": 0.737749352411581,
+  "forbidden_columns_in_features": [],
+  "mlflow_run_id": "08531598aeeb44be8a5b03acb611588d"
+}
