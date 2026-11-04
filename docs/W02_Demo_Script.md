@@ -28,7 +28,7 @@ Every number below comes from `reports/w02/*.json`. Re-check them after any reru
 "CI runs ruff, mypy and pytest on every push: 56 tests, including an as-of test that corrupts all future data and checks the features do not change. In MLflow, every number in the results document links to a run."
 
 **4:30–5:00 — Difficulties and remaining work**
-"Difficulties: the label had to be redefined so it is learnable, the first resistance estimator was biased by 15 %, and the first classifier memorised robots. Remaining work: the C-MAPSS external check, where the code is ready and the dataset is pending approval; a two-stage alert; and calibration, which did little here (Brier 0.0532 to 0.0530). Then Week 3: maintenance-log text and Fari."
+"Difficulties: the label had to be redefined so it is learnable, the first resistance estimator was biased by 15 %, and the first classifier memorised robots. On the public NASA C-MAPSS FD001 benchmark, the same pipeline gets a test RMSE of 13.1 cycles with LightGBM and 14.4 with the LSTM, against 37–42 for the naive baselines. That is inside the published range, between the Deep LSTM's 16.1 and the DCNN's roughly 12.6. It is a different task, remaining life in cycles, so it validates the method, not the SoH numbers. Remaining work: a two-stage alert; and calibration, which did little here (Brier 0.0532 to 0.0530). Then Week 3: maintenance-log text and Fari."
 
 ---
 
@@ -38,4 +38,5 @@ Every number below comes from `reports/w02/*.json`. Re-check them after any reru
 - **Is 0.26 PR-AUC good?** The base rate is 0.055, so it is about 5× no-skill. In operator terms the anomaly detector warns about 80 % of onsets, roughly 30 hours ahead, at about 1 false alarm per robot-week.
 - **Why trust the proper number?** Robots are disjoint, a 72-hour embargo is asserted on every fold, and the time-proxy probe falls to the base rate.
 - **Did you tune on test?** No. Hyper-parameters are fixed, and the variant choice, calibration and thresholds all use inner validation. The round-1 run is kept in MLflow, and the round-2 variant is disclosed.
+- **Why C-MAPSS instead of the NASA battery data?** It has an official held-out test set and widely cited baselines, so it tests whether the protocol produces realistic numbers. Its metric is RMSE in cycles of remaining life, not SoH percentage points, so it is never put in the same table as the SoH results.
 - **What depends on the simulator?** Everything quantitative. Fade rates, fault signatures and noise levels are assumptions in `configs/aido_rover_v0_2.yaml`, so all results need re-validation on real fleet data.

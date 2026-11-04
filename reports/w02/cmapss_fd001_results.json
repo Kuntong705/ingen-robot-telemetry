@@ -1,0 +1,109 @@
+{
+  "task": "RUL in cycles at the last observed cycle of each official test engine (run-to-failure, no repair)",
+  "not_comparable_with": "fleet SoH track (percentage points at 1/7/14-day horizons)",
+  "train_engines": 100,
+  "test_engines": 100,
+  "sensors_used": [
+    "s2",
+    "s3",
+    "s4",
+    "s6",
+    "s7",
+    "s8",
+    "s9",
+    "s11",
+    "s12",
+    "s13",
+    "s14",
+    "s15",
+    "s17",
+    "s20",
+    "s21"
+  ],
+  "rul_cap": 125,
+  "window_cycles": 30,
+  "rmse_vs_capped_truth": {
+    "constant_mean": 41.94179565195834,
+    "age_linear": 36.999324318154784,
+    "lgbm": 13.085348307923624,
+    "lstm": 14.383570153320232
+  },
+  "rmse_vs_raw_truth": {
+    "constant_mean": 43.06703554245684,
+    "age_linear": 37.77803594683027,
+    "lgbm": 14.22733788034325,
+    "lstm": 16.0770624399944
+  },
+  "nasa_score_vs_capped_truth": {
+    "constant_mean": 33354.47175535112,
+    "age_linear": 22226.872367806416,
+    "lgbm": 263.3150264448388,
+    "lstm": 359.9666667709208
+  },
+  "test_engines_with_true_rul_above_cap": 11,
+  "lstm_training": {
+    "epochs_run": 13,
+    "val_engines": 10,
+    "val_rmse_capped": 10.557905721466346
+  },
+  "internal_split_check": {
+    "random_row_cv_rmse": 9.128828183274738,
+    "engine_grouped_cv_rmse": 13.033600104638042
+  },
+  "published_reference_rmse": {
+    "MLP (Babu et al., 2016)": {
+      "rmse": 37.56,
+      "source_check": "secondary: 37.6"
+    },
+    "SVR (Babu et al., 2016)": {
+      "rmse": 20.96,
+      "source_check": "secondary: 21.0"
+    },
+    "CNN (Babu et al., 2016)": {
+      "rmse": 18.45,
+      "source_check": "secondary: 18.4 / 18.44"
+    },
+    "Deep LSTM (Zheng et al., 2017)": {
+      "rmse": 16.14,
+      "source_check": "secondary: 16.1 / 16.14"
+    },
+    "DCNN (Li et al., 2018)": {
+      "rmse": 12.61,
+      "source_check": "secondary: about 12.6 (table layout ambiguous); unverified"
+    }
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "rmse_capped_by_seed": {
+    "lgbm": [
+      13.085348307923624,
+      13.066545287160986,
+      13.065399976218863
+    ],
+    "lstm": [
+      14.383570153320232,
+      14.067697884612954,
+      14.42900024492551
+    ]
+  },
+  "rmse_capped_seed_mean_sd": {
+    "lgbm": [
+      13.072431190434491,
+      0.011201199822321917
+    ],
+    "lstm": [
+      14.293422760952899,
+      0.1967987884993917
+    ]
+  },
+  "data_sha256": {
+    "train_FD001.txt": "963b5e22825b34d8b21c69e1aeb4af3e647050eb672ee8834ba4b5d91d2de0f8",
+    "test_FD001.txt": "3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851",
+    "RUL_FD001.txt": "a19c8ec94931949d0485bdc35118206e9c81c4547b422efb9cf86f4ceddbceca"
+  },
+  "data_source": "A. Saxena and K. Goebel (2008), Turbofan Engine Degradation Simulation Data Set, NASA Prognostics Data Repository, NASA Ames Research Center",
+  "mlflow_run_id": "7399caffc1384d319be348f606fdf6c6"
+}

@@ -328,9 +328,16 @@ def build_model_results() -> Path:
         summary.append(f"SoH h = {h} d: lowest MAE {fmt(r[best]['mae'], 3)} pp ({SOH_LABELS[best]}). "
                        f"LightGBM is {lg} linear extrapolation; the LSTM is {ls} linear extrapolation.")
     summary.append(f"Leakage demonstration: a random shuffle overstates PR-AUC by {fmt(leak['overstatement_pr_auc'])}.")
-    summary.append("External benchmark: " + ("see Section 5." if cmapss_path.exists() else
-                   "the C-MAPSS pipeline is implemented and tested on synthetic engines; the public data set has "
-                   "not been downloaded yet, pending confirmation of the data source. No external number is reported."))
+    if cmapss_path.exists():
+        c = load("cmapss_fd001_results.json")
+        r = c["rmse_vs_capped_truth"]
+        best = min(r, key=r.get)
+        summary.append(f"External benchmark (C-MAPSS FD001, RUL in cycles, not comparable with SoH percentage points): "
+                       f"best test RMSE {fmt(r[best], 2)} cycles ({ {'lgbm': 'LightGBM', 'lstm': 'LSTM'}.get(best, best)}) against constant {fmt(r['constant_mean'], 2)} and "
+                       f"age-linear {fmt(r['age_linear'], 2)}. Published FD001 references range from 37.6 (MLP) to "
+                       "about 12.6 (DCNN).")
+    else:
+        summary.append("External benchmark: not run; no external number is reported.")
     doc.bullets(summary)
 
     # ---------- data ----------
@@ -469,16 +476,65 @@ def build_model_results() -> Path:
     doc.h("5. External benchmark (C-MAPSS FD001)")
     if cmapss_path.exists():
         c = load("cmapss_fd001_results.json")
-        doc.table(["Model", "test RMSE", "NASA score"],
-                  [[k, fmt(v, 2), fmt(c["nasa_score"][k], 0)] for k, v in c["rmse"].items()])
-        doc.p("Published reference RMSE values (to verify against the original papers): " +
-              "; ".join(f"{k} {v}" for k, v in c["published_reference_rmse_unverified"].items()) + ".")
+        doc.p("Purpose: check that the same evaluation discipline and model families produce sensible numbers "
+              "on a public, standard prognostics benchmark. Data: A. Saxena and K. Goebel (2008), Turbofan "
+              "Engine Degradation Simulation Data Set, NASA Prognostics Data Repository, NASA Ames Research "
+              "Center. It was downloaded from the link on the NASA PCoE data-set repository page; SHA-256 hashes "
+              "are in reports/w02/cmapss_fd001_results.json.")
+        doc.table(["", "C-MAPSS FD001 (this section)", "Fleet SoH track (Section 3)"], [
+            ["Quantity predicted", "remaining useful life, in operating cycles", "state of health, in % of capacity"],
+            ["When", "once per test engine, at its last observed cycle", "every day, 1 / 7 / 14 days ahead"],
+            ["Ground truth", "official RUL_FD001.txt (100 engines)", "simulator ground-truth SoH"],
+            ["Units in test", f"{c['test_engines']} official test engines, none in training",
+             "unseen robots, unit-grouped walk-forward"],
+            ["Error metric", "RMSE in cycles (+ PHM08 asymmetric score)", "MAE / RMSE in SoH percentage points"],
+            ["Failure process", "run-to-failure, one fault mode, no repair", "slow capacity fade, faults and repairs"],
+        ], widths=[1.4, 2.6, 2.5])
+        doc.p("The two tracks are not compared numerically: an RMSE in cycles and an MAE in percentage points "
+              "measure different quantities. What carries over is the method: hold out whole engines or robots, "
+              "report baselines first, keep hyper-parameters fixed, and fit any scaler on training units only.",
+              bold_prefix="Comparability. ")
+        labels = {"constant_mean": "Constant (mean capped training RUL)",
+                  "age_linear": "Age-based linear (median life − cycle)", "lgbm": "LightGBM (30-cycle window features)",
+                  "lstm": "LSTM (30-cycle raw windows)"}
+        doc.table(["Model", "RMSE vs capped truth (cycles)", "RMSE vs raw truth (cycles)", "PHM08 score (capped)"],
+                  [[labels.get(k, k), fmt(v, 2), fmt(c["rmse_vs_raw_truth"][k], 2),
+                    fmt(c["nasa_score_vs_capped_truth"][k], 0)] for k, v in c["rmse_vs_capped_truth"].items()])
+        sd = c.get("rmse_capped_seed_mean_sd")
+        if sd:
+            doc.p(f"Seed robustness over seeds {c['seeds']} (capped-truth RMSE, mean ± sd): " + "; ".join(
+                f"{labels.get(k, k)} {fmt(v[0], 2)} ± {fmt(v[1], 2)}" for k, v in sd.items()) +
+                ". The table above shows the first seed.")
+        doc.p(f"Truth convention: the literature trains on a piecewise-linear target capped at 125–130 cycles, and "
+              f"most papers score against the capped truth. {c['test_engines_with_true_rul_above_cap']} of the "
+              f"{c['test_engines']} test engines have a true RUL above {c['rul_cap']}. Their raw-truth error is "
+              "dominated by the cap, so both conventions are shown.")
+        doc.table(["Published method (FD001)", "reported test RMSE", "check in this work"],
+                  [[k, fmt(v["rmse"], 2), v["source_check"]] for k, v in c["published_reference_rmse"].items()])
+        doc.p("The published values were cross-checked in two secondary sources (Serradilla et al., "
+              "arXiv:2010.03207, Table 7; arXiv:2603.00745, Table V). The original papers were not accessed. "
+              "The deep-learning papers use tuned architectures and sometimes different caps (125 or 130), so the "
+              "comparison is indicative, not a like-for-like ranking.")
+        ic = c["internal_split_check"]
+        doc.p(f"Leakage check on public data (training engines, 5-fold CV, all cycles scored): random-row CV RMSE "
+              f"{fmt(ic['random_row_cv_rmse'], 2)} versus engine-grouped CV RMSE {fmt(ic['engine_grouped_cv_rmse'], 2)} "
+              "cycles. The same direction as the fleet leakage demonstration. This CV number scores every cycle and "
+              "is not comparable with the official last-cycle test RMSE above.")
+        r = c["rmse_vs_capped_truth"]
+        doc.p(f"Our LightGBM ({fmt(r['lgbm'], 2)}) and LSTM ({fmt(r['lstm'], 2)}) land inside the published FD001 "
+              "range: below the CNN (18.45) and Deep LSTM (16.14) references and above the DCNN (about 12.6). The "
+              "learned models beat both naive baselines by a wide margin. We read this as a sanity check that "
+              "the pipeline and protocol produce realistic numbers on a public benchmark, not as a claim of "
+              "state-of-the-art: preprocessing, the cap and the truth convention differ between papers, and our "
+              "number is scored against the capped truth.", bold_prefix="Reading. ")
+        lt = c.get("lstm_training") or {}
+        if lt:
+            doc.p(f"LSTM training (first seed): {lt.get('epochs_run')} epochs with early stopping on {lt.get('val_engines')} "
+                  "held-out training engines (never on the official test set).")
+        doc.p(f"MLflow run: {c.get('mlflow_run_id', 'n/a')} (experiment w02_external_cmapss).")
     else:
         doc.p("Not run. src/ingen_fleet_health/benchmarks/cmapss.py implements the same discipline on C-MAPSS "
-              "FD001: per-engine trailing windows, a constant and an age-based linear baseline, LightGBM, and the "
-              "official test split with RUL capped at 125. It is covered by a test on synthetic engines. The public "
-              "files have not been downloaded, pending confirmation of the data source, so no external result is "
-              "claimed in this report.")
+              "FD001. The public files have not been downloaded, so no external result is claimed in this report.")
 
     # ---------- limitations ----------
     doc.h("6. Limitations")
@@ -497,6 +553,8 @@ def build_model_results() -> Path:
         ["w02_early_warning", ew.get("mlflow_run_id", "n/a")],
         ["w02_soh_forecast", soh.get("mlflow_run_id", "n/a")],
         ["w02_leakage_demo", leak.get("mlflow_run_id", "n/a")],
+        ["w02_external_cmapss", load("cmapss_fd001_results.json").get("mlflow_run_id", "n/a")
+         if cmapss_path.exists() else "not run"],
         ["w02_early_warning (round 1, superseded)", "ff0eb6f5e2004c22824afb22e089e637"],
     ])
     return doc.save("W02_Model_Results.docx")

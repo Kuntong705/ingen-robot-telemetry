@@ -160,7 +160,7 @@ Week 2 code lives in the installable package `src/ingen_fleet_health/`. Week 1 s
 | `evaluation/` | Unit-grouped walk-forward splits with purge/embargo, fold audit, operator metrics (alert budget, lead time, false alarms per unit-week) |
 | `models/` | SoH: persistence, linear, LightGBM, LSTM. Early warning: no-skill, physics rule, LightGBM (+ calibration), Isolation Forest |
 | `experiments/` | Runners that write `reports/w02/*.json`, figures in `docs/figures/w02/`, and MLflow runs |
-| `benchmarks/cmapss.py` | C-MAPSS FD001 external check (data not downloaded yet) |
+| `benchmarks/cmapss.py` | C-MAPSS FD001 external check (RUL in cycles; baselines, LightGBM, LSTM, engine-grouped leakage check) |
 
 Week 2 commands (about 25 minutes end to end on a laptop):
 
@@ -182,8 +182,9 @@ Week 2 headline results (unseen robots, unit-grouped walk-forward, 72 h embargo;
 | SoH forecast, MAE (pp) at 1 / 7 / 14 d | persistence 0.34 / 0.44 / 0.67; linear 0.31 / 0.39 / 0.50 | LightGBM 0.26 / 0.31 / 0.41; LSTM 0.27 / 0.40 / 0.52 | LightGBM beats persistence at every horizon and linear at 7 and 14 d; the LSTM does not beat linear |
 | 72 h early warning, PR-AUC (base rate 0.055) | physics rule 0.215 | LightGBM 0.210; Isolation Forest 0.330 | Isolation Forest is best (significant vs both); LightGBM does not beat the physics rule |
 | Leakage demo, PR-AUC | — | same LightGBM | random shuffle 0.999 vs proper protocol 0.261 |
+| External: NASA C-MAPSS FD001, test RMSE in **cycles** (capped truth) | constant 41.94; age-linear 37.00 | LightGBM 13.09 (3 seeds 13.07 ± 0.01); LSTM 14.38 (14.29 ± 0.20) | inside the published range (CNN 18.45, Deep LSTM 16.14, DCNN ≈ 12.6); a different task from SoH, not comparable numerically |
 
-The C-MAPSS external benchmark code is ready, but no result is reported yet (dataset not downloaded).
+C-MAPSS: download `6. Turbofan Engine Degradation Simulation Data Set.zip` from the [NASA PCoE data-set repository](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/), extract `train_FD001.txt`, `test_FD001.txt` and `RUL_FD001.txt` into `data/external/cmapss/` (git-ignored), then run `py -3.11 -m uv run python -m ingen_fleet_health.benchmarks.cmapss --data-dir data/external/cmapss`. Data: A. Saxena and K. Goebel (2008), NASA Prognostics Data Repository.
 
 Deliverables: `docs/W02_Feature_Registry.md`, `docs/W02_Evaluation_Protocol.docx`, `docs/W02_Model_Results.docx`, `docs/adr/0004-evaluation-protocol.md`, `weekly/Wk-02-Log.md`. Progress and hand-over notes: `weekly/W02_Progress.md`.
 

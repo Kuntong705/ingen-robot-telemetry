@@ -10,12 +10,34 @@ from ingen_fleet_health.models.early_warning import (
 from ingen_fleet_health.models.soh_forecast import _rolling_ols, linear_extrapolation
 
 
-def test_cmapss_pipeline_on_synthetic_engines():
+def test_cmapss_pipeline_on_synthetic_engines(monkeypatch):
+    import ingen_fleet_health.benchmarks.cmapss as cm
+
+    monkeypatch.setitem(cm.LGBM_PARAMS, "n_estimators", 60)  # keep the test fast
     train, test, rul = synthetic_cmapss(n_units=16, seed=1)
-    res = run_benchmark(train, test, rul)
+    res = run_benchmark(train, test, rul, with_lstm=False)
     assert res["test_engines"] == 8
+    assert all(c.startswith("s") and c[1:].isdigit() for c in res["sensors_used"])
     # the learned model should beat the constant baseline on clearly degrading engines
-    assert res["rmse"]["lgbm"] < res["rmse"]["constant_mean"]
+    assert res["rmse_vs_capped_truth"]["lgbm"] < res["rmse_vs_capped_truth"]["constant_mean"]
+    # holding whole engines out can only be harder than shuffling rows of the same engines
+    internal = res["internal_split_check"]
+    assert internal["engine_grouped_cv_rmse"] >= internal["random_row_cv_rmse"]
+
+
+def test_cmapss_lstm_trains_and_predicts_in_range():
+    from ingen_fleet_health.benchmarks.cmapss import (
+        add_rul,
+        fit_predict_lstm,
+        informative_sensors,
+    )
+
+    train, test, _ = synthetic_cmapss(n_units=8, seed=2)
+    train = add_rul(train)
+    pred, info = fit_predict_lstm(train, test.assign(rul=float("nan")), informative_sensors(train), max_epochs=1)
+    assert pred.shape == (4,)
+    assert (pred >= 0).all() and (pred <= 125).all()
+    assert info["epochs_run"] == 1
 
 
 def test_linear_extrapolation_exact_on_linear_series():
