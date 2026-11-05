@@ -241,3 +241,6 @@ __marimo__/
 /mlartifacts/
 mlflow.db
 /runs/
+
+# Local demo videos and logs (not committed by default)
+/media/

@@ -1,6 +1,6 @@
 # Week 2 Progress Tracker (living file — read this first in a new session)
 
-**Branch:** `week2` (local, nothing committed yet; commit/push only with Kuntong's approval)  
+**Branch:** `week2` (pushed to origin at 2304f70; do not merge to `main` or open a PR without Kuntong's approval)  
 **Plan:** Internship Plan v3.0, Week 2; demo Monday 2026-11-09  
 **Last updated:** 2026-11-04 (P0–P8 done; Week 2 committed locally as e90d892 + C-MAPSS follow-up; not pushed)
 
@@ -41,7 +41,7 @@ py -3.11 -m uv run mlflow ui --backend-store-uri sqlite:///mlflow.db
 | P7 docs + demo | done | `W02_Model_Results.docx`, `Wk-02-Log.md` (432 words), `docs/W02_Demo_Script.md`, README section 6a |
 | P8 C-MAPSS | done (2026-11-04) | FD001 from the NASA PCoE official link (git-ignored `data/external/`); MLflow run `7399caffc1384d319be348f606fdf6c6`; superseded runs `a5246ae4b7584328924504a3c2740f48` (operational settings wrongly counted as sensors) and `27cffa0998684fdb8977dc7fc6bc9fe7` (single seed) |
 
-Quality gates (2026-11-04): pytest 56 passed; ruff clean; mypy clean (32 files); `uv lock --check` ok. CI on GitHub is not yet verified (nothing pushed).
+Quality gates (2026-11-04): pytest 57 passed; ruff clean; mypy clean (32 files); `uv lock --check` ok. **GitHub Actions: passed.** Run #11 on `week2` at commit 2304f70 was green (confirmed by Kuntong on 2026-11-04). `week2` is pushed to origin; it is not merged to `main`, and no PR has been opened.
 
 ## Results (see reports/w02/*.json)
 
@@ -53,7 +53,14 @@ Quality gates (2026-11-04): pytest 56 passed; ruff clean; mypy clean (32 files);
 
 ## Open items / next steps
 
-- [ ] Kuntong: review the docx files; approve commit + push of `week2` (then check CI) and the PR
-- [ ] Kuntong: record a 30–60 s demo clip (Plan working norms); rehearse `docs/W02_Demo_Script.md`
+- [x] Commit + push of `week2`; CI run #11 green
+- [ ] Kuntong: review the docx files; decide on merge/PR later
+- [x] 50 s demo video `media/W02_demo.mp4` (git-ignored, local only): generated from the live output of `scripts/w02_demo.py` (run 2026-11-04T19:42:14Z) by `scripts/render_demo_video.py`. It is **not a screen recording**, and this is stated on screen. Regenerate with `python scripts/w02_demo.py` and then `python scripts/render_demo_video.py`.
+- [x] 55 s **real screen recording** `media/W02_screen_recording.mp4` (git-ignored, local only): FFmpeg gdigrab captures only the dedicated "W02 live demo" console window during a real run of `scripts/w02_demo.py` (run 2026-11-04T20:26:53Z, log `media/w02_screen_run_log.json`). Recorder: `python scripts/record_screen_demo.py`. Checked: 1360x772 at 15 fps, full output visible, no overlay frames.
+- [x] Video decision (Kuntong, 2026-11-04): keep both. `W02_screen_recording.mp4` is the real screen recording the Plan asks for; `W02_demo.mp4` is the rendered visual walkthrough. Both stay local only.
+- [x] 47 s **live-dashboard screen recording** `media/W02_live_dashboard_recording.mp4` (local only): FFmpeg gdigrab captures only the "W02 live dashboard" window while `scripts/w02_live_dashboard.py` computes one fold in a worker process (run finished 2026-11-04T21:06:34Z; computed in 16.8 s). Panels mark live one-fold values vs saved 20-fold values. Recorder: `python scripts/record_live_dashboard.py`.
+- [ ] Kuntong: rehearse `docs/W02_Demo_Script.md`
+- [x] **Final desktop recording (2026-11-04)**: `media/W02_desktop_recording_final.mp4` (59.45 s, 1920×1080, 20 fps; local only) from `media/W02_desktop_raw_final.mkv`; edit log in `media/W02_desktop_recording_final.edit.json`. Changes vs the first version: (1) typing at an ordinary, uneven pace (log-normal key gaps, mean 0.12 s, slightly longer after `_`/`.`; 0.5–1.3 s pauses between actions; eased mouse moves; no fake typos); (2) GitHub segment: shorter switch, the static page-load wait after the click shortened (0.6 s kept), loaded Success page held 4.0 s; the worker start-up wait is played at 10× (labelled) so the total stays ≤ 60 s; (3) dashboard now shows the report's LightGBM (`lgbm_selected`, 20-fold PR-AUC 0.210) instead of the physics-only variant (`lgbm_physics`, 0.230) — same 20-fold unit-grouped walk-forward protocol, different variant; the demo fold c1205_g2 selects the physics variant in both the formal run and the live run, so the live fold PR-AUC (0.438) is unchanged. Desktop pacing profile slightly faster (presentation only). Privacy fix found while checking: Edge's hover status bar shows the link URL with the username, and the Forward button shifts the URL bar — both now blurred. **The earlier `W02_desktop_recording.mp4` shows the username in the status bar for ~1.5 s (54.25–55.75 s) — do not share it.** Decision (Kuntong, 2026-11-05): keep that file unchanged; no corrected re-render. Use `W02_desktop_recording_final.mp4` for sharing.
+- [x] **Desktop demo recorded (2026-11-04)**: `media/W02_desktop_recording.mp4` (59.0 s, 1920×1080, 20 fps; local only, git-ignored). `scripts/desktop_demo.py record` drives PyCharm and Edge with real SendInput events (Ctrl+Shift+N opens `models/early_warning.py` and `scripts/w02_live_dashboard.py`, Ctrl+Shift+F10 runs the dashboard — a real one-fold evaluation, no full retrain — then Edge is brought forward and run #11 is clicked) while FFmpeg ddagrab records the desktop. A watchdog stopped and deleted the raw file on every attempt where another window came to the front (Claude app, Alt+Tab task switcher); Alt+Tab was replaced by a direct window switch because the switcher shows thumbnails of all windows. `scripts/render_desktop_recording.py` makes the only two edits, both disclosed: privacy blur (PyCharm run-console path, GitHub username in URL/breadcrumb/run list/run page, GitHub and Edge avatars) and the ~13 s worker start-up wait played at 3× with an on-screen "3x speed" label. Checks: duration 59.05 s; frames inspected at all stages; freezedetect shows two ≥4 s static stretches (worker start-up inside the 3× segment; final dashboard takeaway hold). PyCharm's git-blame inlay shows the author name "Kuntong Li" (left visible). Fixes during recording: keyboard INPUT type (was 0 = mouse), click-to-focus before shortcuts, Edge maximised on switch.
 - [ ] Candidate follow-up: two-stage alert (IF raises, LightGBM filters drift); nested threshold tuning
 - [ ] Deferred: pandera schema, Week 1 scripts into `src/`, autoencoder, Fari profile (Week 3)
