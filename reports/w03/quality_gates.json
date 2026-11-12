@@ -1,0 +1,24 @@
+{
+  "run_at_utc": "2026-11-12T09:49:58+00:00",
+  "git_head": "e2e18c7b41c99a27a9ace059cf6a5a7d603fe77b",
+  "ruff": {
+    "ok": true,
+    "summary": "All checks passed!"
+  },
+  "mypy": {
+    "ok": true,
+    "summary": "Success: no issues found in 53 source files"
+  },
+  "pytest": {
+    "ok": true,
+    "summary": "123 passed in 143.15s (0:02:23)"
+  },
+  "pytest_w03": {
+    "ok": true,
+    "summary": "66 passed in 51.99s"
+  },
+  "uv_lock_check": {
+    "ok": true,
+    "summary": "Resolved 137 packages in 2ms"
+  }
+}

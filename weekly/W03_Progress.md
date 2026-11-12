@@ -2,7 +2,7 @@
 
 **Branch:** `week3` (created from `week2` at 382bdee on 2026-11-11; local only — do not push, merge to `main` or open a PR without Kuntong's approval)  
 **Plan:** Internship Plan v3.0, Week 3 — Multimodal Fault Classification, Interpretability & Fari Generalisation  
-**Last updated:** 2026-11-11 ~19:45 local. **Session stopped early (usage limit). Week 3 is NOT finished.** No final results exist yet; every number seen so far came from reduced smoke runs and must not be reported.
+**Last updated:** 2026-11-12 ~04:00 local (session 2, Opus 5.5). **Week 3 deliverables complete and committed locally** (not pushed). Open items are listed under "Open after session 2" at the bottom.
 
 ## Standing constraints (from Kuntong, 2026-11-11)
 
@@ -71,3 +71,44 @@ py -3.11 -m uv run python -m ingen_fleet_health.experiments.fari_transfer_run --
 
 - Model/effort: the session ran on Fable 5.2 (a session cannot switch its own model); pick Opus 5.5 in the model menu if that is required.
 - LLM paraphrase of the corpus and a hosted-LLM summary run (Claude API / Vertex AI) are not done: they need a key, cost approval and a data-handling decision.
+
+
+## Session 2 log (2026-11-12, Opus 5.5)
+
+- Text classifier full run **finished** on 2026-11-11 19:48 (`reports/w03/text_classifier_results.json`, MLflow `3da22b63425f49d1b18ca1725acb1813`, log `runs/w03_text_classifier.log`). No rerun needed.
+- Fari features `features_asis` **finished** (70,800 x 154).
+- Defects 1–4 fixed: checker matches feature phrases first and replaces them with markers (no "offset"/"lowest" cues from inside a phrase; no reading parsed from a feature phrase); direction read per contrast segment; "notes are a driver" judged by the attribution; template quotes only the note that feeds the attributed text feature (`note_behind`); ratio features within 2 % of 1 are qualified "essentially at the reference level"; `invented_cause` corruption no longer picks a concept supported by a `txt_decay_<class>` attribution (that was the 19/20).
+- Privacy gate bug fixed: substring matching refused `surface_temp_c` (face) and `dynamic_load` (mic); now word-prefix matching (still conservative: `framework_version` is refused, documented in a test).
+- New tests: `tests/w03/test_explain.py`, `test_fusion.py`, `test_fari_contract.py` — 62 W03 tests pass.
+- Running (started ~session start): `fusion_run --sensitivity` (log `runs/w03_fusion.log`), `fari_transfer_run` (log `runs/w03_fari_transfer.log`). Next: `explain_run --llm local` after fusion finishes.
+- Fari transfer run 1 finished (MLflow `22a1519de3c443adad685b756d60b92f`, superseded): contract acceptance 0 % as-is -> 100 % with profile; 12 dead features revived; LightGBM PR-AUC 0.046 -> 0.157; physics rule got *worse* (0.183 -> 0.092). Added paired PR-AUC deltas, per-indicator rule diagnostics and fault-type mix; **rerun 2 started** (log `runs/w03_fari_transfer.log`).
+- New experiment `experiments/paraphrase_run.py` (local Qwen rewrites ~200 test tickets; same fold classifiers). Smoke-tested (reproduces OOF 100 %); full run pending (after fusion, CPU).
+- Data contract updated: §3.5 log schema, §3.6 platform profiles + Fari privacy rule (`docs/W01_Data_Contract.md`).
+- `scripts/build_w03_docs.py` started: `build_log_corpus()` done -> `docs/W03_Log_Corpus.md`.
+- Full pytest 119 passed; ruff + mypy clean (as of ~01:10).
+- `scripts/build_w03_docs.py` complete (corpus, fusion, explanations, Fari, overall report `docs/W03_Report.docx`); prose verdicts computed from CIs. `scripts/run_w03_gates.py` records ruff/mypy/pytest/uv-lock into `reports/w03/quality_gates.json`.
+- Full paraphrase run started (`runs/w03_paraphrase.log`, OMP 4 threads). Still running: fusion sensitivity (2x, 4x), Fari rerun.
+- NEXT: when `reports/w03/fusion_results.json` exists -> `explain_run --data-dir data/w02 --llm local` -> read all 20+20 summaries vs evidence, write `reports/w03/manual_faithfulness.json` ({generator: {alert_id: {faithful, note}}}) and paraphrase `manual_check` -> gates -> build docs -> README, Wk-03-Log -> commit.
+- Rover feature regression re-verified in session 2: rebuilt with Week 3 code == Week 2 table (70,800 x 154, DataFrame.equals True; log runs/w03_rover_feature_regression.log).
+- **Fusion full run done** (78 min, MLflow `d51fff3518a140309ff8bf90176bd378`, log `runs/w03_fusion.log`). PR-AUC: no-skill 0.055, LightGBM 0.210, IF 0.330, text-only 0.059, early 0.226, late-stack 0.226, late-stack-IF 0.176. Text vs no-skill +0.004 [-0.014,0.034]; early−LGBM +0.016 [-0.040,0.078]; late-stack-IF − IF −0.153 [-0.243,-0.057] (stacker over-weights text in 18/20 folds); early − IF −0.103 [-0.214,-0.007]. Sensitivity early−LGBM: 0.5x −0.011, 1x +0.016, 2x +0.073 [0.002,0.136], 4x +0.130 [0.044,0.230]. Only 9/31 onsets had a note ≤72 h before.
+- `experiments/fusion_diagnostics.py` (no refit): per-fold PR-AUC, stacker weights, reliability (scores >0.99 are positive ~73 %: overconfident calibration inherited from Week 2).
+- Paraphrase run paused at 47/204 cached rewrites (CPU contention); resume after explain with full threads (cache resumes).
+- explain_run --llm local running (log `runs/w03_explain.log`).
+- **Explain run done** (51 min, MLflow `b01f56c899314e2c94a1b12a3766eb2b`): SHAP additivity 4e-14, reproduces fusion scores exactly; text = 36 % of mean |SHAP| (use, not value). Checker v1: template 20/20, LLM 3/20; controls 79/79.
+- Manual read of all 40 summaries -> `reports/w03/manual_faithfulness.json`: template 20/20, **LLM 0/20** (every summary has a real error). Checker v2 (5 generic false-flag fixes + tests; `explain_run --recheck`, MLflow `f89918c62fd14cd29166177b3f313efd`, v1 numbers kept in `checker_history`): LLM 8/20 automatic, only 6 of 12 flags point at real errors. Conclusion: template for operators; lexical checker insufficient for LLM prose. Checker NOT tuned further (avoid fitting eval to output).
+- Docs built: W03_Log_Corpus.md, W03_Fusion_Results.docx, W03_Alert_Explanations.md, W03_Fari_Gap_Analysis.docx (W03_Report.docx needs gates + paraphrase). README §6b with results table. `weekly/Wk-03-Log.md` written (469 words).
+- Paraphrase run resumed (all threads), ~60/164 new rewrites at 03:03.
+- REMAINING: paraphrase finish -> manual check of 30 pairs (`paraphrase_manual_check` in manual_faithfulness.json) -> `scripts/run_w03_gates.py` -> `scripts/build_w03_docs.py` -> final proofread -> local commit (no push).
+
+- Paraphrase run done (MLflow `794f0ed917eb490ab661e1dbd5fd3246`, 210 tickets): selected macro-F1 0.848 -> 0.851, +0.002 [-0.026, 0.032]; manual check of 30 pairs: 21 kept, 6 detail changed, 3 meaning changed.
+- Gates (`reports/w03/quality_gates.json`): ruff pass, mypy pass (53 files), pytest 123 passed (66 in tests/w03), `uv lock --check` pass.
+- All five documents rebuilt from JSON by `scripts/build_w03_docs.py`; README §6b and Wk-03-Log (469 words) written. Local commit made on `week3`.
+
+## Open after session 2 (need Kuntong or Week 4)
+
+1. **Review the manual faithfulness read** (`reports/w03/manual_faithfulness.json`): written by Claude, not yet checked by a person. The LLM 0/20 conclusion rests on it.
+2. **Hosted LLM** (Claude API / Vertex AI) for summaries and corpus paraphrase: not run; needs key, cost approval, data-handling decision. The local 1.5 B model was not faithful (0/20 manual).
+3. **Ask InGen** (no data needed in the repo): what share of real faults had an operator note before onset? The fusion conclusion flips between 1x and 2x of the assumed notice rate.
+4. Week 4: telemetry-first scoring (Isolation Forest best), recalibration (scores > 0.99 are positive ~73 %), regularised stacker if text is used, per-platform physics-rule composition chosen on validation data.
+5. No 30–60 s demo recording for Week 3 was made in this session (plan asks for one per weekly deliverable).
+6. Superseded MLflow runs kept for transparency: Fari run 1 `22a1519de3c443adad685b756d60b92f` (before paired deltas); explain v1 numbers are inside `alert_explanations.json -> checker_history`.

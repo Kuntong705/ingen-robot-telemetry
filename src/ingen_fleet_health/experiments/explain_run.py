@@ -25,16 +25,28 @@ from ingen_fleet_health import plotstyle
 from ingen_fleet_health.evaluation.metrics import raise_alerts, threshold_for_budget
 from ingen_fleet_health.experiments.common import load_w02
 from ingen_fleet_health.experiments.early_warning_run import build_folds
-from ingen_fleet_health.experiments.w03_common import figure_path, load_text, write_json
+from ingen_fleet_health.experiments.w03_common import (
+    figure_path,
+    load_text,
+    read_json,
+    write_json,
+)
 from ingen_fleet_health.explain.alert_summaries import (
     LOOKBACK_HOURS,
+    Attribution,
     Evidence,
+    LinkedTicket,
     TemplateSummariser,
     build_evidence,
     build_prompt,
     concept_label,
 )
-from ingen_fleet_health.explain.faithfulness import CORRUPTIONS, check_summary, corrupt
+from ingen_fleet_health.explain.faithfulness import (
+    CHECKER_VERSION,
+    CORRUPTIONS,
+    check_summary,
+    corrupt,
+)
 from ingen_fleet_health.explain.shap_utils import (
     concept_importance,
     feature_info,
@@ -99,6 +111,89 @@ def explain_folds(data_dir: Path, seed: int) -> dict[str, Any]:
         "values": pd.concat(value_parts), "models": models, "additivity_max_abs_error": additivity,
         "refractory": refractory, "budget": budget, "all_cols": all_cols,
     }
+
+
+def check_all(per_alert: list[dict[str, Any]], packs: list[Evidence]) -> dict[str, Any]:
+    """Run the faithfulness checker on every stored summary; writes each check into ``per_alert``."""
+    by_gen: dict[str, list[Any]] = {}
+    for record, pack in zip(per_alert, packs, strict=True):
+        for name, entry in record["summaries"].items():
+            check = check_summary(entry["text"], pack, name)
+            entry["check"] = check.to_dict()
+            by_gen.setdefault(name, []).append(check)
+    rates: dict[str, Any] = {}
+    for name, checks in by_gen.items():
+        claims = [c for ch in checks for c in ch.claims]
+        kinds = pd.Series([c.kind for c in claims if not c.supported], dtype=object)
+        rates[name] = {
+            "alerts": len(checks),
+            "faithful": int(sum(ch.faithful for ch in checks)),
+            "faithfulness_rate": float(np.mean([ch.faithful for ch in checks])),
+            "claims_checked": len(claims),
+            "claims_supported": int(sum(c.supported for c in claims)),
+            "unsupported_by_kind": {str(k): int(v) for k, v in kinds.value_counts().items()},
+        }
+    return rates
+
+
+def run_controls(packs: list[Evidence], seed: int) -> dict[str, Any]:
+    """Negative controls: the checker must flag deliberately unfaithful summaries."""
+    rng = np.random.default_rng(seed)
+    template = TemplateSummariser()
+    controls: dict[str, dict[str, int]] = {k: {"built": 0, "flagged": 0} for k in CORRUPTIONS}
+    examples: dict[str, Any] = {}
+    for pack in packs:
+        base = template.summarise(pack)
+        for kind in CORRUPTIONS:
+            bad = corrupt(base, pack, kind, rng)
+            if bad is None:
+                continue
+            result = check_summary(bad, pack, f"corrupted[{kind}]")
+            controls[kind]["built"] += 1
+            controls[kind]["flagged"] += int(not result.faithful)
+            examples.setdefault(kind, {"alert_id": pack.alert_id, "text": bad, "check": result.to_dict()})
+    built = sum(v["built"] for v in controls.values())
+    flagged = sum(v["flagged"] for v in controls.values())
+    return {"by_kind": controls, "built": built, "flagged": flagged,
+            "detection_rate": flagged / built if built else float("nan"), "examples": examples}
+
+
+def evidence_from_dict(d: dict[str, Any]) -> Evidence:
+    return Evidence(**{**d, "positive": [Attribution(**a) for a in d["positive"]],
+                       "negative": [Attribution(**a) for a in d["negative"]],
+                       "tickets": [LinkedTicket(**t) for t in d["tickets"]]})
+
+
+def recheck(seed: int = 0) -> dict[str, Any]:
+    """Re-score the stored summaries and controls with the current checker (no refit, no regeneration).
+
+    The previous checker version's numbers are kept under ``checker_history``."""
+    res = read_json("alert_explanations.json")
+    packs = [evidence_from_dict(a["evidence"]) for a in res["alerts"]]
+    history = res.get("checker_history", [])
+    history.append({
+        "checker_version": res.get("checker_version", 1),
+        "generators": res["generators"],
+        "negative_controls": {k: v for k, v in res["negative_controls"].items() if k != "examples"},
+        "faithful_per_alert": {a["alert_id"]: {n: e["check"]["faithful"] for n, e in a["summaries"].items()}
+                               for a in res["alerts"]},
+    })
+    res["checker_history"] = history
+    res["generators"] = check_all(res["alerts"], packs)
+    res["negative_controls"] = run_controls(packs, seed)
+    res["checker_version"] = CHECKER_VERSION
+    with tracked_run("w03_explanations", "faithfulness_recheck",
+                     {"track": "explain", "recheck_of": res["mlflow_run_id"]}) as run_:
+        for name, r in res["generators"].items():
+            key = "template" if name == "template" else "local_llm"
+            log_flat_metrics({"faithfulness_rate": r["faithfulness_rate"], "claims_checked": r["claims_checked"],
+                              "claims_supported": r["claims_supported"]}, prefix=f"{key}.")
+        log_flat_metrics({"negative_control_detection_rate": res["negative_controls"]["detection_rate"],
+                          "checker_version": float(CHECKER_VERSION)})
+        log_dict_json(res, "alert_explanations.json")
+        res["recheck_mlflow_run_id"] = run_.info.run_id
+    write_json(res, "alert_explanations.json")
+    return res
 
 
 def sample_alerts(scored: pd.DataFrame, refractory: float, seed: int) -> pd.DataFrame:
@@ -220,42 +315,12 @@ def run(data_dir: Path, seed: int = 0, llm: str | None = None) -> dict[str, Any]
 
     per_alert: list[dict[str, Any]] = [{"alert_id": p.alert_id, "outcome": "true_positive" if outcome[p.alert_id] else "false_alarm",
                                         "evidence": p.to_dict(), "prompt": build_prompt(p)[1], "summaries": {}} for p in packs]
-    rates: dict[str, Any] = {}
     for gen in generators:
-        checks = []
         for record, pack in zip(per_alert, packs, strict=True):
             summary = gen.summarise(pack)
-            check = check_summary(summary, pack, gen.name)
-            checks.append(check)
-            record["summaries"][gen.name] = {"text": summary, "sentences": len([s for s in summary.split(". ") if s.strip()]),
-                                             "check": check.to_dict()}
-        claims = [c for ch in checks for c in ch.claims]
-        rates[gen.name] = {
-            "alerts": len(checks),
-            "faithful": int(sum(ch.faithful for ch in checks)),
-            "faithfulness_rate": float(np.mean([ch.faithful for ch in checks])),
-            "claims_checked": len(claims),
-            "claims_supported": int(sum(c.supported for c in claims)),
-            "unsupported_by_kind": {k: int(v) for k, v in pd.Series([c.kind for c in claims if not c.supported]).value_counts().items()},
-        }
-
-    # negative controls: the checker must flag deliberately unfaithful summaries
-    rng = np.random.default_rng(seed)
-    template = TemplateSummariser()
-    controls: dict[str, dict[str, int]] = {k: {"built": 0, "flagged": 0} for k in CORRUPTIONS}
-    examples: dict[str, Any] = {}
-    for pack in packs:
-        base = template.summarise(pack)
-        for kind in CORRUPTIONS:
-            bad = corrupt(base, pack, kind, rng)
-            if bad is None:
-                continue
-            result = check_summary(bad, pack, f"corrupted[{kind}]")
-            controls[kind]["built"] += 1
-            controls[kind]["flagged"] += int(not result.faithful)
-            examples.setdefault(kind, {"alert_id": pack.alert_id, "text": bad, "check": result.to_dict()})
-    built = sum(v["built"] for v in controls.values())
-    flagged = sum(v["flagged"] for v in controls.values())
+            record["summaries"][gen.name] = {"text": summary, "sentences": len([s for s in summary.split(". ") if s.strip()])}
+    rates = check_all(per_alert, packs)
+    negative_controls = run_controls(packs, seed)
 
     figs = [global_figure(importance, concepts), alert_figure(packs, outcome)]
     results: dict[str, Any] = {
@@ -278,8 +343,8 @@ def run(data_dir: Path, seed: int = 0, llm: str | None = None) -> dict[str, Any]
         "llm": {"requested": llm, "error": llm_error,
                 "hosted_llm_api_called": False,
                 "note": "No hosted LLM API was called. Local generation uses open weights on this machine only."},
-        "negative_controls": {"by_kind": controls, "built": built, "flagged": flagged,
-                              "detection_rate": flagged / built if built else float("nan"), "examples": examples},
+        "checker_version": CHECKER_VERSION,
+        "negative_controls": negative_controls,
         "alerts": per_alert,
     }
     with tracked_run("w03_explanations", "shap_and_faithfulness", {"track": "explain", "data_dir": str(data_dir)}) as run_:
@@ -306,15 +371,17 @@ def main() -> None:
     parser.add_argument("--data-dir", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--llm", choices=["local"], help="also write summaries with the local open-weights model")
+    parser.add_argument("--recheck", action="store_true",
+                        help="re-score the stored summaries with the current checker (no refit, no generation)")
     args = parser.parse_args()
-    res = run(args.data_dir, args.seed, args.llm)
+    res = recheck(args.seed) if args.recheck else run(args.data_dir, args.seed, args.llm)
     for name, r in res["generators"].items():
         print(f"{name}: faithful {r['faithful']}/{r['alerts']} = {r['faithfulness_rate']:.2f}; "
               f"claims {r['claims_supported']}/{r['claims_checked']}; unsupported {r['unsupported_by_kind']}")
     print("negative controls:", res["negative_controls"]["by_kind"], res["negative_controls"]["detection_rate"])
     print("SHAP additivity error:", res["shap"]["additivity_max_abs_error"],
           "| score reproduction diff:", res["reproduces_fusion_run_scores_max_abs_diff"])
-    print("MLflow run:", res["mlflow_run_id"])
+    print("MLflow run:", res.get("recheck_mlflow_run_id", res["mlflow_run_id"]))
 
 
 if __name__ == "__main__":

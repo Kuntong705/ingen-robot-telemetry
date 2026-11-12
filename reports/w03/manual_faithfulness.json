@@ -1,0 +1,209 @@
+{
+  "_about": "Manual faithfulness read of the 20 sampled alerts (reports/w03/alert_explanations.json, explain run b01f56c899314e2c94a1b12a3766eb2b). Each summary was read sentence by sentence against its evidence pack (attributions with values now and 72 h earlier, linked notes with classifier readings). A summary is faithful only if every stated cause, direction, number and quote is supported. 'auto_flag_valid' (LLM only): whether the automatic checker (v2) flagged the summary for a claim that is actually wrong. Read by Claude (Opus 5.5) on 2026-11-12; not yet independently reviewed by a person.",
+  "reader": "Claude Opus 5.5 (session 2), not yet reviewed by Kuntong",
+  "template": {
+    "A01": {
+      "faithful": true,
+      "note": "All drivers, values and 72 h values match. Quotes the newest of the four notes behind the 7-day note-count driver; true, but it puts a wifi note next to a vibration alert, which over-emphasises one note."
+    },
+    "A02": {
+      "faithful": true,
+      "note": "Two drivers have no valid reading; stated as such. Faithful, but not actionable for an operator."
+    },
+    "A03": {
+      "faithful": true,
+      "note": "Connectivity-note feature at 0 raises the risk (absence of notes); stated with its value and the 72 h value, and that no note is linked."
+    },
+    "A04": {
+      "faithful": true,
+      "note": ""
+    },
+    "A05": {
+      "faithful": true,
+      "note": "Energy ratio 1.01 correctly qualified as essentially at the reference level."
+    },
+    "A06": {
+      "faithful": true,
+      "note": "Quoted battery note is the one behind the strongest-fault-wording driver (battery is a fault class)."
+    },
+    "A07": {
+      "faithful": true,
+      "note": ""
+    },
+    "A08": {
+      "faithful": true,
+      "note": ""
+    },
+    "A09": {
+      "faithful": true,
+      "note": "Thermal-note feature at 0.000081 is a real driver of the model but carries no information an operator can use."
+    },
+    "A10": {
+      "faithful": true,
+      "note": "Battery-note feature at 0.000006 is stated with its value; faithful to the model, misleading to read ('read as battery' with no battery note linked)."
+    },
+    "A11": {
+      "faithful": true,
+      "note": ""
+    },
+    "A12": {
+      "faithful": true,
+      "note": "Same near-zero thermal-note driver as A09."
+    },
+    "A13": {
+      "faithful": true,
+      "note": "Quoted drivetrain note is the one behind the drivetrain-note driver."
+    },
+    "A14": {
+      "faithful": true,
+      "note": ""
+    },
+    "A15": {
+      "faithful": true,
+      "note": "States 100 % risk: faithful to the model, but the calibration is overconfident (W03_Fusion_Results)."
+    },
+    "A16": {
+      "faithful": true,
+      "note": ""
+    },
+    "A17": {
+      "faithful": true,
+      "note": ""
+    },
+    "A18": {
+      "faithful": true,
+      "note": ""
+    },
+    "A19": {
+      "faithful": true,
+      "note": ""
+    },
+    "A20": {
+      "faithful": true,
+      "note": ""
+    }
+  },
+  "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+    "A01": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Lists the drivetrain-note feature (a risk-LOWERING attribution) among the indicators of elevated risk and says it shows increased activity while it fell (0.293 to 0.179). Truncated mid-sentence; more than 3 sentences."
+    },
+    "A02": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "Invents 'a trend showing increasing vibration' (no valid reading); says user-error notes have 'a strong negative impact' while they slightly raise the risk. Checker flag is a negation-scope false flag."
+    },
+    "A03": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Says notes indicate connectivity issues 'weighting 0.121': that is the value 72 h earlier; now 0 and no note is linked."
+    },
+    "A04": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "'Increased by 0.433 units' (0.400 to 0.433 is +0.034); invents 'wear on components', 'lack of proactive maintenance', 'better thermal management'. Checker flag (no service tickets) is a false flag: there are none."
+    },
+    "A05": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "Invents 'above the threshold' for the motor-temperature excess; truncated. Checker flags are spurious ('ambient' inside a feature definition; negation)."
+    },
+    "A06": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Says the fault note is 'from 72 hours ago' (it is within the last 72 h; 72 h ago the value was 0.001); calls a rising resistance 'consistently low'."
+    },
+    "A07": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "Says energy use 'exceeds expectations' at 0.952 x expected and calls a 1.0009 x baseline value 'high'; says resistance is higher than expected while it fell. Checker flags are spurious."
+    },
+    "A08": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "Presents the motor-temperature excess (a risk-lowering attribution) as a concern; invents '+16 %'; attaches the connectivity-note value 0.0565 to energy use."
+    },
+    "A09": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "Attributes the temperature-corrected resistance values to the baseline-ratio feature and to '24 hours'; invents 'thermal issues'; presents the risk-lowering drivetrain-note feature as more relevant."
+    },
+    "A10": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Claims notes 'mentioning battery' (no battery note linked; feature value 0.000006) indicate 'a substantial concern'; invents 'ongoing operational challenges'."
+    },
+    "A11": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "Calls 0.142 g 'slightly above the threshold of 0.143 g' (no such threshold; 0.143 is the 72 h value); attaches the no-fault-found value 0.404 to the thermal-note feature. Checker flag is a negation false flag."
+    },
+    "A12": {
+      "faithful": false,
+      "auto_flag_valid": false,
+      "note": "Claims notes 'indicate a thermal issue' (no thermal note linked; value 0.000066). Checker flag (drivetrain mentioned) is weak; the real error is not caught."
+    },
+    "A13": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "Quotes a voltage-sag note (classified 'no fault found') as the drivetrain issue; '+25 %' for a 1.54 x baseline ratio; ambient 'risen from 38 to 34.9' (it fell)."
+    },
+    "A14": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "'Increased the risk by 0.0624': 0.0624 is the feature value, not a risk change; calls a falling resistance 'high' and 'exacerbating'."
+    },
+    "A15": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "Invents '+48 %', '+27 %' and an 'alert threshold of 15 %' for vibration (15 % is the risk threshold)."
+    },
+    "A16": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Mixes the 72 h-earlier maximum (0.0698) with the current minimum (0.0529) into an invented 'significant drop'; adds advice ('the operator should closely monitor'), which the prompt forbids."
+    },
+    "A17": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "'Motor heating has risen by 9.76 %' (it is 0.976 x nominal, below nominal); invents 'overheating issues' and that the classifier reading says the issue was resolved."
+    },
+    "A18": {
+      "faithful": false,
+      "auto_flag_valid": true,
+      "note": "Says the strongest-fault note mentions a drivetrain issue (it is a battery note; the drivetrain-note feature lowers the risk)."
+    },
+    "A19": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Invents 'two instances' of high vibration and says 0.239 g is higher than 0.250 g; says resistance 'dropped' from 0.0490 to 0.0500; presents the risk-lowering fault-wording feature as pushing the risk up."
+    },
+    "A20": {
+      "faithful": false,
+      "auto_flag_valid": null,
+      "note": "Invents 'inefficient operation' for 1.00 x baseline energy and 'mechanical wear'; garbles the 72 h comparison."
+    }
+  },
+  "paraphrase_manual_check": {
+    "source": "reports/w03/paraphrase_results.json pairs_for_manual_check (30 pairs, random_state 0), paraphrase MLflow run 794f0ed917eb490ab661e1dbd5fd3246",
+    "pairs_read": 30,
+    "meaning_kept": 21,
+    "detail_changed_category_kept": 6,
+    "meaning_changed": 3,
+    "changed_pairs": [
+      0,
+      19,
+      20
+    ],
+    "detail_changed_pairs": [
+      1,
+      6,
+      10,
+      18,
+      22,
+      23
+    ],
+    "notes": "meaning changes: 'returns to dock early' became 'departs from dock prematurely', a battery SoH note became 'display malfunctioned', 'kept in service' became 'removal from service'; detail changes: 'BRG' expanded to 'bracket', 'blown out' became 'need to clean', 'charger' dropped, a cause or an instruction added"
+  }
+}

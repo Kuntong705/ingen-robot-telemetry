@@ -33,6 +33,8 @@ import numpy as np
 
 from ingen_fleet_health.explain.alert_summaries import (
     DRIVERS_IN_TEXT,
+    RATIO_UNITS,
+    Attribution,
     Evidence,
     describe_attribution,
     fmt,
@@ -49,7 +51,7 @@ CONCEPT_LEXICON: dict[str, str] = {
     "energy": r"energy|power draw|power consumption|electrical power",
     "sensor_drift": (r"sensor drift|sensor offset|temperature[- ]sensor|sensor fault|faulty sensor|miscalibrat"
                      r"|thermistor"),
-    "environment": r"ambient|weather|terrain|\broute\b",
+    "environment": r"ambient|weather|terrain(?![- ]?normali)|\broute\b",   # 'terrain-normalised' = adjusted for terrain
     "data_quality": r"telemetry gaps?|data gaps?|dropout|connectivity|telemetry missing|missing telemetry|network",
     "usage": r"\bduty\b|charge sessions|equivalent full cycles|odometer|hour of day",
     "maintenance_history": r"repair|service tickets?|maintenance",
@@ -58,6 +60,7 @@ CONCEPT_LEXICON: dict[str, str] = {
 }
 MITIGATING = re.compile(r"lower|reduc|downward|offset|counter|mitigat|push(?:es|ed|ing)? (?:\w+ ){0,3}down"
                         r"|pull(?:s|ed|ing)? (?:\w+ ){0,3}down|decreas\w* the (?:risk|score)")
+UPWARD = re.compile(r"push(?:es|ed|ing)? (?:\w+ ){0,3}up|rais|increas|elevat|driv|contribut")
 NEGATION = re.compile(r"\bno\b|\bnot\b|\bnone\b|\bwithout\b|n't\b|\babsence of\b|\black of\b")
 DRIVER_CUE = re.compile(r"driver|contribut|push|rais|because|due to|caus|explain")
 NOT_A_DRIVER = re.compile(r"not (?:\w+ ){0,3}(?:driver|contribut)|n't (?:\w+ ){0,3}contribut")
@@ -69,7 +72,6 @@ NEUTRAL = [
     r"\b(?:1|6|24|72)\s*-?\s*(?:h|hr|hrs|hours?)\b",
     r"\b7\s*-?\s*(?:d|days?)\b",
 ]
-RATIO_UNITS = ("x baseline", "x expected", "x nominal")
 
 
 @dataclass
@@ -126,6 +128,35 @@ def _number_supported(token: str, allowed: list[float]) -> bool:
     return any(abs(value - a) <= tol or abs(value - abs(a)) <= tol for a in allowed)
 
 
+CONTRAST = re.compile(r";\s*(?:while|whereas|but|however)\b|,?\s*\b(?:but|while|whereas|although|however)\b")
+
+
+def _feature_directions(work: str, marker: str) -> list[str]:
+    """Direction ("up" / "down") the text states for each occurrence of a feature marker.
+
+    The direction cue is looked for in the contrast segment that holds the
+    marker (a sentence split at but / while / whereas / although / however);
+    if that segment has no cue, the sentence decides. Feature phrases are
+    already replaced by markers, so words inside a phrase are not cues.
+    """
+    out: list[str] = []
+    for sentence in re.split(r"(?<=[.!?])\s+", work):
+        if marker not in sentence:
+            continue
+        sentence_down = bool(MITIGATING.search(sentence.lower()))
+        for segment in CONTRAST.split(sentence):
+            if marker not in segment:
+                continue
+            low = segment.lower()
+            if MITIGATING.search(low):
+                out.append("down")
+            elif UPWARD.search(low):
+                out.append("up")
+            else:
+                out.append("down" if sentence_down else "up")
+    return out
+
+
 def _clauses(text: str) -> list[str]:
     out: list[str] = []
     for sentence in re.split(r"(?<=[.!?])\s+", text):
@@ -134,19 +165,55 @@ def _clauses(text: str) -> list[str]:
     return out
 
 
+CHECKER_VERSION = 2
+# v2 (2026-11-12, after the manual read of the first full run): US spellings of
+# feature-phrase words, quoted category names, "no fault was found", "terrain-
+# normalised" and the unit named in other words ("rover 46") no longer raise
+# false flags. See tests/w03/test_explain.py.
+US_SPELLING = re.compile(r"\b(normali|optimi|minimi|maximi|characteri)z(e|ed|es|ing|ation)\b", re.IGNORECASE)
+NFF_WORDING = re.compile(r"no faults? (?:was |were |has been |is )?found", re.IGNORECASE)
+CATEGORY_NAMES = {_c.replace("_", " ") for _c in TAXONOMY}
+
+
 def check_summary(summary: str, ev: Evidence, generator: str = "") -> FaithfulnessResult:
     claims: list[Claim] = []
+    summary = US_SPELLING.sub(lambda m: f"{m.group(1)}s{m.group(2)}", summary)
     work = summary
 
-    # 1. quotes must come from a linked ticket
+    # 1. quotes must come from a linked ticket (a quoted category name is a category mention, not a quote)
     ticket_texts = [_norm(t.text) for t in ev.tickets]
     for m in QUOTE.finditer(summary):
         quoted = _norm(m.group(1))
+        if quoted in CATEGORY_NAMES:
+            continue
         ok = bool(quoted) and any(quoted in t for t in ticket_texts)
         claims.append(Claim("quote", m.group(1), ok, "matches a linked ticket" if ok else "no linked ticket has this text"))
-    work = QUOTE.sub(" QUOTED ", work)
+    work = QUOTE.sub(lambda m: f" {m.group(1)} " if _norm(m.group(1)) in CATEGORY_NAMES else " QUOTED ", work)
 
-    # 2. classifier readings
+    # 2. model features named verbatim. Matched *before* classifier readings,
+    #    because a feature phrase ("... notes read as 'thermal' ...") may itself
+    #    contain reading-like wording. Every occurrence is replaced by a numbered
+    #    marker so that the words inside a phrase ("offset", "lowest") never count
+    #    as a direction cue.
+    pack = [(a, "positive") for a in ev.positive] + [(a, "negative") for a in ev.negative]
+    mentions: list[tuple[str, Attribution, str]] = []
+    for k, (a, side) in enumerate(sorted(pack, key=lambda x: -len(x[0].phrase))):
+        marker = f" FEATURE{k}X "
+        pattern = re.compile(re.escape(a.phrase), re.IGNORECASE)
+        if pattern.search(work):
+            mentions.append((marker.strip(), a, side))
+            work = pattern.sub(marker, work)
+    for marker, a, side in mentions:
+        for direction in _feature_directions(work, marker):
+            says_down = direction == "down"
+            ok = (side == "negative") if says_down else (side == "positive")
+            claims.append(Claim("feature", a.phrase, ok,
+                                f"in the pack as a {side} attribution (SHAP {a.shap:+.3f})" if ok
+                                else f"stated as {'lowering' if says_down else 'raising'} the risk "
+                                     f"but SHAP is {a.shap:+.3f}"))
+    work = re.sub(r"FEATURE\d+X", "FEATURE", work)
+
+    # 3. classifier readings
     classes = "|".join(re.escape(c.replace("_", " ")) for c in TAXONOMY)
     reading = re.compile(rf"(?:classifier reading:?|read(?:s|ing)? as|classified as)\s*['\"]?({classes})", re.IGNORECASE)
     for m in reading.finditer(work):
@@ -155,30 +222,15 @@ def check_summary(summary: str, ev: Evidence, generator: str = "") -> Faithfulne
         claims.append(Claim("reading", m.group(0), ok, "a linked ticket has this reading" if ok
                             else "no linked ticket has this classifier reading"))
     work = reading.sub(" READING ", work)
-    work = re.sub(r"no fault found", " NFFCLASS ", work, flags=re.IGNORECASE)
-
-    # 3. model features named verbatim
-    pack = [(a, "positive") for a in ev.positive] + [(a, "negative") for a in ev.negative]
-    lower = work.lower()
-    mentioned: list[tuple[int, Any, str]] = []
-    for a, side in sorted(pack, key=lambda x: -len(x[0].phrase)):
-        pos = lower.find(a.phrase.lower())
-        if pos >= 0:
-            mentioned.append((pos, a, side))
-            lower = lower.replace(a.phrase.lower(), " FEATURE ", 1)
-            work = re.sub(re.escape(a.phrase), " FEATURE ", work, count=1, flags=re.IGNORECASE)
-    for pos, a, side in mentioned:
-        sentence = next((s for s in re.split(r"(?<=[.!?])\s+", summary) if a.phrase.lower() in s.lower()), summary)
-        says_down = bool(MITIGATING.search(sentence.lower()))
-        ok = (side == "negative") if says_down else (side == "positive")
-        claims.append(Claim("feature", a.phrase, ok,
-                            f"in the pack as a {side} attribution (SHAP {a.shap:+.3f})" if ok
-                            else f"stated as {'lowering' if says_down else 'raising'} the risk but SHAP is {a.shap:+.3f}"))
+    work = NFF_WORDING.sub(" NFFCLASS ", work)
 
     # 4. numbers
     numeric_text = work.replace(ev.unit_id, " ")
-    for pattern in NEUTRAL:
-        numeric_text = re.sub(pattern, " ", numeric_text, flags=re.IGNORECASE)
+    unit_no = re.sub(r"\D", "", ev.unit_id).lstrip("0")
+    if unit_no:   # the unit named in other words ("rover 46", "Unit 46") is not a numeric claim
+        numeric_text = re.sub(rf"\b(?:rover|unit|robot|r)[ _-]?0*{unit_no}\b", " ", numeric_text, flags=re.IGNORECASE)
+    for neutral in NEUTRAL:
+        numeric_text = re.sub(neutral, " ", numeric_text, flags=re.IGNORECASE)
     allowed = allowed_numbers(ev)
     for m in NUMBER.finditer(numeric_text):
         ok = _number_supported(m.group(0), allowed)
@@ -212,12 +264,14 @@ def check_summary(summary: str, ev: Evidence, generator: str = "") -> Faithfulne
                     ok = len(ev.notes) == 0
                     claims.append(Claim("notes", clause, ok, "no linked operator note" if ok
                                         else f"{len(ev.notes)} linked operator note(s) exist"))
-                else:
+                elif DRIVER_CUE.search(low):     # "notes are a driver": the attribution decides
+                    ok = "operator_notes" in positive_concepts
+                    claims.append(Claim("notes", clause, ok, "a note feature is a positive attribution" if ok
+                                        else "no note feature raises the risk"))
+                else:                            # "the unit has notes": a linked ticket must exist
                     ok = len(ev.tickets) > 0
-                    if ok and DRIVER_CUE.search(low):
-                        ok = "operator_notes" in positive_concepts
-                    claims.append(Claim("notes", clause, ok, "linked note(s) support this" if ok
-                                        else "no linked note, or text is not a positive attribution"))
+                    claims.append(Claim("notes", clause, ok, "linked ticket(s) exist" if ok
+                                        else "no linked operator note or service ticket"))
                 continue
             if negated:
                 continue                      # "no sign of X" is not a stated cause
@@ -246,7 +300,11 @@ def corrupt(summary: str, ev: Evidence, kind: str, rng: np.random.Generator) -> 
     """A deliberately unfaithful variant of a faithful summary, or None when
     this corruption cannot be built for this alert."""
     if kind == "invented_cause":
+        # every concept the checker may legitimately accept is excluded, including the
+        # category concept of a txt_decay_<class> attribution
         supported = {a.concept for a in ev.positive + ev.negative} | ticket_concepts(ev)
+        supported |= {str(CLASS_CONCEPT[a.note_class]) for a in ev.positive + ev.negative
+                      if a.note_class and CLASS_CONCEPT.get(a.note_class)}
         options = [c for c in INVENTED_CAUSE if c not in supported]
         return f"{summary} {INVENTED_CAUSE[str(rng.choice(options))]}" if options else None
     if kind == "wrong_number":

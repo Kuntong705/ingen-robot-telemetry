@@ -37,8 +37,10 @@ from ingen_fleet_health.explain.shap_utils import (
     CONCEPT_LABEL,
     feature_info,
 )
-from ingen_fleet_health.text import TAXONOMY
+from ingen_fleet_health.text import FAULT_CLASSES, TAXONOMY
 
+RATIO_UNITS = ("x baseline", "x expected", "x nominal")
+NEAR_REFERENCE_TOL = 0.02
 TOP_POSITIVE = 5
 TOP_NEGATIVE = 2
 DRIVERS_IN_TEXT = 3
@@ -140,12 +142,41 @@ def pct(value: float) -> str:
     return f"{100 * value:.1f}" if value < 0.0995 else f"{100 * value:.0f}"
 
 
+def near_reference(a: Attribution) -> bool:
+    """A ratio feature (x baseline / expected / nominal) within 2 % of 1."""
+    return a.unit in RATIO_UNITS and a.value is not None and abs(a.value - 1.0) < NEAR_REFERENCE_TOL
+
+
 def describe_attribution(a: Attribution) -> str:
     unit = f" {a.unit}" if a.unit else ""
     text = f"{a.phrase} at {fmt(a.value)}{unit}" if a.value is not None else f"{a.phrase} (no valid reading)"
+    if near_reference(a):
+        # the model still uses the value, but a reader must not infer a large deviation
+        text += ", i.e. essentially at the reference level"
     if a.value is not None and a.value_72h_ago is not None and fmt(a.value_72h_ago) != fmt(a.value):
         text += f" ({fmt(a.value_72h_ago)}{unit} 72 h earlier)"
     return text
+
+
+def note_behind(a: Attribution, ev: Evidence) -> LinkedTicket | None:
+    """The linked operator note that feeds text feature ``a``, or None.
+
+    ``txt_decay_<class>``: the newest note whose classifier reading is that
+    class. ``txt_fault_max_72h``: the note younger than 72 h with the strongest
+    fault reading. Count / recency features: the newest note. A note is never
+    quoted for a feature it does not feed.
+    """
+    notes = ev.notes
+    if a.feature.startswith("txt_decay_"):
+        return next((n for n in notes if n.predicted_class == a.note_class), None)
+    if a.feature == "txt_fault_max_72h":
+        fault = [n for n in notes if n.age_hours < 72.0 and n.predicted_class in FAULT_CLASSES]
+        return max(fault, key=lambda n: n.predicted_probability) if fault else None
+    if a.feature == "txt_note_count_72h":
+        return next((n for n in notes if n.age_hours < 72.0), None)
+    if a.feature in ("txt_note_count_7d", "txt_hours_since_note"):
+        return notes[0] if notes else None        # notes are ordered newest first
+    return None
 
 
 def _join(items: list[str]) -> str:
@@ -166,11 +197,17 @@ class TemplateSummariser:
         else:
             s2 = "No single feature pushes this score up; it sits at the model's baseline."
         notes = ev.notes
-        text_driver = any(a.concept == "operator_notes" for a in drivers)
-        if notes and text_driver:
-            n = notes[0]
-            s3 = (f"A linked operator note written {fmt(n.age_hours)} h before the alert is among these drivers: "
-                  f"\"{n.text}\" (ticket classifier reading: {n.predicted_class.replace('_', ' ')}).")
+        text_driver = next((a for a in drivers if a.concept == "operator_notes"), None)
+        source = note_behind(text_driver, ev) if text_driver is not None else None
+        if source is not None:
+            s3 = (f"An operator note written {fmt(source.age_hours)} h before the alert feeds one of these drivers: "
+                  f"\"{source.text}\" (ticket classifier reading: {source.predicted_class.replace('_', ' ')}).")
+        elif text_driver is not None and not notes:
+            s3 = ("One of these drivers is an operator-note feature, and no operator note was linked to this unit "
+                  "in the previous 7 days.")
+        elif text_driver is not None:
+            s3 = ("One of these drivers is derived from the unit's operator notes as a whole rather than from "
+                  "a single quotable note.")
         elif notes:
             s3 = (f"The unit has {len(notes)} operator note(s) from the previous 7 days, "
                   "but they are not among the main drivers of this score.")

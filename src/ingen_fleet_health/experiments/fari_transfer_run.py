@@ -38,7 +38,7 @@ from sklearn.ensemble import IsolationForest
 from ingen_fleet_health import plotstyle
 from ingen_fleet_health.config import REPO_ROOT, load_config
 from ingen_fleet_health.contract import DEFAULT_PROFILE, platform_profile
-from ingen_fleet_health.evaluation.metrics import mae, threshold_for_budget
+from ingen_fleet_health.evaluation.metrics import mae, pr_auc, threshold_for_budget
 from ingen_fleet_health.evaluation.shift import availability, psi
 from ingen_fleet_health.experiments.common import W02Data, load_w02
 from ingen_fleet_health.experiments.early_warning_run import (
@@ -46,6 +46,7 @@ from ingen_fleet_health.experiments.early_warning_run import (
     alert_metrics,
     bootstrap_ci,
     build_folds,
+    paired_prauc_diff,
     per_unit_table,
     prauc_bootstrap,
 )
@@ -79,6 +80,14 @@ ARM_LABEL = {
     "fari_native": "Trained on Fari units (reference)",
     "pooled": "Trained on Rover + Fari units",
 }
+PAIRED = [
+    ("fixed_rover_thr:lgbm", "asis:lgbm"),
+    ("fixed_rover_thr:iforest", "asis:iforest"),
+    ("fixed_rover_thr:physics_rule", "asis:physics_rule"),
+    ("fari_native:lgbm", "fixed_rover_thr:lgbm"),
+    ("pooled:lgbm", "fari_native:lgbm"),
+    ("pooled:lgbm", "fixed_rover_thr:lgbm"),
+]
 SOH_HORIZON = 7
 SOH_CUTOFF_DAYS = [30, 40, 50]
 
@@ -261,6 +270,25 @@ def model_layer(rover: W02Data, fari: W02Data, fari_asis: pd.DataFrame, seed: in
             "fari_base_rate": float(scored_frames["fari_native:lgbm"]["y"].mean())}, scored_frames
 
 
+def rule_indicators(scored: pd.DataFrame, fixed: pd.DataFrame, asis: pd.DataFrame) -> dict[str, Any]:
+    """PR-AUC of each physics-rule indicator |x - 1| on its own, on the Fari test rows.
+
+    The rule takes the worst of its indicators; an indicator that is dead (NaN)
+    drops out. This shows which indicator carries the rule on Fari."""
+    key = ["unit_id", "t"]
+    out: dict[str, Any] = {}
+    for name, table in (("fari_fixed", fixed), ("fari_asis", asis)):
+        rows = scored[[*key, "y"]].merge(table[[*key, *RULE_FEATURES]], on=key, how="left")
+        out[name] = {}
+        for col in RULE_FEATURES:
+            dev = np.abs(rows[col].to_numpy(dtype=float) - 1.0)
+            valid = np.isfinite(dev)
+            out[name][col] = {"valid_share": float(valid.mean()),
+                              "pr_auc": pr_auc(rows["y"].to_numpy(), np.where(valid, dev, 0.0)) if valid.any()
+                              else float("nan")}
+    return out
+
+
 def soh_layer(rover: W02Data, fari: W02Data, seed: int) -> dict[str, Any]:
     """Battery SoH forecast at 7 days: Rover-trained LightGBM applied to Fari."""
     h = SOH_HORIZON
@@ -407,7 +435,14 @@ def run(rover_dir: Path, fari_dir: Path, seed: int = 0) -> dict[str, Any]:
     rover_el, fari_el = rover.eligible(), fari.eligible()
     asis_el = fari_el[["unit_id", "t"]].merge(asis, on=["unit_id", "t"], how="left")
     results["features"] = feature_layer(rover_el, asis_el, fari_el)
-    results["models"], _ = model_layer(rover, fari, asis, seed)
+    results["models"], scored = model_layer(rover, fari, asis, seed)
+    results["models"]["paired_pr_auc_diff"] = {
+        f"{a} minus {b}": {"delta": pr_auc(scored[a]["y"].to_numpy(), scored[a]["score"].to_numpy())
+                           - pr_auc(scored[b]["y"].to_numpy(), scored[b]["score"].to_numpy()),
+                           "ci95": paired_prauc_diff(scored[a], scored[b], seed=seed)} for a, b in PAIRED}
+    results["models"]["rule_indicators"] = rule_indicators(scored["fixed_rover_thr:physics_rule"], fari_el, asis_el)
+    results["fault_types"] = {"rover": {str(k): int(v) for k, v in rover.events["fault_type"].value_counts().items()},
+                              "fari": {str(k): int(v) for k, v in fari.events["fault_type"].value_counts().items()}}
     results["soh"] = soh_layer(rover, fari, seed)
     results["fari_events_in_test"] = results["models"]["arms"]["fari_native"]["lgbm"]["events"]
 

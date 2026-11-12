@@ -12,6 +12,7 @@ source for each platform's numbers.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 # Week 1 behaviour, unchanged: used whenever no profile is passed.
@@ -44,10 +45,21 @@ def platform_profile(config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _tokens(column: str) -> list[str]:
+    """``cameraFrame_id`` -> ["camera", "frame", "id"]: split on camelCase and non-alphanumerics."""
+    spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", column)
+    return [t for t in re.split(r"[^a-z0-9]+", spaced.lower()) if t]
+
+
 def forbidden_fields(columns: list[str], profile: dict[str, Any]) -> list[str]:
-    """Column names that match a forbidden pattern (case-insensitive substring)."""
+    """Column names with a word that starts with a forbidden pattern.
+
+    Matching is per word, not per substring: ``mic`` refuses ``mic_level`` and
+    ``microphone_gain`` but not ``dynamic_load``; ``face`` refuses
+    ``face_count`` but not ``surface_temp_c``.
+    """
     patterns = profile.get("forbidden_field_patterns", ())
-    return sorted(c for c in columns if any(p in c.lower() for p in patterns))
+    return sorted(c for c in columns if any(t.startswith(p) for t in _tokens(c) for p in patterns))
 
 
 def assert_no_forbidden_fields(columns: list[str], profile: dict[str, Any]) -> None:
