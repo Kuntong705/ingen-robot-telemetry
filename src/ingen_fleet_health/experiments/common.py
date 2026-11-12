@@ -57,11 +57,14 @@ class W02Data:
         return joined
 
 
-def load_w02(data_dir: str | Path, n_groups: int = 5, seed: int = 0) -> W02Data:
+def load_w02(data_dir: str | Path, n_groups: int = 5, seed: int = 0, config_path: str | Path | None = None,
+             features_subdir: str = "features") -> W02Data:
+    """Load one simulated fleet. ``config_path`` selects the platform profile
+    (default: Aido Rover v0.2); ``features_subdir`` selects a feature build."""
     data_dir = Path(data_dir)
-    config = load_config()
+    config = load_config(config_path)
     manifest = json.loads((data_dir / "simulation_manifest.json").read_text(encoding="utf-8"))
-    features = pd.read_parquet(data_dir / "features" / "features_hourly.parquet")
+    features = pd.read_parquet(data_dir / features_subdir / "features_hourly.parquet")
     events = load_fault_events(data_dir / "ground_truth" / "fault_events.csv")
     start, end = pd.Timestamp(manifest["start_utc"]), pd.Timestamp(manifest["end_utc"])
     lab_cfg = config["labels"]

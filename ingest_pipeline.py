@@ -11,6 +11,7 @@ from pathlib import Path
 import duckdb
 
 from fleet_simulator import FIELDS
+from ingen_fleet_health.contract import DEFAULT_PROFILE, assert_no_forbidden_fields
 
 ROOT = Path(__file__).resolve().parent
 NUMERIC_FIELDS = [
@@ -23,14 +24,17 @@ def sql_path(path):
     return str(path.resolve()).replace("\\", "/").replace("'", "''")
 
 
-def check_row(row, last_timestamp, last_odometer):
+def check_row(row, last_timestamp, last_odometer, profile=None):
+    """Validate one record. ``profile`` is a platform profile from
+    ``ingen_fleet_health.contract``; without it the Week 1 Aido Rover rules apply."""
+    profile = profile or DEFAULT_PROFILE
     problems = []
     unit = (row.get("unit_id") or "").strip()
 
     if not unit:
         problems.append("missing_unit_id")
 
-    if row.get("mode") not in ("patrol", "dock"):
+    if row.get("mode") not in profile["allowed_modes"]:
         problems.append("invalid_mode")
 
     timestamp = None
@@ -61,7 +65,7 @@ def check_row(row, last_timestamp, last_odometer):
     ranges = {
         "battery_soc_pct": (0, 100),
         "battery_soh_pct": (0, 100),
-        "battery_voltage_v": (30, 60),
+        "battery_voltage_v": tuple(profile["voltage_range_v"]),
         "ambient_temp_c": (-60, 70),
         "motor_temp_c": (-40, 120),
         "terrain_factor": (0, 1),
@@ -85,7 +89,10 @@ def check_row(row, last_timestamp, last_odometer):
     if (
             "power_w" in values
             and "battery_current_a" in values
-            and abs(values["power_w"] - 48 * values["battery_current_a"]) > 0.1
+            and abs(
+                values["power_w"]
+                - profile["nominal_voltage_v"] * values["battery_current_a"]
+            ) > 0.1
     ):
         problems.append("power_current_mismatch")
 
@@ -111,8 +118,15 @@ def check_row(row, last_timestamp, last_odometer):
     return problems, timestamp, unit
 
 
-def run_pipeline(source, out_root=None):
+def run_pipeline(source, out_root=None, profile=None):
     source = Path(source)
+    profile = profile or DEFAULT_PROFILE
+
+    # schema-level privacy gate: refuse the file before anything is copied
+    with source.open(newline="", encoding="utf-8") as probe:
+        header = next(csv.reader(probe), [])
+    assert_no_forbidden_fields(header, profile)
+
     base = Path(out_root) if out_root else ROOT
 
     raw_dir = base / "data" / "raw"
@@ -175,7 +189,7 @@ def run_pipeline(source, out_root=None):
         for row in reader:
             total += 1
             problems, timestamp, unit = check_row(
-                row, last_timestamp, last_odometer
+                row, last_timestamp, last_odometer, profile
             )
 
             if None in row:
@@ -266,6 +280,7 @@ def run_pipeline(source, out_root=None):
 
     report = {
         "dataset": "synthetic_fleet_telemetry",
+        "platform": profile["platform"],
         "total_rows": total,
         "accepted_rows": accepted,
         "rejected_rows": rejected,
@@ -301,7 +316,20 @@ if __name__ == "__main__":
         default=ROOT / "data/generated/fleet_telemetry.csv",
         type=Path,
     )
+    parser.add_argument("--out-root", type=Path)
+    parser.add_argument(
+        "--platform-config",
+        type=Path,
+        help="platform YAML (e.g. configs/fari.yaml); default: Week 1 Rover rules",
+    )
     args = parser.parse_args()
 
-    result = run_pipeline(args.input)
+    platform = None
+    if args.platform_config:
+        from ingen_fleet_health.config import load_config
+        from ingen_fleet_health.contract import platform_profile
+
+        platform = platform_profile(load_config(args.platform_config))
+
+    result = run_pipeline(args.input, args.out_root, platform)
     print(json.dumps(result, indent=2))

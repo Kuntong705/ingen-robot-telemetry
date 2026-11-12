@@ -315,13 +315,18 @@ def simulate_fleet_v02(
     for sub in ("generated", "events", "ground_truth"):
         (out / sub).mkdir(parents=True, exist_ok=True)
 
+    modes = config.get("modes", {})
+    mode_active, mode_docked = str(modes.get("active", "patrol")), str(modes.get("docked", "dock"))
+    sessions = str(config["duty_cycle"].get("pattern", "shifts")) == "sessions"
+    intensity = ("heavy", "regular") if sessions else ("double", "single")
+
     stamps = pd.date_range(start, periods=total, freq="min", tz="UTC").strftime("%Y-%m-%dT%H:%M:%S+00:00")
     stamps_arr = np.asarray(stamps)
     current_round = np.round(current_meas, 3)
     frame = pd.DataFrame({
         "timestamp_utc": np.tile(stamps_arr, units),
         "unit_id": np.repeat(params.unit_ids, total),
-        "mode": np.where(dyn["patrol"], "patrol", "dock").ravel(),
+        "mode": np.where(dyn["patrol"], mode_active, mode_docked).ravel(),
         "battery_soc_pct": np.round(dyn["soc"], 3).ravel(),
         "battery_soh_pct": np.round(np.minimum(dyn["bms_soh"], 100.0), 3).ravel(),
         "battery_voltage_v": np.round(voltage_meas, 3).ravel(),
@@ -381,7 +386,7 @@ def simulate_fleet_v02(
         "platform": config["platform"],
         "firmware_version": config["firmware_version"],
         "site": site_names[int(params.site_index[i])],
-        "shift_pattern": "double" if params.shift_double[i] else "single",
+        "shift_pattern": intensity[0] if params.shift_double[i] else intensity[1],
     } for i, u in enumerate(unit_ids)]).to_csv(out / "events" / "units.csv", index=False)
     pd.DataFrame(params.to_records(site_names)).to_csv(out / "ground_truth" / "unit_params.csv", index=False)
 
@@ -412,6 +417,7 @@ def simulate_fleet_v02(
     ).read_text(encoding="utf-8")
     manifest = {
         "simulator_version": "0.2",
+        "platform": str(config["platform"]),
         "config_sha256": hashlib.sha256(config_text.encode("utf-8")).hexdigest(),
         "units": units,
         "days": days,

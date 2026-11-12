@@ -66,7 +66,16 @@ def physics_features(minute: pd.DataFrame, config: dict[str, Any]) -> dict[str, 
     vib = config["vibration"]
     b = config["battery"]
 
-    patrol = minute["mode"].eq("patrol").to_numpy()
+    # platform-conditional settings; the defaults are the Week 2 (Aido Rover) constants
+    fcfg = config.get("features", {})
+    active_mode = str(config.get("modes", {}).get("active", "patrol"))
+    min_step_a = float(fcfg.get("min_current_step_a", 1.0))
+    min_expected_wh = float(fcfg.get("min_expected_energy_wh_24h", 50.0))
+    min_distance_km = float(fcfg.get("min_distance_km_24h", 0.5))
+    min_thermal_rise = float(fcfg.get("min_expected_thermal_rise_c", 3.0))
+
+    # "patrol" below means "in the platform's active mode" (patrol on Rover, interact on Fari)
+    patrol = minute["mode"].eq(active_mode).to_numpy()
     observed = minute["mode"].notna().to_numpy()
     amb = minute["ambient_temp_c"]
     power = minute["power_w"]
@@ -80,8 +89,8 @@ def physics_features(minute: pd.DataFrame, config: dict[str, Any]) -> dict[str, 
     volt = minute["battery_voltage_v"].to_numpy()
     curr = minute["battery_current_a"].to_numpy()
     cold = (1.0 + float(b["cold_resistance_per_c"]) * np.maximum(0.0, 25.0 - amb.ffill())).to_numpy()
-    r_raw = resistance_step_estimate(volt, curr, DAY)
-    r_norm = pd.Series(resistance_step_estimate(volt, curr, DAY, scale=cold))
+    r_raw = resistance_step_estimate(volt, curr, DAY, min_step_a=min_step_a)
+    r_norm = pd.Series(resistance_step_estimate(volt, curr, DAY, min_step_a=min_step_a, scale=cold))
     out["r_hat_24h"] = r_raw
     out["r_hat_temp_norm_24h"] = r_norm.to_numpy()
     out["r_hat_ratio_to_baseline"] = r_norm.to_numpy() / _commissioning_baseline(r_norm)
@@ -96,8 +105,8 @@ def physics_features(minute: pd.DataFrame, config: dict[str, Any]) -> dict[str, 
     e24 = energy_wh.rolling(DAY, min_periods=1).sum()
     d24 = dist_km.rolling(DAY, min_periods=1).sum()
     x24 = expected_wh.rolling(DAY, min_periods=1).sum()
-    out["energy_per_km_24h"] = (e24 / d24.where(d24 > 0.5)).to_numpy()
-    ratio = e24 / x24.where(x24 > 50.0)
+    out["energy_per_km_24h"] = (e24 / d24.where(d24 > min_distance_km)).to_numpy()
+    ratio = e24 / x24.where(x24 > min_expected_wh)
     out["energy_ratio_to_expected_24h"] = ratio.to_numpy()
     out["energy_ratio_to_baseline"] = ratio.to_numpy() / _commissioning_baseline(ratio)
 
@@ -119,7 +128,7 @@ def physics_features(minute: pd.DataFrame, config: dict[str, Any]) -> dict[str, 
     rise_obs = (minute["motor_temp_c"] - amb).where(patrol)
     rise_exp = pd.Series(expected_t - amb_f.to_numpy()).where(patrol)
     gain = rise_obs.rolling(DAY, min_periods=30).sum() / rise_exp.rolling(DAY, min_periods=30).sum()
-    out["thermal_gain_ratio_24h"] = gain.where(rise_exp.rolling(DAY, min_periods=30).mean() > 3.0).to_numpy()
+    out["thermal_gain_ratio_24h"] = gain.where(rise_exp.rolling(DAY, min_periods=30).mean() > min_thermal_rise).to_numpy()
     out["motor_temp_resid_slope_24h"] = rolling_slope(resid_patrol.to_numpy(), DAY)
 
     # --- vibration normalised for terrain, trend and unit baseline ---

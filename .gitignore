@@ -244,3 +244,7 @@ mlflow.db
 
 # Local demo videos and logs (not committed by default)
 /media/
+
+# Week 3 generated data (synthetic Fari fleet)
+/data/w03_fari/
+/data/w03_fari_small/

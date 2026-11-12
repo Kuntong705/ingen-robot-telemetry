@@ -108,6 +108,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build hourly as-of features")
     parser.add_argument("--data-dir", type=Path, required=True)
     parser.add_argument("--config", type=Path)
+    parser.add_argument("--out-subdir", default="features", help="folder under the data dir for the feature table")
     args = parser.parse_args()
     config = load_config(args.config)
     data_dir = args.data_dir
@@ -117,7 +118,7 @@ def main() -> None:
     start = pd.Timestamp(manifest["start_utc"])
     end = pd.Timestamp(manifest["end_utc"])
     table = build_feature_table(telemetry, maintenance, config, start, end)
-    out = data_dir / "features" / "features_hourly.parquet"
+    out = data_dir / args.out_subdir / "features_hourly.parquet"
     out.parent.mkdir(parents=True, exist_ok=True)
     table.to_parquet(out, index=False)
     print(f"features: {table.shape[0]:,} rows x {table.shape[1]} columns -> {out}")
