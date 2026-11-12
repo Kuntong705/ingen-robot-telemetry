@@ -2,7 +2,7 @@
 
 **Branch:** `week2` (pushed to origin at 2304f70; do not merge to `main` or open a PR without Kuntong's approval)  
 **Plan:** Internship Plan v3.0, Week 2; demo Monday 2026-11-09  
-**Last updated:** 2026-11-04 (P0–P8 done; Week 2 committed locally as e90d892 + C-MAPSS follow-up; not pushed)
+**Last updated:** 2026-11-05 (P0–P8 done; demo scripts committed as 382bdee and pushed to `week2`; CI #12 green; final demo video approved, kept local only)
 
 ## Decisions confirmed by Kuntong (2026-11-04)
 
@@ -41,7 +41,7 @@ py -3.11 -m uv run mlflow ui --backend-store-uri sqlite:///mlflow.db
 | P7 docs + demo | done | `W02_Model_Results.docx`, `Wk-02-Log.md` (432 words), `docs/W02_Demo_Script.md`, README section 6a |
 | P8 C-MAPSS | done (2026-11-04) | FD001 from the NASA PCoE official link (git-ignored `data/external/`); MLflow run `7399caffc1384d319be348f606fdf6c6`; superseded runs `a5246ae4b7584328924504a3c2740f48` (operational settings wrongly counted as sensors) and `27cffa0998684fdb8977dc7fc6bc9fe7` (single seed) |
 
-Quality gates (2026-11-04): pytest 57 passed; ruff clean; mypy clean (32 files); `uv lock --check` ok. **GitHub Actions: passed.** Run #11 on `week2` at commit 2304f70 was green (confirmed by Kuntong on 2026-11-04). `week2` is pushed to origin; it is not merged to `main`, and no PR has been opened.
+Quality gates (2026-11-04): pytest 57 passed; ruff clean; mypy clean (32 files); `uv lock --check` ok. **GitHub Actions: passed.** Run #11 on `week2` at commit 2304f70 was green (confirmed by Kuntong on 2026-11-04). Run #12 at commit 382bdee (demo/recording scripts + progress log) was green in 1m10s (confirmed by Kuntong on 2026-11-05). `week2` is pushed to origin; it is not merged to `main`, and no PR has been opened.
 
 ## Results (see reports/w02/*.json)
 
