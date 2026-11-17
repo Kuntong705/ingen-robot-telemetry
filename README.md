@@ -224,10 +224,10 @@ Week 3 headline results (synthetic data; unseen robots / held-out period; 95 % C
 |---|---|---|---|
 | Ticket classifier, macro-F1 (917 held-out tickets, 7 classes) | majority 0.108 | TF-IDF + LR 0.846; embeddings + LR 0.863; both 0.868 | both − TF-IDF +0.022 [0.007, 0.039]; unseen wording 0.481; early symptom notes are mostly read as 'no fault found' |
 | Fusion, 72 h early warning PR-AUC (base rate 0.055) | LightGBM 0.210; Isolation Forest 0.330 | text only 0.059; early fusion 0.226; late stacked 0.226 | early − LightGBM +0.016 [-0.040, 0.078] (not detectable); text stacked on Isolation Forest -0.153 (worse); at 4x operator notice rate early − LightGBM +0.130 [0.044, 0.230] |
-| Alert summaries, faithful on 20 sampled alerts | — | template; local Qwen2.5-1.5B | template 20/20 automatic, 20/20 manual; LLM 8/20 automatic, 0/20 manual; checker flags 79/79 corrupted summaries |
+| Alert summaries, faithful on 20 sampled alerts | — | template; local Qwen2.5-1.5B | template 20/20 automatic, 20/20 on reading; LLM 8/20 automatic, 0/20 in the AI-assisted evidence review; checker flags 79/79 corrupted summaries |
 | Fari transfer (synthetic profile), Rover LightGBM PR-AUC on Fari | as-is 0.046; contract acceptance 0 % | platform profile + feature guards 0.157; Fari-trained 0.151 | minimal change +0.111 [0.034, 0.189]; acceptance 100 %; per-platform threshold needed |
 
-Deliverables: `docs/W03_Report.docx` (overview), `docs/W03_Log_Corpus.md`, `docs/W03_Fusion_Results.docx`, `docs/W03_Alert_Explanations.md`, `docs/W03_Fari_Gap_Analysis.docx`, data-contract §3.5–3.6 in `docs/W01_Data_Contract.md`, `weekly/Wk-03-Log.md`. Progress and hand-over notes: `weekly/W03_Progress.md`.
+Deliverables: `docs/W03_Report.docx` (overview), `docs/W03_Log_Corpus.md`, `docs/W03_Fusion_Results.docx`, `docs/W03_Alert_Explanations.md`, `docs/W03_Fari_Gap_Analysis.docx`, data-contract §3.5–3.6 in `docs/W01_Data_Contract.md`, `weekly/Wk-03-Log.md`, demo script `docs/W03_Demo_Script.md`. LLM-summary faithfulness verdicts: `reports/w03/llm_faithfulness_review.json` (AI-assisted evidence review; review pack built by `scripts/build_w03_review_pack.py`). Progress and hand-over notes: `weekly/W03_Progress.md`.
 
 ## 7. Limitations and Future Work
 

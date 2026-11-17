@@ -1,7 +1,7 @@
 # Week 03 — Engineering Log
 
 **Project:** Robot Fleet Telemetry Analytics & Predictive Health  
-**Period:** November 9 – 14, 2026 (Week 3 scope; written November 12; all data synthetic)  
+**Period:** November 9 – 14, 2026 (Week 3 scope; written November 12, review figures updated November 17; all data synthetic)  
 **Topic:** How maintenance text enters the early-warning model, and what did not carry over from the news-sentiment pipeline
 
 ## What transferred directly
@@ -22,7 +22,7 @@ The cost of option 3 is fewer training labels per fold (about 550 tickets on ave
 
 - **Sparsity.** News arrives every day. Only 9 of 31 test-period fault onsets had a symptom note in the 72 h before them. Early fusion changed PR-AUC by +0.016 [−0.040, 0.078] over telemetry LightGBM. Stacking text onto the Isolation Forest cost −0.153, because the stacker over-weighted a noisy modality fitted on a few validation events. At 4× the assumed notice rate, text adds +0.130 [0.044, 0.230]. So the honest answer depends on how often real operators write, which InGen's ticket history can measure.
 - **"No fault found" dominates.** It is 61 % of the test tickets, and real symptom notes read like it.
-- **LLM faithfulness.** The stock project used the LLM to make models more interpretable; here every summary had to be checked against the attributions. The template summaries passed 20/20, both automatically and by hand. The local 1.5 B model passed 0/20 by hand, while a lexical checker passed 8 of them. Plausible-sounding is not faithful.
+- **LLM faithfulness.** The stock project used the LLM to make models more interpretable; here every summary had to be checked against the attributions. The template summaries passed 20/20, both automatically and on reading. In an AI-assisted evidence review, none of the local 1.5 B model's 20 summaries was faithful, while a lexical checker passed 8 of them. Plausible-sounding is not faithful.
 
 ## Next
 
