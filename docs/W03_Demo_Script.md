@@ -1,5 +1,7 @@
 # W03 Demo — 60-second recording script
 
+> **Superseded for the plan's weekly recording.** The Week 3 demo video (`media/W03_demo.mp4`, 55 s, git-ignored) is a real screen recording of `scripts/w03_demo.py` (fault alert -> template and local-LLM explanation -> faithfulness check), made by `python scripts/record_w03_screen_demo.py`. The steps below are a figure walk-through for a live talk only.
+
 All data is synthetic. Every number below comes from `reports/w03/*.json` (the same numbers as `docs/W03_Report.docx`). Nothing has to run live: the recording only shows figures and documents that already exist.
 
 ## Recording steps (about 5 minutes, Windows)
