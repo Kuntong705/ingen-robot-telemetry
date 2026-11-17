@@ -93,6 +93,46 @@ Future maintenance records should include:
 
 These records will support maintenance exclusion windows and future predictive-maintenance labels.
 
+### 3.5 Maintenance-Log and Operator-Note Corpus — Implemented (Week 3, synthetic)
+
+`data/<run>/text/log_corpus.csv` (observable) and `ground_truth/log_corpus_truth.csv` (hidden, analysis only).
+**Every record is synthetic** (`is_synthetic = true`); no InGen ticket, operator or customer text exists in the repository.
+
+| Field | Type | Rule |
+|---|---|---|
+| `ticket_id` | string | unique |
+| `unit_id` | string | must exist in the telemetry fleet |
+| `created_at_utc` | timestamp (UTC) | the note/ticket is visible to any feature at time t only if `created_at_utc <= t` |
+| `doc_type` | enum | `operator_note` (symptom report) or `service_ticket` (work order / closure); known at creation |
+| `text` | string | free text, may contain abbreviations, typos and unit mentions |
+| `label` | enum | fixed taxonomy: battery, drivetrain, thermal, sensor, connectivity, user_or_operational_error, no_fault_found |
+| `label_available_utc` | timestamp (UTC) | the label may be used for training only if `label_available_utc <= training cut-off`; it is confirmed at triage or at the closing repair, never at creation |
+| `is_synthetic` | bool | always true in this repository |
+
+The generator, its parameters and the regeneration command are documented in `docs/W03_Log_Corpus.md`.
+
+### 3.6 Platform Profiles — Implemented (Week 3)
+
+Week 1 hard-coded three Aido Rover facts into ingestion (mode enum `patrol`/`dock`, a 30–60 V pack window,
+`power = 48 V × current`). They are now a **platform profile** derived from the platform's simulator YAML
+(`ingen_fleet_health.contract.platform_profile`), passed with `ingest_pipeline.py --platform-config`. Without a
+profile the Week 1 Rover rules apply unchanged.
+
+| Profile field | Aido Rover (default) | Fari (`configs/fari.yaml`, **synthetic assumption**) |
+|---|---|---|
+| allowed modes | patrol, dock | interact, dock |
+| nominal voltage (power/current check) | 48 V | 14.4 V |
+| voltage range | 30–60 V | 9–18 V |
+| not-applicable fields | none | `terrain_factor` (indoor; always 0) |
+| forbidden fields | none | imagery / audio (below) |
+
+**Fari privacy rule (enforced, not only stated).** On Fari no imagery or audio field may enter analytics. Before any
+copy of an input file is stored, the header is checked; a column with a word starting with `image`, `camera`,
+`video`, `frame`, `audio`, `mic`, `voice`, `speech`, `transcript` or `face` makes the pipeline raise
+`ContractViolation` and refuse the whole file (`tests/w03/test_fari_contract.py`). Matching is per word, so
+`surface_temp_c` or `dynamic_load` pass; it is deliberately conservative (`framework_version` is refused), because a
+false refusal costs a rename while a false acceptance would leak data.
+
 ## 4. Data Validation Rules
 
 The implemented ingestion pipeline checks:
@@ -105,14 +145,14 @@ The implemented ingestion pipeline checks:
 | Duplicate records | No repeated unit/timestamp combination among accepted records |
 | Battery SoC | 0–100% |
 | Battery SoH | 0–100% |
-| Battery voltage | 30–60 V |
+| Battery voltage | 30–60 V (Rover); from the platform profile otherwise (§3.6) |
 | Ambient temperature | −60 to 70°C |
 | Motor temperature | −40 to 120°C |
 | Terrain factor | 0–1 |
 | Vibration RMS | Nonnegative |
 | Internal resistance | Positive |
 | Odometer | Nonnegative and non-decreasing |
-| Power/current | Consistent with the baseline nominal 48 V assumption |
+| Power/current | Consistent with the platform's nominal voltage (48 V Rover default) |
 | Sampling gaps | Counted per robot |
 
 All numeric values must be finite.
@@ -243,10 +283,10 @@ The current Week 1 foundation supports configurable synthetic fleet generation, 
 Remaining engineering improvements include:
 
 - Strict external schema validation with pandera or Great Expectations
-- Unit consistency driven by the YAML configuration rather than a hard-coded nominal voltage
+- ~~Unit consistency driven by the YAML configuration rather than a hard-coded nominal voltage~~ (done in Week 3, §3.6)
 - Full operational and maintenance event schemas
 - Sensor drift detection beyond simple physical-range validation
 - Expanded physical modeling and empirical calibration
-- Final repository structure and cross-platform configuration profiles
+- Final repository structure (cross-platform configuration profiles: done for Rover and Fari in Week 3, §3.6)
 
 The prototype is suitable for demonstrating a reproducible synthetic data engineering workflow, but is not a validated digital twin of production hardware.

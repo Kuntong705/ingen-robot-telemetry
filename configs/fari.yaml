@@ -1,0 +1,173 @@
+# Fari (indoor companion) -- SYNTHETIC simulation profile for the Week 3 generalisation test
+#
+# !!! EVERY VALUE IN THIS FILE IS A SYNTHETIC ASSUMPTION. !!!
+# No Fari hardware specification, datasheet, internal document or measurement was
+# available or consulted. Numbers are order-of-magnitude guesses for a small
+# indoor companion robot, chosen only to reproduce the *data profile* named in
+# Internship Plan v3.0: short interaction sessions, frequent dock charging, no
+# terrain variation, no imagery or audio retained. They must not be quoted as
+# InGen specifications. Replace them when verified parameters exist.
+#   [asm] = modelling assumption    [lit] = public Li-ion literature order of magnitude
+# The file has the same structure as configs/aido_rover_v0_2.yaml so the same
+# simulator (v0.2) and feature code run on both platforms.
+
+platform: fari
+profile_version: "0.1-synthetic"
+firmware_version: "fari-fw-0.0.0-synthetic"   # [asm] placeholder, not a real build
+unit_id_prefix: Fari                           # unit ids Fari_001, ...
+
+modes:                      # values written to the telemetry `mode` field
+  active: interact          # [asm] an interaction session (moving, talking, screen on)
+  docked: dock
+
+contract:                   # platform profile enforced by the ingestion pipeline
+  voltage_range_v: [9.0, 18.0]        # [asm] plausible window for a 4s pack
+  not_applicable_fields: [terrain_factor]   # indoor flat floors: field is always 0
+  forbidden_field_patterns:           # privacy: no imagery or audio may enter analytics
+    - image
+    - camera
+    - video
+    - frame
+    - audio
+    - mic
+    - voice
+    - speech
+    - transcript
+    - face
+
+simulation:
+  units: 50
+  days: 60
+  sample_interval_seconds: 60
+  seed: 2027
+  start_utc: "2026-10-26T00:00:00Z"
+
+sites:                      # [asm] indoor climates; small diurnal swing
+  - {name: home_cool,   ambient_mean_c: 19.5, diurnal_amplitude_c: 1.5}
+  - {name: home_mild,   ambient_mean_c: 22.0, diurnal_amplitude_c: 1.0}
+  - {name: care_home,   ambient_mean_c: 24.0, diurnal_amplitude_c: 0.8}
+
+weather:
+  daily_ar1_phi: 0.6
+  daily_noise_std_c: 0.6    # [asm] thermostat-controlled rooms
+  minute_noise_std_c: 0.15
+  peak_hour_utc: 15.0
+
+unit_variation:
+  capacity: 0.03
+  fade_rate_log_std: 0.25   # [lit] same cell-to-cell ageing spread as the Rover profile
+  base_resistance: 0.10
+  heating_coefficient: 0.10
+  thermal_time_constant: 0.10
+  vibration_baseline: 0.15
+  baseline_power: 0.08
+
+duty_cycle:
+  pattern: sessions                  # short interaction sessions instead of patrol shifts
+  session_window_hours_utc: [7, 22]  # [asm] waking hours
+  sessions_per_day_mean: 14.0        # [asm] Poisson mean
+  session_minutes_range: [5, 25]     # [asm]
+  heavy_user_fraction: 0.35          # [asm] share of units with 1.5x the session rate
+  heavy_user_rate_factor: 1.5
+  day_off_probability: 0.03          # [asm] nobody home
+  return_to_dock_soc_pct: 15.0
+  patrol_speed_mps: 0.15             # [asm] mean speed while interacting (mostly stationary)
+  terrain_speed_reduction: 0.0
+  baseline_patrol_power_w: 35.0      # [asm] compute + display + small drive motors
+  terrain_extra_power_w: 0.0         # no terrain
+  cold_heater_w_per_c: 0.0           # indoor: no pack heater
+  cold_heater_threshold_c: 10.0
+  charging_power_w: 60.0             # [asm] dock charger
+  charge_taper_start_soc_pct: 85.0
+  charge_target_soc_pct: 95.0
+  charge_efficiency: 0.92
+
+terrain:
+  enabled: false                     # terrain_factor is written as 0.0 for every record
+  segment_minutes: [5, 20]
+  surfaces: {indoor_floor: 0.0}
+  grade_to_factor_offset: 0.05
+  grade_to_factor_span: 0.17
+  routes:
+    indoor_flat: {surface_probs: [1.0], grade_mean: 0.0, grade_std: 0.0}
+  route_change_fraction: 0.0
+  route_change_day_range: [15, 45]
+
+battery:
+  nominal_voltage_v: 14.4             # [asm] 4s Li-ion
+  nominal_capacity_wh: 120.0          # [asm]
+  initial_soc_pct: 95.0
+  initial_soh_pct: 100.0
+  min_soh_pct: 70.0
+  ocv_soc_slope_v_per_pct: 0.015      # [asm] Rover slope scaled by the voltage ratio
+  base_internal_resistance_ohm: 0.08  # [asm] smaller pack, higher resistance
+  cycle_fade_pct_per_efc: 0.04        # [lit]
+  calendar_fade_pct_per_day: 0.008    # [lit]
+  arrhenius_doubling_c: 10.0          # [lit]
+  low_soc_stress_threshold_pct: 30.0
+  low_soc_stress_factor: 1.5
+  resistance_growth_per_pct_fade: 0.08
+  cold_resistance_per_c: 0.01
+  cold_capacity_loss_per_c: 0.005
+  pack_temp_rise_patrol_c: 2.0
+  pack_temp_rise_charge_c: 2.0
+  bms_soh_bias_std_pct: 0.3
+  bms_soh_noise_std_pct: 0.3
+
+thermal:
+  initial_motor_temp_c: 23.0
+  load_heating_coefficient_c_per_w: 0.15   # [asm] steady-state rise ~5 C at 35 W
+  response_time_minutes: 15.0              # [asm] small thermal mass
+  measurement_noise_std_c: 0.3
+
+vibration:
+  dock_baseline_g: 0.01
+  patrol_baseline_g: 0.03         # [asm] smooth indoor floor
+  terrain_gain: 0.0
+  noise_std_g: 0.004
+  bearing_friction_extra_w: 1.0   # [asm] traction is a small share of the power budget
+
+measurement:
+  voltage_noise_std_v: 0.02
+  current_noise_std_a: 0.02
+
+faults:                           # same P-F model and fault types as the Rover profile
+  types: [bearing_wear, cooling_degradation, battery_cell_fault]
+  faults_per_unit_per_60_days: 1.0
+  initiation_fraction_range: [0.03, 0.95]
+  precursor_days_range: [2.0, 10.0]
+  qualifying_severity: 0.3
+  ramp_shapes: [linear, exponential, sigmoid]
+  detection_delay_days_range: [0.5, 4.0]
+  repair_hours_range: [6.0, 24.0]
+  failure_to_repair_days: 0.5
+  min_gap_after_repair_days: 1.0
+  bearing_max_extra_g: 0.10       # [asm] same ~3.3x of baseline as on the Rover
+  cooling_max_heating_increase: 0.8
+  cooling_max_time_constant_increase: 0.3
+  cell_max_resistance_increase: 0.8
+  cell_extra_fade_pct_per_day: 0.5
+
+impairments:
+  dropout_probability: 0.003
+  burst_probability_per_unit_day: 0.10   # [asm] home wifi
+  burst_minutes_range: [5, 60]
+  drift_unit_fraction: 0.10
+  drift_peak_c_range: [2.0, 5.0]
+  drift_ramp_days_range: [3.0, 10.0]
+
+labels:
+  horizon_hours: 72
+  prediction_interval_hours: 1
+  history_warmup_hours: 24
+  post_repair_exclusion_hours: 24
+
+alerting:
+  budget_alerts_per_unit_week: 1.0
+  refractory_hours: 72
+
+features:                         # platform-conditional feature guards (Week 3 minimal change)
+  min_current_step_a: 0.5         # Rover default 1.0 A
+  min_expected_energy_wh_24h: 5.0 # Rover default 50 Wh
+  min_distance_km_24h: 0.2        # Rover default 0.5 km
+  min_expected_thermal_rise_c: 1.0  # Rover default 3.0 C

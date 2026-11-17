@@ -1,0 +1,1874 @@
+{
+  "protocol": {
+    "cutoff_days": [
+      20,
+      30,
+      40,
+      50
+    ],
+    "test_span_days": 10,
+    "embargo_hours": 72,
+    "unit_groups": 5,
+    "folds": 20,
+    "train_rule": "units not in the test group and label_available_utc <= cutoff - 72 h",
+    "test_rule": "units in the test group and cutoff <= created_at_utc < cutoff + 10 d"
+  },
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "c_grid": [
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "test_tickets": 917,
+  "test_label_counts": {
+    "battery": 74,
+    "drivetrain": 73,
+    "thermal": 45,
+    "sensor": 38,
+    "connectivity": 60,
+    "user_or_operational_error": 70,
+    "no_fault_found": 557
+  },
+  "models": {
+    "majority": {
+      "macro_f1": 0.10796666020546618,
+      "accuracy": 0.6074154852780806,
+      "macro_f1_ci95": [
+        0.10273279386480229,
+        0.11314817633942564
+      ],
+      "per_class": {
+        "battery": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 74
+        },
+        "drivetrain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 73
+        },
+        "thermal": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 45
+        },
+        "sensor": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 38
+        },
+        "connectivity": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 60
+        },
+        "user_or_operational_error": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 70
+        },
+        "no_fault_found": {
+          "precision": 0.6074154852780806,
+          "recall": 1.0,
+          "f1": 0.7557666214382632,
+          "support": 557
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          74
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          73
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          45
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          38
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          60
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          70
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          557
+        ]
+      ],
+      "by_cutoff_day": {
+        "20": 0.10931677018633541,
+        "30": 0.11341991341991342,
+        "40": 0.10801393728222997,
+        "50": 0.1020932794711715
+      }
+    },
+    "tfidf_lr": {
+      "macro_f1": 0.8464815030313886,
+      "accuracy": 0.9051254089422028,
+      "macro_f1_ci95": [
+        0.8150697112745661,
+        0.8777966192753729
+      ],
+      "per_class": {
+        "battery": {
+          "precision": 0.896551724137931,
+          "recall": 0.7027027027027027,
+          "f1": 0.7878787878787878,
+          "support": 74
+        },
+        "drivetrain": {
+          "precision": 0.9122807017543859,
+          "recall": 0.7123287671232876,
+          "f1": 0.8,
+          "support": 73
+        },
+        "thermal": {
+          "precision": 0.9666666666666667,
+          "recall": 0.6444444444444445,
+          "f1": 0.7733333333333333,
+          "support": 45
+        },
+        "sensor": {
+          "precision": 0.8387096774193549,
+          "recall": 0.6842105263157895,
+          "f1": 0.7536231884057971,
+          "support": 38
+        },
+        "connectivity": {
+          "precision": 0.9206349206349206,
+          "recall": 0.9666666666666667,
+          "f1": 0.943089430894309,
+          "support": 60
+        },
+        "user_or_operational_error": {
+          "precision": 0.9545454545454546,
+          "recall": 0.9,
+          "f1": 0.9264705882352942,
+          "support": 70
+        },
+        "no_fault_found": {
+          "precision": 0.8986928104575164,
+          "recall": 0.9874326750448833,
+          "f1": 0.9409751924721984,
+          "support": 557
+        }
+      },
+      "confusion_matrix": [
+        [
+          52,
+          1,
+          0,
+          0,
+          1,
+          1,
+          19
+        ],
+        [
+          3,
+          52,
+          0,
+          2,
+          1,
+          0,
+          15
+        ],
+        [
+          0,
+          2,
+          29,
+          3,
+          0,
+          2,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          26,
+          1,
+          0,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          58,
+          0,
+          2
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          63,
+          6
+        ],
+        [
+          2,
+          2,
+          1,
+          0,
+          2,
+          0,
+          550
+        ]
+      ],
+      "by_cutoff_day": {
+        "20": 0.7846528682394943,
+        "30": 0.8933230179781904,
+        "40": 0.8413400850962146,
+        "50": 0.8316262649287276
+      }
+    },
+    "embed_lr": {
+      "macro_f1": 0.8625679342292001,
+      "accuracy": 0.9094874591057798,
+      "macro_f1_ci95": [
+        0.8331104590787415,
+        0.8916881770197679
+      ],
+      "per_class": {
+        "battery": {
+          "precision": 0.7903225806451613,
+          "recall": 0.6621621621621622,
+          "f1": 0.7205882352941176,
+          "support": 74
+        },
+        "drivetrain": {
+          "precision": 0.9137931034482759,
+          "recall": 0.726027397260274,
+          "f1": 0.8091603053435115,
+          "support": 73
+        },
+        "thermal": {
+          "precision": 0.9142857142857143,
+          "recall": 0.7111111111111111,
+          "f1": 0.8,
+          "support": 45
+        },
+        "sensor": {
+          "precision": 0.967741935483871,
+          "recall": 0.7894736842105263,
+          "f1": 0.8695652173913043,
+          "support": 38
+        },
+        "connectivity": {
+          "precision": 0.9508196721311475,
+          "recall": 0.9666666666666667,
+          "f1": 0.9586776859504132,
+          "support": 60
+        },
+        "user_or_operational_error": {
+          "precision": 0.9420289855072463,
+          "recall": 0.9285714285714286,
+          "f1": 0.935251798561151,
+          "support": 70
+        },
+        "no_fault_found": {
+          "precision": 0.9101497504159733,
+          "recall": 0.9820466786355476,
+          "f1": 0.9447322970639033,
+          "support": 557
+        }
+      },
+      "confusion_matrix": [
+        [
+          49,
+          0,
+          0,
+          0,
+          1,
+          1,
+          23
+        ],
+        [
+          5,
+          53,
+          0,
+          0,
+          0,
+          0,
+          15
+        ],
+        [
+          2,
+          1,
+          32,
+          1,
+          0,
+          1,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          30,
+          1,
+          0,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          58,
+          0,
+          2
+        ],
+        [
+          4,
+          1,
+          0,
+          0,
+          0,
+          65,
+          0
+        ],
+        [
+          2,
+          3,
+          2,
+          0,
+          1,
+          2,
+          547
+        ]
+      ],
+      "by_cutoff_day": {
+        "20": 0.8346854825846423,
+        "30": 0.8974161560061746,
+        "40": 0.8458079839032219,
+        "50": 0.8509197502624393
+      }
+    },
+    "tfidf_embed_lr": {
+      "macro_f1": 0.8684906015373416,
+      "accuracy": 0.9138495092693566,
+      "macro_f1_ci95": [
+        0.8385280794698202,
+        0.8966757319025745
+      ],
+      "per_class": {
+        "battery": {
+          "precision": 0.8947368421052632,
+          "recall": 0.6891891891891891,
+          "f1": 0.7786259541984732,
+          "support": 74
+        },
+        "drivetrain": {
+          "precision": 0.8813559322033898,
+          "recall": 0.7123287671232876,
+          "f1": 0.7878787878787878,
+          "support": 73
+        },
+        "thermal": {
+          "precision": 0.96875,
+          "recall": 0.6888888888888889,
+          "f1": 0.8051948051948052,
+          "support": 45
+        },
+        "sensor": {
+          "precision": 0.9090909090909091,
+          "recall": 0.7894736842105263,
+          "f1": 0.8450704225352113,
+          "support": 38
+        },
+        "connectivity": {
+          "precision": 0.9830508474576272,
+          "recall": 0.9666666666666667,
+          "f1": 0.9747899159663865,
+          "support": 60
+        },
+        "user_or_operational_error": {
+          "precision": 0.9428571428571428,
+          "recall": 0.9428571428571428,
+          "f1": 0.9428571428571428,
+          "support": 70
+        },
+        "no_fault_found": {
+          "precision": 0.9060955518945635,
+          "recall": 0.9874326750448833,
+          "f1": 0.9450171821305842,
+          "support": 557
+        }
+      },
+      "confusion_matrix": [
+        [
+          51,
+          1,
+          0,
+          0,
+          0,
+          1,
+          21
+        ],
+        [
+          3,
+          52,
+          0,
+          1,
+          0,
+          0,
+          17
+        ],
+        [
+          0,
+          2,
+          31,
+          2,
+          0,
+          2,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          30,
+          1,
+          0,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          58,
+          0,
+          2
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          66,
+          2
+        ],
+        [
+          2,
+          3,
+          1,
+          0,
+          0,
+          1,
+          550
+        ]
+      ],
+      "by_cutoff_day": {
+        "20": 0.8117126811623967,
+        "30": 0.9361404885840976,
+        "40": 0.8500354982707922,
+        "50": 0.8557137219683497
+      }
+    },
+    "selected": {
+      "macro_f1": 0.8719771590946893,
+      "accuracy": 0.9171210468920392,
+      "macro_f1_ci95": [
+        0.8427725893946547,
+        0.9013073830720546
+      ],
+      "per_class": {
+        "battery": {
+          "precision": 0.8813559322033898,
+          "recall": 0.7027027027027027,
+          "f1": 0.7819548872180451,
+          "support": 74
+        },
+        "drivetrain": {
+          "precision": 0.896551724137931,
+          "recall": 0.7123287671232876,
+          "f1": 0.7938931297709924,
+          "support": 73
+        },
+        "thermal": {
+          "precision": 0.9411764705882353,
+          "recall": 0.7111111111111111,
+          "f1": 0.810126582278481,
+          "support": 45
+        },
+        "sensor": {
+          "precision": 0.9090909090909091,
+          "recall": 0.7894736842105263,
+          "f1": 0.8450704225352113,
+          "support": 38
+        },
+        "connectivity": {
+          "precision": 0.9830508474576272,
+          "recall": 0.9666666666666667,
+          "f1": 0.9747899159663865,
+          "support": 60
+        },
+        "user_or_operational_error": {
+          "precision": 0.9565217391304348,
+          "recall": 0.9428571428571428,
+          "f1": 0.9496402877697842,
+          "support": 70
+        },
+        "no_fault_found": {
+          "precision": 0.9107438016528926,
+          "recall": 0.9892280071813285,
+          "f1": 0.9483648881239243,
+          "support": 557
+        }
+      },
+      "confusion_matrix": [
+        [
+          52,
+          1,
+          0,
+          0,
+          0,
+          0,
+          21
+        ],
+        [
+          3,
+          52,
+          0,
+          1,
+          0,
+          0,
+          17
+        ],
+        [
+          0,
+          2,
+          32,
+          2,
+          0,
+          2,
+          7
+        ],
+        [
+          0,
+          0,
+          1,
+          30,
+          1,
+          0,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          58,
+          0,
+          2
+        ],
+        [
+          2,
+          1,
+          0,
+          0,
+          0,
+          66,
+          1
+        ],
+        [
+          2,
+          2,
+          1,
+          0,
+          0,
+          1,
+          551
+        ]
+      ],
+      "by_cutoff_day": {
+        "20": 0.8306366119615507,
+        "30": 0.9361404885840976,
+        "40": 0.8500354982707922,
+        "50": 0.8557137219683497
+      }
+    }
+  },
+  "paired": {
+    "embed_lr_minus_tfidf_lr": {
+      "delta_macro_f1": 0.0160864311978115,
+      "ci95": [
+        -0.005560797704246248,
+        0.03798731500533361
+      ]
+    },
+    "tfidf_embed_lr_minus_tfidf_lr": {
+      "delta_macro_f1": 0.022009098505953006,
+      "ci95": [
+        0.007212067273106368,
+        0.03870799597937856
+      ]
+    },
+    "tfidf_lr_minus_majority": {
+      "delta_macro_f1": 0.7385148428259224,
+      "ci95": [
+        0.7077617694713118,
+        0.7694500873346245
+      ]
+    }
+  },
+  "fold_info": [
+    {
+      "fold_id": "c1115_g0",
+      "cutoff_day": 20,
+      "group": 0,
+      "train_tickets": 293,
+      "test_tickets": 40,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 1.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.7466127283205506,
+        "embed_lr": 0.8193580951475611,
+        "tfidf_embed_lr": 0.8371568959801706
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1115_g1",
+      "cutoff_day": 20,
+      "group": 1,
+      "train_tickets": 286,
+      "test_tickets": 47,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 1.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 1.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.7395491413348555,
+        "embed_lr": 0.7934743691526955,
+        "tfidf_embed_lr": 0.7876221445324127
+      },
+      "selected_kind": "embed_lr"
+    },
+    {
+      "fold_id": "c1115_g2",
+      "cutoff_day": 20,
+      "group": 2,
+      "train_tickets": 289,
+      "test_tickets": 41,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 1000.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 1.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.7633820480210497,
+        "embed_lr": 0.8154974954654186,
+        "tfidf_embed_lr": 0.7950245990568571
+      },
+      "selected_kind": "embed_lr"
+    },
+    {
+      "fold_id": "c1115_g3",
+      "cutoff_day": 20,
+      "group": 3,
+      "train_tickets": 281,
+      "test_tickets": 31,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 10.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 1.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.7743894466533243,
+        "embed_lr": 0.9119971432364036,
+        "tfidf_embed_lr": 0.8305479090320167
+      },
+      "selected_kind": "embed_lr"
+    },
+    {
+      "fold_id": "c1115_g4",
+      "cutoff_day": 20,
+      "group": 4,
+      "train_tickets": 271,
+      "test_tickets": 54,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 1.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8211626558185123,
+        "embed_lr": 0.827291238781922,
+        "tfidf_embed_lr": 0.8391405207035367
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1125_g0",
+      "cutoff_day": 30,
+      "group": 0,
+      "train_tickets": 490,
+      "test_tickets": 40,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 1000.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8383197497250147,
+        "embed_lr": 0.848885083312085,
+        "tfidf_embed_lr": 0.8767370935207178
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1125_g1",
+      "cutoff_day": 30,
+      "group": 1,
+      "train_tickets": 469,
+      "test_tickets": 40,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 1000.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8891110267628944,
+        "embed_lr": 0.8701253104579616,
+        "tfidf_embed_lr": 0.9038814463669531
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1125_g2",
+      "cutoff_day": 30,
+      "group": 2,
+      "train_tickets": 477,
+      "test_tickets": 39,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 10.0,
+        "embed_lr": 10.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8684341187626797,
+        "embed_lr": 0.8696053696495978,
+        "tfidf_embed_lr": 0.8969092980778196
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1125_g3",
+      "cutoff_day": 30,
+      "group": 3,
+      "train_tickets": 476,
+      "test_tickets": 35,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 1000.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8082502799001975,
+        "embed_lr": 0.8653654701746571,
+        "tfidf_embed_lr": 0.8661529435637004
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1125_g4",
+      "cutoff_day": 30,
+      "group": 4,
+      "train_tickets": 432,
+      "test_tickets": 45,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.888484017260777,
+        "embed_lr": 0.8809635133713501,
+        "tfidf_embed_lr": 0.9240770255792645
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1205_g0",
+      "cutoff_day": 40,
+      "group": 0,
+      "train_tickets": 656,
+      "test_tickets": 57,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8754128514133985,
+        "embed_lr": 0.8603039855585928,
+        "tfidf_embed_lr": 0.8974365911865912
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1205_g1",
+      "cutoff_day": 40,
+      "group": 1,
+      "train_tickets": 635,
+      "test_tickets": 47,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.9060253674178956,
+        "embed_lr": 0.8860911273720066,
+        "tfidf_embed_lr": 0.9213282668518981
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1205_g2",
+      "cutoff_day": 40,
+      "group": 2,
+      "train_tickets": 644,
+      "test_tickets": 44,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 10.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8763083200404166,
+        "embed_lr": 0.8714575290095002,
+        "tfidf_embed_lr": 0.8932408019921472
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1205_g3",
+      "cutoff_day": 40,
+      "group": 3,
+      "train_tickets": 643,
+      "test_tickets": 55,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8901006896588923,
+        "embed_lr": 0.8924753387376418,
+        "tfidf_embed_lr": 0.893421029299318
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1205_g4",
+      "cutoff_day": 40,
+      "group": 4,
+      "train_tickets": 586,
+      "test_tickets": 52,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 10.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.9214493439997048,
+        "embed_lr": 0.8857930576068156,
+        "tfidf_embed_lr": 0.9300604645580799
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1215_g0",
+      "cutoff_day": 50,
+      "group": 0,
+      "train_tickets": 834,
+      "test_tickets": 56,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8933172026461629,
+        "embed_lr": 0.87858608830961,
+        "tfidf_embed_lr": 0.9131378928639867
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1215_g1",
+      "cutoff_day": 50,
+      "group": 1,
+      "train_tickets": 813,
+      "test_tickets": 52,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 100.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.9151555993518903,
+        "embed_lr": 0.9042629934817279,
+        "tfidf_embed_lr": 0.928874968004581
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1215_g2",
+      "cutoff_day": 50,
+      "group": 2,
+      "train_tickets": 827,
+      "test_tickets": 52,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 10.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.9042895261967672,
+        "embed_lr": 0.8836723353090135,
+        "tfidf_embed_lr": 0.9123717236051881
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1215_g3",
+      "cutoff_day": 50,
+      "group": 3,
+      "train_tickets": 819,
+      "test_tickets": 50,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 100.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.8946336932724617,
+        "embed_lr": 0.8883759657520949,
+        "tfidf_embed_lr": 0.9151593245655011
+      },
+      "selected_kind": "tfidf_embed_lr"
+    },
+    {
+      "fold_id": "c1215_g4",
+      "cutoff_day": 50,
+      "group": 4,
+      "train_tickets": 771,
+      "test_tickets": 40,
+      "train_classes": 7,
+      "chosen_c": {
+        "tfidf_lr": 100.0,
+        "embed_lr": 1000.0,
+        "tfidf_embed_lr": 10.0
+      },
+      "cv_macro_f1": {
+        "tfidf_lr": 0.9086900140377338,
+        "embed_lr": 0.8810265246423332,
+        "tfidf_embed_lr": 0.9341434442657862
+      },
+      "selected_kind": "tfidf_embed_lr"
+    }
+  ],
+  "selected_kind_counts": {
+    "tfidf_embed_lr": 17,
+    "embed_lr": 3
+  },
+  "lexical_shift": {
+    "held_out_rule": "training tickets built from held-out core phrases are removed",
+    "table": {
+      "seen_phrases": {
+        "tickets": 766,
+        "majority": {
+          "accuracy": 0.6005221932114883,
+          "macro_f1": 0.10720111862036821
+        },
+        "tfidf_lr": {
+          "accuracy": 0.9033942558746736,
+          "macro_f1": 0.8458838697406481
+        },
+        "embed_lr": {
+          "accuracy": 0.9151436031331592,
+          "macro_f1": 0.8733275035068016
+        },
+        "tfidf_embed_lr": {
+          "accuracy": 0.9203655352480418,
+          "macro_f1": 0.8823860782718425
+        },
+        "selected": {
+          "accuracy": 0.922976501305483,
+          "macro_f1": 0.8873793735823473
+        }
+      },
+      "unseen_phrases": {
+        "tickets": 151,
+        "majority": {
+          "accuracy": 0.6423841059602649,
+          "macro_f1": 0.11175115207373272
+        },
+        "tfidf_lr": {
+          "accuracy": 0.7019867549668874,
+          "macro_f1": 0.3929343967601066
+        },
+        "embed_lr": {
+          "accuracy": 0.6225165562913907,
+          "macro_f1": 0.47510318734235263
+        },
+        "tfidf_embed_lr": {
+          "accuracy": 0.6754966887417219,
+          "macro_f1": 0.4494569969551841
+        },
+        "selected": {
+          "accuracy": 0.6622516556291391,
+          "macro_f1": 0.48066878655113954
+        }
+      }
+    },
+    "paired_unseen_embed_minus_tfidf": {
+      "delta_macro_f1": 0.08216879058224602,
+      "ci95": [
+        -0.0324372978277397,
+        0.19189808260167907
+      ]
+    },
+    "fold_train_tickets_mean": 448.4
+  },
+  "best_single_model_on_test": "tfidf_embed_lr",
+  "error_analysis": {
+    "tfidf_lr": {
+      "model": "tfidf_lr",
+      "errors": 87,
+      "tickets": 917,
+      "top_confusions": [
+        {
+          "true": "battery",
+          "predicted": "no_fault_found",
+          "count": 19,
+          "by_source": {
+            "fault_symptom": 16,
+            "fault_service_close": 2,
+            "minor_battery": 1
+          },
+          "by_style": {
+            "specific": 14,
+            "vague": 5
+          },
+          "examples": [
+            "takes much longer to reach full chg tan the oter units",
+            "Replaced weak cell moudle. Internal resistance back in range. Returned to service.",
+            "Takes much longer to reach full chg than the other units not urgent"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "no_fault_found",
+          "count": 15,
+          "by_source": {
+            "fault_symptom": 11,
+            "fault_service_open": 2,
+            "fault_service_close": 2
+          },
+          "by_style": {
+            "specific": 11,
+            "misattributed": 2,
+            "vague": 2
+          },
+          "examples": [
+            "After the morning round battery seems to drain faster, runtime shorter than last week",
+            "Work order opened: vbiration alarm on drivetrain. Check rear right bearing play.",
+            "Work order opened vibratoin alarm on driveteain Check front left bearing play"
+          ]
+        },
+        {
+          "true": "sensor",
+          "predicted": "no_fault_found",
+          "count": 11,
+          "by_source": {
+            "drift_symptom": 5,
+            "drift_service": 3,
+            "minor_sensor": 3
+          },
+          "by_style": {
+            "specific": 9,
+            "misattributed": 2
+          },
+          "examples": [
+            "Thermistor offset confirmed with IR gun while docked. snsr flagged for replacement at next service.",
+            "R018 - mtr temperature high on the dashboard again",
+            "temperature readout is offset same error every morning before the first patrol not urgent"
+          ]
+        },
+        {
+          "true": "thermal",
+          "predicted": "no_fault_found",
+          "count": 9,
+          "by_source": {
+            "fault_symptom": 9
+          },
+          "by_style": {
+            "specific": 7,
+            "vague": 2
+          },
+          "examples": [
+            "HOT SMELL COMING FROM THE MOTOR BAY - PLS CHECK",
+            "TEMP ALARM CLEARED AFTER A TEN MINUTE REST. LOGGIBG FOR MAINTENANCE",
+            "Night shift: same problem as yesterday"
+          ]
+        },
+        {
+          "true": "user_or_operational_error",
+          "predicted": "no_fault_found",
+          "count": 6,
+          "by_source": {
+            "user_error": 6
+          },
+          "by_style": {
+            "specific": 6
+          },
+          "examples": [
+            "Someone moved the dock, robot could not find it",
+            "During ptarol wrong route loaded by the operator, it went to the old zone, please check",
+            "R029: robot not docked properly, contacts misaligned, no chg"
+          ]
+        },
+        {
+          "true": "thermal",
+          "predicted": "sensor",
+          "count": 3,
+          "by_source": {
+            "fault_service_close": 1,
+            "fault_service_open": 1,
+            "fault_symptom": 1
+          },
+          "by_style": {
+            "specific": 2,
+            "misattributed": 1
+          },
+          "examples": [
+            "repl cooling fan. motor temperature normal on test patrol.",
+            "Work order opened: motor temperature rise above fleet average. Check cooling path.",
+            "rover_048 - mtr temp number looks wrong probably a bad sensor"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "battery",
+          "count": 3,
+          "by_source": {
+            "fault_symptom": 3
+          },
+          "by_style": {
+            "vague": 3
+          },
+          "examples": [
+            "Issue again, see earlir note",
+            "Acting weird again, no error cde shown",
+            "Problem again, see earlier note, same as last shift"
+          ]
+        },
+        {
+          "true": "no_fault_found",
+          "predicted": "connectivity",
+          "count": 2,
+          "by_source": {
+            "nff_complaint": 2
+          },
+          "by_style": {
+            "specific": 2
+          },
+          "examples": [
+            "during patrol overheating warning on the display near the end of the shift, pls check",
+            "Evening shift state of health on the dash went down again"
+          ]
+        }
+      ],
+      "accuracy_by_style": {
+        "hedged": {
+          "n": 27,
+          "accuracy": 0.9259259259259259
+        },
+        "misattributed": {
+          "n": 12,
+          "accuracy": 0.4166666666666667
+        },
+        "specific": {
+          "n": 860,
+          "accuracy": 0.9290697674418604
+        },
+        "vague": {
+          "n": 18,
+          "accuracy": 0.05555555555555555
+        }
+      },
+      "accuracy_by_source": {
+        "connectivity_misc": {
+          "n": 8,
+          "accuracy": 1.0
+        },
+        "drift_service": {
+          "n": 5,
+          "accuracy": 0.4
+        },
+        "drift_symptom": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "fault_service_close": {
+          "n": 34,
+          "accuracy": 0.8529411764705882
+        },
+        "fault_service_open": {
+          "n": 34,
+          "accuracy": 0.9117647058823529
+        },
+        "fault_symptom": {
+          "n": 73,
+          "accuracy": 0.3150684931506849
+        },
+        "minor_battery": {
+          "n": 16,
+          "accuracy": 0.9375
+        },
+        "minor_drivetrain": {
+          "n": 21,
+          "accuracy": 1.0
+        },
+        "minor_sensor": {
+          "n": 27,
+          "accuracy": 0.8888888888888888
+        },
+        "minor_thermal": {
+          "n": 14,
+          "accuracy": 1.0
+        },
+        "nff_closure": {
+          "n": 36,
+          "accuracy": 1.0
+        },
+        "nff_complaint": {
+          "n": 35,
+          "accuracy": 0.8
+        },
+        "outage": {
+          "n": 52,
+          "accuracy": 0.9615384615384616
+        },
+        "routine_note": {
+          "n": 486,
+          "accuracy": 1.0
+        },
+        "user_error": {
+          "n": 70,
+          "accuracy": 0.9
+        }
+      },
+      "accuracy_by_typos": {
+        "0 typos": {
+          "n": 625,
+          "accuracy": 0.9008
+        },
+        "1 typo": {
+          "n": 238,
+          "accuracy": 0.9243697478991597
+        },
+        "2+ typos": {
+          "n": 54,
+          "accuracy": 0.8703703703703703
+        }
+      },
+      "accuracy_by_doc_type": {
+        "operator_note": {
+          "n": 808,
+          "accuracy": 0.905940594059406
+        },
+        "service_ticket": {
+          "n": 109,
+          "accuracy": 0.8990825688073395
+        }
+      }
+    },
+    "embed_lr": {
+      "model": "embed_lr",
+      "errors": 83,
+      "tickets": 917,
+      "top_confusions": [
+        {
+          "true": "battery",
+          "predicted": "no_fault_found",
+          "count": 23,
+          "by_source": {
+            "fault_symptom": 21,
+            "minor_battery": 1,
+            "fault_service_close": 1
+          },
+          "by_style": {
+            "specific": 16,
+            "vague": 5,
+            "misattributed": 2
+          },
+          "examples": [
+            "takes much longer to reach full chg tan the oter units",
+            "Takes much longer to reach full chg than the other units not urgent",
+            "Rover_006 - did not chg fully, maybe it was not docked right"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "no_fault_found",
+          "count": 15,
+          "by_source": {
+            "fault_symptom": 12,
+            "fault_service_open": 2,
+            "fault_service_close": 1
+          },
+          "by_style": {
+            "specific": 10,
+            "vague": 4,
+            "misattributed": 1
+          },
+          "examples": [
+            "Work order opened: vbiration alarm on drivetrain. Check rear right bearing play.",
+            "Work order opened vibratoin alarm on driveteain Check front left bearing play",
+            "R024: droning noise from the drivetrain that was not there last week, 2nd time this week"
+          ]
+        },
+        {
+          "true": "thermal",
+          "predicted": "no_fault_found",
+          "count": 8,
+          "by_source": {
+            "fault_symptom": 7,
+            "fault_service_open": 1
+          },
+          "by_style": {
+            "specific": 7,
+            "vague": 1
+          },
+          "examples": [
+            "Motor housing very hot to the touch after patrol logging for maintenance",
+            "TEMP ALARM CLEARED AFTER A TEN MINUTE REST. LOGGIBG FOR MAINTENANCE",
+            "Work order opened: motor temperature rise above fleet average. Check cooling path."
+          ]
+        },
+        {
+          "true": "sensor",
+          "predicted": "no_fault_found",
+          "count": 6,
+          "by_source": {
+            "drift_symptom": 4,
+            "minor_sensor": 2
+          },
+          "by_style": {
+            "specific": 4,
+            "misattributed": 2
+          },
+          "examples": [
+            "R018 - mtr temperature high on the dashboard again",
+            "note for mainteenance: dash says it is running hot. not urgent",
+            "Motor temperature reading seems off, no heat felt on the housing"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "battery",
+          "count": 5,
+          "by_source": {
+            "fault_symptom": 5
+          },
+          "by_style": {
+            "vague": 3,
+            "misattributed": 2
+          },
+          "examples": [
+            "After the morning round battery seems to drain faster, runtime shorter than last week",
+            "Acting weird again, no error cde shown",
+            "Day shift: battery seems to drain quicker, runtime shorter than last weeek. no error code shown"
+          ]
+        },
+        {
+          "true": "user_or_operational_error",
+          "predicted": "battery",
+          "count": 4,
+          "by_source": {
+            "user_error": 4
+          },
+          "by_style": {
+            "specific": 4
+          },
+          "examples": [
+            "R029: robot not docked properly, contacts misaligned, no chg",
+            "Unit 22: unit not docked properly, contacts misaligned, no chg",
+            "left in mabual mode over the weekend, battery ran flat"
+          ]
+        },
+        {
+          "true": "no_fault_found",
+          "predicted": "drivetrain",
+          "count": 3,
+          "by_source": {
+            "nff_complaint": 3
+          },
+          "by_style": {
+            "hedged": 2,
+            "specific": 1
+          },
+          "examples": [
+            "brg on the front right side sounds dry",
+            "r043 - possibly fan sounnds weak and is not spinning up like it used to, hard to tell",
+            "Thought bearing on the left side sounds dry but it looks fine now"
+          ]
+        },
+        {
+          "true": "connectivity",
+          "predicted": "no_fault_found",
+          "count": 2,
+          "by_source": {
+            "outage": 2
+          },
+          "by_style": {
+            "specific": 2
+          },
+          "examples": [
+            "missed heartbeat alerts from the fleet serevr",
+            "missed heartbeat alerts from the fleet server, no error code shown"
+          ]
+        }
+      ],
+      "accuracy_by_style": {
+        "hedged": {
+          "n": 27,
+          "accuracy": 0.8148148148148148
+        },
+        "misattributed": {
+          "n": 12,
+          "accuracy": 0.25
+        },
+        "specific": {
+          "n": 860,
+          "accuracy": 0.9383720930232559
+        },
+        "vague": {
+          "n": 18,
+          "accuracy": 0.1111111111111111
+        }
+      },
+      "accuracy_by_source": {
+        "connectivity_misc": {
+          "n": 8,
+          "accuracy": 1.0
+        },
+        "drift_service": {
+          "n": 5,
+          "accuracy": 1.0
+        },
+        "drift_symptom": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "fault_service_close": {
+          "n": 34,
+          "accuracy": 0.9117647058823529
+        },
+        "fault_service_open": {
+          "n": 34,
+          "accuracy": 0.8823529411764706
+        },
+        "fault_symptom": {
+          "n": 73,
+          "accuracy": 0.3150684931506849
+        },
+        "minor_battery": {
+          "n": 16,
+          "accuracy": 0.9375
+        },
+        "minor_drivetrain": {
+          "n": 21,
+          "accuracy": 1.0
+        },
+        "minor_sensor": {
+          "n": 27,
+          "accuracy": 0.9259259259259259
+        },
+        "minor_thermal": {
+          "n": 14,
+          "accuracy": 1.0
+        },
+        "nff_closure": {
+          "n": 36,
+          "accuracy": 0.9722222222222222
+        },
+        "nff_complaint": {
+          "n": 35,
+          "accuracy": 0.8
+        },
+        "outage": {
+          "n": 52,
+          "accuracy": 0.9615384615384616
+        },
+        "routine_note": {
+          "n": 486,
+          "accuracy": 0.9958847736625515
+        },
+        "user_error": {
+          "n": 70,
+          "accuracy": 0.9285714285714286
+        }
+      },
+      "accuracy_by_typos": {
+        "0 typos": {
+          "n": 625,
+          "accuracy": 0.912
+        },
+        "1 typo": {
+          "n": 238,
+          "accuracy": 0.9159663865546218
+        },
+        "2+ typos": {
+          "n": 54,
+          "accuracy": 0.8518518518518519
+        }
+      },
+      "accuracy_by_doc_type": {
+        "operator_note": {
+          "n": 808,
+          "accuracy": 0.9071782178217822
+        },
+        "service_ticket": {
+          "n": 109,
+          "accuracy": 0.926605504587156
+        }
+      }
+    },
+    "tfidf_embed_lr": {
+      "model": "tfidf_embed_lr",
+      "errors": 79,
+      "tickets": 917,
+      "top_confusions": [
+        {
+          "true": "battery",
+          "predicted": "no_fault_found",
+          "count": 21,
+          "by_source": {
+            "fault_symptom": 18,
+            "fault_service_close": 2,
+            "minor_battery": 1
+          },
+          "by_style": {
+            "specific": 16,
+            "vague": 5
+          },
+          "examples": [
+            "takes much longer to reach full chg tan the oter units",
+            "Replaced weak cell moudle. Internal resistance back in range. Returned to service.",
+            "Takes much longer to reach full chg than the other units not urgent"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "no_fault_found",
+          "count": 17,
+          "by_source": {
+            "fault_symptom": 12,
+            "fault_service_open": 3,
+            "fault_service_close": 2
+          },
+          "by_style": {
+            "specific": 12,
+            "vague": 3,
+            "misattributed": 2
+          },
+          "examples": [
+            "After the morning round battery seems to drain faster, runtime shorter than last week",
+            "Work order opened: vbiration alarm on drivetrain. Check rear right bearing play.",
+            "Work order opened vibratoin alarm on driveteain Check front left bearing play"
+          ]
+        },
+        {
+          "true": "thermal",
+          "predicted": "no_fault_found",
+          "count": 8,
+          "by_source": {
+            "fault_symptom": 8
+          },
+          "by_style": {
+            "specific": 6,
+            "vague": 2
+          },
+          "examples": [
+            "Motor housing very hot to the touch after patrol logging for maintenance",
+            "HOT SMELL COMING FROM THE MOTOR BAY - PLS CHECK",
+            "TEMP ALARM CLEARED AFTER A TEN MINUTE REST. LOGGIBG FOR MAINTENANCE"
+          ]
+        },
+        {
+          "true": "sensor",
+          "predicted": "no_fault_found",
+          "count": 7,
+          "by_source": {
+            "drift_symptom": 5,
+            "minor_sensor": 2
+          },
+          "by_style": {
+            "specific": 4,
+            "misattributed": 3
+          },
+          "examples": [
+            "R018 - mtr temperature high on the dashboard again",
+            "ROVER 9: MOTOR TEMP HIGH ON THE DASH AGAIN - LOGGING FOR MAINT",
+            "note for mainteenance: dash says it is running hot. not urgent"
+          ]
+        },
+        {
+          "true": "no_fault_found",
+          "predicted": "drivetrain",
+          "count": 3,
+          "by_source": {
+            "nff_complaint": 3
+          },
+          "by_style": {
+            "hedged": 2,
+            "specific": 1
+          },
+          "examples": [
+            "Note for maintenance: customer reports metallic scraping sound near the rear right axle, not confirmed - needs a look asap",
+            "brg on the front right side sounds dry",
+            "Thought bearing on the left side sounds dry but it looks fine now"
+          ]
+        },
+        {
+          "true": "drivetrain",
+          "predicted": "battery",
+          "count": 3,
+          "by_source": {
+            "fault_symptom": 3
+          },
+          "by_style": {
+            "vague": 3
+          },
+          "examples": [
+            "Issue again, see earlir note",
+            "Acting weird again, no error cde shown",
+            "Problem again, see earlier note, same as last shift"
+          ]
+        },
+        {
+          "true": "connectivity",
+          "predicted": "no_fault_found",
+          "count": 2,
+          "by_source": {
+            "outage": 2
+          },
+          "by_style": {
+            "specific": 2
+          },
+          "examples": [
+            "missed heartbeat alerts from the fleet serevr",
+            "missed heartbeat alerts from the fleet server, no error code shown"
+          ]
+        },
+        {
+          "true": "user_or_operational_error",
+          "predicted": "no_fault_found",
+          "count": 2,
+          "by_source": {
+            "user_error": 2
+          },
+          "by_style": {
+            "specific": 2
+          },
+          "examples": [
+            "Someone moved the dock, robot could not find it",
+            "R029: robot not docked properly, contacts misaligned, no chg"
+          ]
+        }
+      ],
+      "accuracy_by_style": {
+        "hedged": {
+          "n": 27,
+          "accuracy": 0.8888888888888888
+        },
+        "misattributed": {
+          "n": 12,
+          "accuracy": 0.4166666666666667
+        },
+        "specific": {
+          "n": 860,
+          "accuracy": 0.9395348837209302
+        },
+        "vague": {
+          "n": 18,
+          "accuracy": 0.05555555555555555
+        }
+      },
+      "accuracy_by_source": {
+        "connectivity_misc": {
+          "n": 8,
+          "accuracy": 1.0
+        },
+        "drift_service": {
+          "n": 5,
+          "accuracy": 1.0
+        },
+        "drift_symptom": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "fault_service_close": {
+          "n": 34,
+          "accuracy": 0.8823529411764706
+        },
+        "fault_service_open": {
+          "n": 34,
+          "accuracy": 0.8823529411764706
+        },
+        "fault_symptom": {
+          "n": 73,
+          "accuracy": 0.3287671232876712
+        },
+        "minor_battery": {
+          "n": 16,
+          "accuracy": 0.9375
+        },
+        "minor_drivetrain": {
+          "n": 21,
+          "accuracy": 1.0
+        },
+        "minor_sensor": {
+          "n": 27,
+          "accuracy": 0.9259259259259259
+        },
+        "minor_thermal": {
+          "n": 14,
+          "accuracy": 1.0
+        },
+        "nff_closure": {
+          "n": 36,
+          "accuracy": 1.0
+        },
+        "nff_complaint": {
+          "n": 35,
+          "accuracy": 0.8285714285714286
+        },
+        "outage": {
+          "n": 52,
+          "accuracy": 0.9615384615384616
+        },
+        "routine_note": {
+          "n": 486,
+          "accuracy": 0.9979423868312757
+        },
+        "user_error": {
+          "n": 70,
+          "accuracy": 0.9428571428571428
+        }
+      },
+      "accuracy_by_typos": {
+        "0 typos": {
+          "n": 625,
+          "accuracy": 0.9136
+        },
+        "1 typo": {
+          "n": 238,
+          "accuracy": 0.9243697478991597
+        },
+        "2+ typos": {
+          "n": 54,
+          "accuracy": 0.8703703703703703
+        }
+      },
+      "accuracy_by_doc_type": {
+        "operator_note": {
+          "n": 808,
+          "accuracy": 0.9121287128712872
+        },
+        "service_ticket": {
+          "n": 109,
+          "accuracy": 0.926605504587156
+        }
+      }
+    }
+  },
+  "mlflow_run_id": "3da22b63425f49d1b18ca1725acb1813"
+}

@@ -1,0 +1,3336 @@
+{
+  "explained_model": "early_fusion (LightGBM on telemetry + text features, variant chosen on validation)",
+  "shap": {
+    "method": "TreeExplainer, exact tree SHAP, raw margin (log-odds) of the uncalibrated model",
+    "additivity_max_abs_error": 4.085620730620576e-14,
+    "test_rows_explained": 41970
+  },
+  "reproduces_fusion_run_scores_max_abs_diff": 0.0,
+  "global_importance_top": [
+    {
+      "feature": "txt_decay_drivetrain",
+      "mean_abs_shap": 0.4660245032253301,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "motor_temp_resid_dock_mean_24h",
+      "mean_abs_shap": 0.3939627014501397,
+      "concept": "sensor_drift"
+    },
+    {
+      "feature": "ambient_mean_24h",
+      "mean_abs_shap": 0.3639657087478816,
+      "concept": "environment"
+    },
+    {
+      "feature": "r_hat_ratio_to_baseline",
+      "mean_abs_shap": 0.326358353375177,
+      "concept": "battery"
+    },
+    {
+      "feature": "energy_ratio_to_baseline",
+      "mean_abs_shap": 0.2868052692504703,
+      "concept": "energy"
+    },
+    {
+      "feature": "txt_decay_no_fault_found",
+      "mean_abs_shap": 0.2812591109137677,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "txt_decay_user_or_operational_error",
+      "mean_abs_shap": 0.27800328129190544,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "txt_decay_battery",
+      "mean_abs_shap": 0.26685758072579935,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "motor_temp_resid_patrol_mean_24h",
+      "mean_abs_shap": 0.259361477637513,
+      "concept": "thermal"
+    },
+    {
+      "feature": "thermal_gain_ratio_24h",
+      "mean_abs_shap": 0.2328315943725876,
+      "concept": "thermal"
+    },
+    {
+      "feature": "txt_decay_thermal",
+      "mean_abs_shap": 0.22185995956685714,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "vib_norm_ratio_to_baseline",
+      "mean_abs_shap": 0.2047608790810241,
+      "concept": "vibration"
+    },
+    {
+      "feature": "energy_ratio_to_expected_24h",
+      "mean_abs_shap": 0.18288383428357033,
+      "concept": "energy"
+    },
+    {
+      "feature": "txt_decay_sensor",
+      "mean_abs_shap": 0.17727910283119822,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "txt_decay_connectivity",
+      "mean_abs_shap": 0.1772275388190677,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "r_hat_temp_norm_24h",
+      "mean_abs_shap": 0.16228947386098744,
+      "concept": "battery"
+    },
+    {
+      "feature": "hours_since_repair",
+      "mean_abs_shap": 0.1616823750401624,
+      "concept": "maintenance_history"
+    },
+    {
+      "feature": "txt_fault_max_72h",
+      "mean_abs_shap": 0.1456729898160055,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "vib_norm_change_72h",
+      "mean_abs_shap": 0.13234504927125093,
+      "concept": "vibration"
+    },
+    {
+      "feature": "txt_note_count_7d",
+      "mean_abs_shap": 0.13150733236582118,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "vib_norm_mean_6h",
+      "mean_abs_shap": 0.11217562338663893,
+      "concept": "vibration"
+    },
+    {
+      "feature": "terrain_patrol_mean_24h",
+      "mean_abs_shap": 0.0982015425243012,
+      "concept": "environment"
+    },
+    {
+      "feature": "txt_hours_since_note",
+      "mean_abs_shap": 0.09082976338707391,
+      "concept": "operator_notes"
+    },
+    {
+      "feature": "missing_fraction_24h",
+      "mean_abs_shap": 0.08758229389895016,
+      "concept": "data_quality"
+    },
+    {
+      "feature": "patrol_fraction_24h",
+      "mean_abs_shap": 0.08548231791240989,
+      "concept": "usage"
+    }
+  ],
+  "concept_share_of_mean_abs_shap": {
+    "operator_notes": 0.34971071533425163,
+    "battery": 0.13879993830431706,
+    "vibration": 0.11568753882282672,
+    "thermal": 0.1003221146645854,
+    "environment": 0.08607168354844469,
+    "energy": 0.08274666231589159,
+    "sensor_drift": 0.060620867384939034,
+    "maintenance_history": 0.03728265414045158,
+    "usage": 0.015281131867932353,
+    "data_quality": 0.013476693616359935
+  },
+  "text_feature_share_of_mean_abs_shap": 0.36211455282603594,
+  "alert_sampling": {
+    "budget_alerts_per_unit_week": 1.0,
+    "alerts_raised_on_test": 136,
+    "true_positive_alerts": 17,
+    "sampled": 20,
+    "sampled_true_positive": 10,
+    "seed": 0,
+    "rule": "up to 10 true-positive alerts, the rest false alarms, drawn with a seeded generator"
+  },
+  "fold_variants": {
+    "c1115_g0": "physics+text",
+    "c1115_g1": "physics+text",
+    "c1115_g2": "physics+text",
+    "c1115_g3": "physics+text",
+    "c1115_g4": "all+text",
+    "c1125_g0": "physics+text",
+    "c1125_g1": "physics+text",
+    "c1125_g2": "physics+text",
+    "c1125_g3": "all+text",
+    "c1125_g4": "physics+text",
+    "c1205_g0": "all+text",
+    "c1205_g1": "physics+text",
+    "c1205_g2": "physics+text",
+    "c1205_g3": "physics+text",
+    "c1205_g4": "physics+text",
+    "c1215_g0": "physics+text",
+    "c1215_g1": "all+text",
+    "c1215_g2": "all+text",
+    "c1215_g3": "physics+text",
+    "c1215_g4": "physics+text"
+  },
+  "generators": {
+    "template": {
+      "alerts": 20,
+      "faithful": 20,
+      "faithfulness_rate": 1.0,
+      "claims_checked": 246,
+      "claims_supported": 246,
+      "unsupported_by_kind": {}
+    },
+    "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+      "alerts": 20,
+      "faithful": 8,
+      "faithfulness_rate": 0.4,
+      "claims_checked": 171,
+      "claims_supported": 154,
+      "unsupported_by_kind": {
+        "cause": 7,
+        "notes": 6,
+        "number": 4
+      }
+    }
+  },
+  "llm": {
+    "requested": "local",
+    "error": null,
+    "hosted_llm_api_called": false,
+    "note": "No hosted LLM API was called. Local generation uses open weights on this machine only."
+  },
+  "negative_controls": {
+    "by_kind": {
+      "invented_cause": {
+        "built": 19,
+        "flagged": 19
+      },
+      "wrong_number": {
+        "built": 20,
+        "flagged": 20
+      },
+      "invented_quote": {
+        "built": 20,
+        "flagged": 20
+      },
+      "reversed_direction": {
+        "built": 20,
+        "flagged": 20
+      }
+    },
+    "built": 79,
+    "flagged": 79,
+    "detection_rate": 1.0,
+    "examples": {
+      "invented_cause": {
+        "alert_id": "A01",
+        "text": "Rover_048 was flagged at 2026-11-15 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 21 %, against an alert threshold of 8.2 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 1.49 x baseline (1.12 x baseline 72 h earlier); change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier); and operator notes in the last 7 days at 4.00 (1.00 72 h earlier). An operator note written 41.2 h before the alert feeds one of these drivers: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity). The underlying cause is a failing cooling fan.",
+        "check": {
+          "alert_id": "A01",
+          "generator": "corrupted[invented_cause]",
+          "faithful": false,
+          "claims": 16,
+          "unsupported": [
+            {
+              "kind": "cause",
+              "text": "thermal: The underlying cause is a failing cooling fan.",
+              "supported": false,
+              "detail": "concept is not among the features raising the risk nor in a linked ticket"
+            }
+          ]
+        }
+      },
+      "wrong_number": {
+        "alert_id": "A01",
+        "text": "Rover_048 was flagged at 2026-11-15 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 21 %, against an alert threshold of 8.2 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 6.09 x baseline (1.12 x baseline 72 h earlier); change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier); and operator notes in the last 7 days at 4.00 (1.00 72 h earlier). An operator note written 41.2 h before the alert feeds one of these drivers: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity).",
+        "check": {
+          "alert_id": "A01",
+          "generator": "corrupted[wrong_number]",
+          "faithful": false,
+          "claims": 15,
+          "unsupported": [
+            {
+              "kind": "number",
+              "text": "6.09",
+              "supported": false,
+              "detail": "no pack value rounds to this number"
+            }
+          ]
+        }
+      },
+      "invented_quote": {
+        "alert_id": "A01",
+        "text": "Rover_048 was flagged at 2026-11-15 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 21 %, against an alert threshold of 8.2 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 1.49 x baseline (1.12 x baseline 72 h earlier); change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier); and operator notes in the last 7 days at 4.00 (1.00 72 h earlier). An operator note written 41.2 h before the alert feeds one of these drivers: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity). An operator wrote \"loud knocking from the gearbox since Monday\".",
+        "check": {
+          "alert_id": "A01",
+          "generator": "corrupted[invented_quote]",
+          "faithful": false,
+          "claims": 16,
+          "unsupported": [
+            {
+              "kind": "quote",
+              "text": "loud knocking from the gearbox since Monday",
+              "supported": false,
+              "detail": "no linked ticket has this text"
+            }
+          ]
+        }
+      },
+      "reversed_direction": {
+        "alert_id": "A01",
+        "text": "Rover_048 was flagged at 2026-11-15 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 21 %, against an alert threshold of 8.2 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 1.49 x baseline (1.12 x baseline 72 h earlier); change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier); and operator notes in the last 7 days at 4.00 (1.00 72 h earlier). An operator note written 41.2 h before the alert feeds one of these drivers: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity). The score is also pushed up by recent operator notes read as 'drivetrain' (time-decayed weight) at 0.179 (0.293 72 h earlier).",
+        "check": {
+          "alert_id": "A01",
+          "generator": "corrupted[reversed_direction]",
+          "faithful": false,
+          "claims": 18,
+          "unsupported": [
+            {
+              "kind": "feature",
+              "text": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+              "supported": false,
+              "detail": "stated as raising the risk but SHAP is -0.951"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "A01",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A01",
+        "unit_id": "Rover_048",
+        "t": "2026-11-15 00:00",
+        "fold_id": "c1115_g0",
+        "risk": 0.2052980132450331,
+        "threshold": 0.08229426433915212,
+        "base_value": -12.242003740515164,
+        "raw_margin": -4.617955644509439,
+        "positive": [
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": 1.4916398703746125,
+            "value_72h_ago": 1.1181172348538528,
+            "shap": 5.407807806159803,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_change_72h",
+            "phrase": "change in terrain-normalised vibration over 72 h",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.06734990909536784,
+            "value_72h_ago": 0.018472049940643,
+            "shap": 1.6488342185168396,
+            "note_class": null
+          },
+          {
+            "feature": "txt_note_count_7d",
+            "phrase": "operator notes in the last 7 days",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 4.0,
+            "value_72h_ago": 1.0,
+            "shap": 1.4752178568175718,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.7457641146927048,
+            "value_72h_ago": 0.03192465662936855,
+            "shap": 0.8049356235816105,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "vib_norm_slope_24h",
+            "phrase": "trend of terrain-normalised vibration (24 h)",
+            "unit": "g/h",
+            "concept": "vibration",
+            "value": 0.002544980900836959,
+            "value_72h_ago": 0.0007218092943910674,
+            "shap": 0.4872438498385029,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.178778287802199,
+            "value_72h_ago": 0.2926695177695502,
+            "shap": -0.9507080439077664,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.06240942539960699,
+            "value_72h_ago": 0.032907870378773164,
+            "shap": -0.9178409830324183,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00409",
+            "doc_type": "operator_note",
+            "age_hours": 41.18333333333333,
+            "text": "R048 - wifi handoevr failed at the loading bay - logging for maintenance",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.4297436818372939
+          },
+          {
+            "ticket_id": "T00383",
+            "doc_type": "operator_note",
+            "age_hours": 59.2,
+            "text": "fyi quiet shift",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.8091057790944826
+          },
+          {
+            "ticket_id": "T00382",
+            "doc_type": "operator_note",
+            "age_hours": 59.65,
+            "text": "Note for maint checked for noise and vib nothing unusual - same as lats shift",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.6678753001990082
+          },
+          {
+            "ticket_id": "T00326",
+            "doc_type": "operator_note",
+            "age_hours": 126.21666666666667,
+            "text": "Drive belt cover cracked",
+            "predicted_class": "drivetrain",
+            "predicted_probability": 0.6403170307279259
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_048. Alert time: 2026-11-15 00:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 21 %. Alert threshold: 8.2 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised vibration relative to the unit's own baseline at 1.49 x baseline (1.12 x baseline 72 h earlier)\n- change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier)\n- operator notes in the last 7 days at 4.00 (1.00 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.179 (0.293 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 41.2 h before the alert: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity)\n- 59.2 h before the alert: \"fyi quiet shift\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_048 was flagged at 2026-11-15 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 21 %, against an alert threshold of 8.2 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 1.49 x baseline (1.12 x baseline 72 h earlier); change in terrain-normalised vibration over 72 h at 0.0673 g (0.0185 g 72 h earlier); and operator notes in the last 7 days at 4.00 (1.00 72 h earlier). An operator note written 41.2 h before the alert feeds one of these drivers: \"R048 - wifi handoevr failed at the loading bay - logging for maintenance\" (ticket classifier reading: connectivity).",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A01",
+            "generator": "template",
+            "faithful": true,
+            "claims": 15,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "The unit Rover_048 is experiencing an elevated risk of a qualifying fault onset within the next 72 hours due to several factors. The most significant indicators are: - A 1.49x increase in terrain-normalized vibration compared to its baseline, which has been observed over the past 72 hours. - A 0.0673g change in terrain-normalized vibration over the same period, also indicating a rise. - Recent operator notes showing increased activity on the drivetrain system, with a weight of 0.179, compared to 0.293 in the 72-hour window prior. However, there are mitigating factors: - The recent operator note stating \"R048 - wifi handoevr failed at the",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A01",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 9,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A02",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A02",
+        "unit_id": "Rover_019",
+        "t": "2026-11-22 20:00",
+        "fold_id": "c1115_g3",
+        "risk": 0.056768558951965066,
+        "threshold": 0.056768558951965066,
+        "base_value": -11.610170312262593,
+        "raw_margin": -7.9307506858606445,
+        "positive": [
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": null,
+            "value_72h_ago": 1.0023643362146282,
+            "shap": 4.0351897511029975,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_slope_24h",
+            "phrase": "trend of terrain-normalised vibration (24 h)",
+            "unit": "g/h",
+            "concept": "vibration",
+            "value": null,
+            "value_72h_ago": -3.923815227357621e-05,
+            "shap": 0.37373478419173445,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_user_or_operational_error",
+            "phrase": "recent operator notes read as 'user or operational error' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.012733542330247925,
+            "value_72h_ago": 0.18011728544290342,
+            "shap": 0.15751388207681824,
+            "note_class": "user_or_operational_error"
+          },
+          {
+            "feature": "txt_decay_connectivity",
+            "phrase": "recent operator notes read as 'connectivity' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.8940198319106798,
+            "value_72h_ago": 0.02303043249157452,
+            "shap": 0.15714779212578317,
+            "note_class": "connectivity"
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.025413012052853536,
+            "value_72h_ago": 0.11991701118619683,
+            "shap": 0.14669164421364744,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.46902963591759705,
+            "value_72h_ago": 1.3249171416929493,
+            "shap": -0.3919969677500796,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "ambient_mean_24h",
+            "phrase": "24 h mean of ambient temperature",
+            "unit": "deg C",
+            "concept": "environment",
+            "value": 13.634204946996467,
+            "value_72h_ago": 15.335059233449478,
+            "shap": -0.3710685448177792,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00611",
+            "doc_type": "operator_note",
+            "age_hours": 8.066666666666666,
+            "text": "during patrol lost connection to the unit for abt 20 minutes",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.9956415901813422
+          },
+          {
+            "ticket_id": "T00544",
+            "doc_type": "operator_note",
+            "age_hours": 97.03333333333333,
+            "text": "HEAVY RAIN TODAY, PATROL COMPLETED AS PLANMED, NO ERROR CODE SHOWN",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9221988878001606
+          },
+          {
+            "ticket_id": "T00543",
+            "doc_type": "operator_note",
+            "age_hours": 98.0,
+            "text": "Rover 19 monthly inventory check rover present and working",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9926743720188401
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_019. Alert time: 2026-11-22 20:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 5.7 %. Alert threshold: 5.7 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised vibration relative to the unit's own baseline (no valid reading)\n- trend of terrain-normalised vibration (24 h) (no valid reading)\n- recent operator notes read as 'user or operational error' (time-decayed weight) at 0.0127 (0.180 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'no fault found' (time-decayed weight) at 0.469 (1.32 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 8.07 h before the alert: \"during patrol lost connection to the unit for abt 20 minutes\" (ticket classifier reading: connectivity)\n- 97.0 h before the alert: \"HEAVY RAIN TODAY, PATROL COMPLETED AS PLANMED, NO ERROR CODE SHOWN\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_019 was flagged at 2026-11-22 20:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 5.7 %, against an alert threshold of 5.7 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline (no valid reading); trend of terrain-normalised vibration (24 h) (no valid reading); and recent operator notes read as 'user or operational error' (time-decayed weight) at 0.0127 (0.180 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A02",
+            "generator": "template",
+            "faithful": true,
+            "claims": 8,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_019 has a 5.7% risk of a qualifying fault onset within the next 72 hours, which is at the alert threshold. The risk is being pushed up by a combination of factors: a lack of valid terrain-normalized vibration readings, a trend showing increasing vibration over the past 24 hours, and recent operator notes indicating potential user or operational errors. These notes have a strong negative impact on the risk assessment. On the other hand, two recent operator notes suggest no fault was found, which slightly reduces the risk.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A02",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 4,
+            "unsupported": [
+              {
+                "kind": "notes",
+                "text": "The risk is being pushed up by a combination of factors: a lack of valid terrain-normalised vibration readings, a trend showing increasing vibration over the past 24 hours, and recent operator notes indicating potential user or operational errors.",
+                "supported": false,
+                "detail": "3 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A03",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A03",
+        "unit_id": "Rover_008",
+        "t": "2026-12-01 00:00",
+        "fold_id": "c1125_g1",
+        "risk": 0.020748255869010298,
+        "threshold": 0.01762204558904523,
+        "base_value": -10.584628974206906,
+        "raw_margin": -8.155664616086073,
+        "positive": [
+          {
+            "feature": "thermal_gain_ratio_24h",
+            "phrase": "motor heating per watt relative to the nominal model (24 h)",
+            "unit": "x nominal",
+            "concept": "thermal",
+            "value": 1.1437066820693569,
+            "value_72h_ago": 1.1372268137040944,
+            "shap": 0.9370095202907893,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_connectivity",
+            "phrase": "recent operator notes read as 'connectivity' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0,
+            "value_72h_ago": 0.12057981997734493,
+            "shap": 0.9278390430461783,
+            "note_class": "connectivity"
+          },
+          {
+            "feature": "ambient_mean_24h",
+            "phrase": "24 h mean of ambient temperature",
+            "unit": "deg C",
+            "concept": "environment",
+            "value": 22.408639218422888,
+            "value_72h_ago": 18.60158077994429,
+            "shap": 0.5748342942690395,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 1.637841757896266,
+            "value_72h_ago": 1.6107606643093468,
+            "shap": 0.552330110838793,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_battery",
+            "phrase": "recent operator notes read as 'battery' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0,
+            "value_72h_ago": 0.0028886478750788595,
+            "shap": 0.3881418803023146,
+            "note_class": "battery"
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_user_or_operational_error",
+            "phrase": "recent operator notes read as 'user or operational error' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0,
+            "value_72h_ago": 0.0009396661655096796,
+            "shap": -0.6938717846043976,
+            "note_class": "user_or_operational_error"
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0,
+            "value_72h_ago": 0.24668437936444598,
+            "shap": -0.4330751657774874,
+            "note_class": "no_fault_found"
+          }
+        ],
+        "tickets": []
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_008. Alert time: 2026-12-01 00:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 2.1 %. Alert threshold: 1.8 %.\nFeatures pushing the risk UP (strongest first):\n- motor heating per watt relative to the nominal model (24 h) at 1.14 x nominal\n- recent operator notes read as 'connectivity' (time-decayed weight) at 0 (0.121 72 h earlier)\n- 24 h mean of ambient temperature at 22.4 deg C (18.6 deg C 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'user or operational error' (time-decayed weight) at 0 (0.000940 72 h earlier)\nOperator notes for this unit in the previous 7 days: none.\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_008 was flagged at 2026-12-01 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 2.1 %, against an alert threshold of 1.8 %. The score is pushed up mainly by motor heating per watt relative to the nominal model (24 h) at 1.14 x nominal; recent operator notes read as 'connectivity' (time-decayed weight) at 0 (0.121 72 h earlier); and 24 h mean of ambient temperature at 22.4 deg C (18.6 deg C 72 h earlier). One of these drivers is an operator-note feature, and no operator note was linked to this unit in the previous 7 days.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A03",
+            "generator": "template",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_008 has a 2.1% risk of a qualifying fault onset within 72 hours, which is above the alert threshold of 1.8%. The risk is being pushed up by several factors: high motor heating relative to nominal at 1.14x, recent operator notes indicating connectivity issues (weighting 0.121), and a recent increase in ambient temperature from 18.6\u00b0C to 22.4\u00b0C over the past 72 hours. However, there have been no recent operator notes suggesting user or operational errors, which could potentially lower the risk.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A03",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A04",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A04",
+        "unit_id": "Rover_002",
+        "t": "2026-12-04 12:00",
+        "fold_id": "c1125_g0",
+        "risk": 0.02835291396620106,
+        "threshold": 0.02287070573668187,
+        "base_value": -10.732758684838657,
+        "raw_margin": -14.012709422870241,
+        "positive": [
+          {
+            "feature": "terrain_patrol_mean_24h",
+            "phrase": "mean terrain load while active (24 h)",
+            "unit": "",
+            "concept": "environment",
+            "value": 0.43306041666666667,
+            "value_72h_ago": 0.399517745302714,
+            "shap": 0.10450052365738426,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_mean_6h",
+            "phrase": "terrain-normalised vibration (6 h mean)",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.17441114421908302,
+            "value_72h_ago": 0.17394196354292893,
+            "shap": 0.09357365265396239,
+            "note_class": null
+          },
+          {
+            "feature": "txt_service_count_7d",
+            "phrase": "service tickets in the last 7 days",
+            "unit": "",
+            "concept": "maintenance_history",
+            "value": 0.0,
+            "value_72h_ago": 0.0,
+            "shap": 0.04194915065214808,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_thermal",
+            "phrase": "recent operator notes read as 'thermal' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0004526937982229546,
+            "value_72h_ago": 0.0007748830411182248,
+            "shap": 0.02243657451377769,
+            "note_class": "thermal"
+          },
+          {
+            "feature": "r_hat_temp_norm_24h",
+            "phrase": "temperature-corrected battery internal resistance (24 h)",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": null,
+            "value_72h_ago": 0.048259976205804765,
+            "shap": 0.01640026769596817,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.09100126654534553,
+            "value_72h_ago": 0.09874820646661765,
+            "shap": -0.7190916010217067,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_user_or_operational_error",
+            "phrase": "recent operator notes read as 'user or operational error' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.943703860930517,
+            "value_72h_ago": 0.00011515334458199418,
+            "shap": -0.5336040186887903,
+            "note_class": "user_or_operational_error"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00856",
+            "doc_type": "operator_note",
+            "age_hours": 3.85,
+            "text": "Pre-shift check was skipped & the patrpl started late",
+            "predicted_class": "user_or_operational_error",
+            "predicted_probability": 0.9952602577556602
+          },
+          {
+            "ticket_id": "T00848",
+            "doc_type": "operator_note",
+            "age_hours": 16.816666666666666,
+            "text": "heavy rain today, patrol completed as planned, reported by the guard on site",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9957052277741872
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_002. Alert time: 2026-12-04 12:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 2.8 %. Alert threshold: 2.3 %.\nFeatures pushing the risk UP (strongest first):\n- mean terrain load while active (24 h) at 0.433 (0.400 72 h earlier)\n- terrain-normalised vibration (6 h mean) at 0.174 g\n- service tickets in the last 7 days at 0\nFeatures pushing the risk DOWN:\n- docked motor-temperature offset from ambient (24 h mean) at 0.0910 deg C (0.0987 deg C 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 3.85 h before the alert: \"Pre-shift check was skipped & the patrpl started late\" (ticket classifier reading: user or operational error)\n- 16.8 h before the alert: \"heavy rain today, patrol completed as planned, reported by the guard on site\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_002 was flagged at 2026-12-04 12:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 2.8 %, against an alert threshold of 2.3 %. The score is pushed up mainly by mean terrain load while active (24 h) at 0.433 (0.400 72 h earlier); terrain-normalised vibration (6 h mean) at 0.174 g; and service tickets in the last 7 days at 0. The unit has 2 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A04",
+            "generator": "template",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_002 is experiencing a higher-than-expected risk of a qualifying fault onset within the next 72 hours due to several factors. The mean terrain load while active has increased by 0.433 units compared to 72 hours ago, indicating potential wear on the rover's components. Additionally, the terrain-normalized vibration level has risen to 0.174 g, suggesting increased stress on the vehicle's structure. Furthermore, there have been no service tickets filed in the past seven days, which could indicate a lack of proactive maintenance. However, there are mitigating factors that may reduce the risk. The docked motor-temperature offset from ambient has decreased slightly, indicating better thermal management. The patrol was completed as planned despite heavy rain, suggesting that the",
+          "sentences": 7,
+          "check": {
+            "alert_id": "A04",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 7,
+            "unsupported": [
+              {
+                "kind": "notes",
+                "text": "Furthermore, there have been no service tickets filed in the past seven days, which could indicate a lack of proactive maintenance.",
+                "supported": false,
+                "detail": "2 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A05",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A05",
+        "unit_id": "Rover_046",
+        "t": "2026-12-05 00:00",
+        "fold_id": "c1205_g3",
+        "risk": 0.8565318342253253,
+        "threshold": 0.125,
+        "base_value": -10.402906251224147,
+        "raw_margin": 0.7386248641604869,
+        "positive": [
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": 1.4655943105214349,
+            "value_72h_ago": null,
+            "shap": 6.178057339902778,
+            "note_class": null
+          },
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.0141181411699671,
+            "value_72h_ago": null,
+            "shap": 4.806623898167308,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 1.6701228754164683,
+            "value_72h_ago": null,
+            "shap": 0.6217249201969582,
+            "note_class": null
+          },
+          {
+            "feature": "txt_note_count_72h",
+            "phrase": "operator notes in the last 72 h",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 3.0,
+            "value_72h_ago": 0.0,
+            "shap": 0.44235970998227353,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_mean_6h",
+            "phrase": "terrain-normalised vibration (6 h mean)",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.2211247012033693,
+            "value_72h_ago": null,
+            "shap": 0.44061984249240843,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0006396521598445244,
+            "value_72h_ago": 0.0015990474061040798,
+            "shap": -0.4272514496228983,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "vib_norm_change_72h",
+            "phrase": "change in terrain-normalised vibration over 72 h",
+            "unit": "g",
+            "concept": "vibration",
+            "value": null,
+            "value_72h_ago": null,
+            "shap": -0.3813081356425938,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00832",
+            "doc_type": "operator_note",
+            "age_hours": 38.53333333333333,
+            "text": "Weekly visual insp done no issues",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9937916456280359
+          },
+          {
+            "ticket_id": "T00823",
+            "doc_type": "operator_note",
+            "age_hours": 55.36666666666667,
+            "text": "Rover 46 - normal patrol, no incidents. loghing for maint",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9948316942423442
+          },
+          {
+            "ticket_id": "T00808",
+            "doc_type": "operator_note",
+            "age_hours": 64.23333333333333,
+            "text": "charger was unplugged by cleaning staff unit did not chg overnight same as last shidt",
+            "predicted_class": "user_or_operational_error",
+            "predicted_probability": 0.9980106697285327
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_046. Alert time: 2026-12-05 00:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 86 %. Alert threshold: 12 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised vibration relative to the unit's own baseline at 1.47 x baseline\n- terrain-normalised energy use relative to the unit's own baseline at 1.01 x baseline, i.e. essentially at the reference level\n- motor temperature above the load/ambient model while active (24 h mean) at 1.67 deg C\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.000640 (0.00160 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 38.5 h before the alert: \"Weekly visual insp done no issues\" (ticket classifier reading: no fault found)\n- 55.4 h before the alert: \"Rover 46 - normal patrol, no incidents. loghing for maint\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_046 was flagged at 2026-12-05 00:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 86 %, against an alert threshold of 12 %. The score is pushed up mainly by terrain-normalised vibration relative to the unit's own baseline at 1.47 x baseline; terrain-normalised energy use relative to the unit's own baseline at 1.01 x baseline, i.e. essentially at the reference level; and motor temperature above the load/ambient model while active (24 h mean) at 1.67 deg C. The unit has 3 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A05",
+            "generator": "template",
+            "faithful": true,
+            "claims": 10,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "The rover 46 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to several factors. The strongest indicators are: - A significant increase in terrain-normalized vibration relative to the unit's baseline, reaching 1.47 times the baseline value. - An elevated energy use compared to the unit's baseline, with a factor of 1.01, indicating near-normal operation. - A motor temperature above the load/ambient model during active operation, at 1.67 degrees Celsius, which is above the threshold. However, there are also mitigating factors: - Recent operator notes indicate routine maintenance activities and no reported faults, with weights decaying over time. - The most recent note from 38.5 hours prior states that a",
+          "sentences": 6,
+          "check": {
+            "alert_id": "A05",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 10,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "environment: - A motor temperature above the load/ambient model during active operation, at 1.67 degrees Celsius, which is above the threshold.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              },
+              {
+                "kind": "notes",
+                "text": "However, there are also mitigating factors: - Recent operator notes indicate routine maintenance activities and no reported faults, with weights decaying over time.",
+                "supported": false,
+                "detail": "3 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A06",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A06",
+        "unit_id": "Rover_018",
+        "t": "2026-12-05 08:00",
+        "fold_id": "c1205_g0",
+        "risk": 0.11842105263157894,
+        "threshold": 0.11842105263157894,
+        "base_value": -10.655034817212762,
+        "raw_margin": -3.543451722133775,
+        "positive": [
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.6714498534700565,
+            "value_72h_ago": 0.0009975117062148203,
+            "shap": 1.7208185476519569,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_max_24h",
+            "phrase": "24 h maximum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.066898,
+            "value_72h_ago": 0.052657,
+            "shap": 1.2115842959549448,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.06193345402284714,
+            "value_72h_ago": 0.0004446211700624529,
+            "shap": 1.1115157386206727,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "soc_min_24h",
+            "phrase": "24 h minimum of battery state of charge",
+            "unit": "%",
+            "concept": "battery",
+            "value": 94.917,
+            "value_72h_ago": 36.839,
+            "shap": 0.6146931696164973,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_mean_24h",
+            "phrase": "terrain-normalised vibration (24 h mean)",
+            "unit": "g",
+            "concept": "vibration",
+            "value": null,
+            "value_72h_ago": 0.1571512045974698,
+            "shap": 0.5845966888005869,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.038348806074159095,
+            "value_72h_ago": 0.32052645001847513,
+            "shap": -0.855628985915135,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "txt_decay_sensor",
+            "phrase": "recent operator notes read as 'sensor' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.2570249535703683,
+            "value_72h_ago": 0.5332431965820942,
+            "shap": -0.4234920555629242,
+            "note_class": "sensor"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00837",
+            "doc_type": "operator_note",
+            "age_hours": 43.11666666666667,
+            "text": "Rover_018 - SoH on the display went down again, not urgent",
+            "predicted_class": "battery",
+            "predicted_probability": 0.5420021542592167
+          },
+          {
+            "ticket_id": "T00778",
+            "doc_type": "operator_note",
+            "age_hours": 115.36666666666666,
+            "text": "Proximity sensor on the rear right side gives no reading reported by the guard on site",
+            "predicted_class": "sensor",
+            "predicted_probability": 0.9959227705431437
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_018. Alert time: 2026-12-05 08:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 12 %. Alert threshold: 12 %.\nFeatures pushing the risk UP (strongest first):\n- strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.671 (0.000998 72 h earlier)\n- 24 h maximum of BMS-reported internal resistance at 0.0669 ohm (0.0527 ohm 72 h earlier)\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.0619 (0.000445 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'no fault found' (time-decayed weight) at 0.0383 (0.321 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 43.1 h before the alert: \"Rover_018 - SoH on the display went down again, not urgent\" (ticket classifier reading: battery)\n- 115 h before the alert: \"Proximity sensor on the rear right side gives no reading reported by the guard on site\" (ticket classifier reading: sensor)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_018 was flagged at 2026-12-05 08:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 12 %, against an alert threshold of 12 %. The score is pushed up mainly by strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.671 (0.000998 72 h earlier); 24 h maximum of BMS-reported internal resistance at 0.0669 ohm (0.0527 ohm 72 h earlier); and recent operator notes read as 'drivetrain' (time-decayed weight) at 0.0619 (0.000445 72 h earlier). An operator note written 43.1 h before the alert feeds one of these drivers: \"Rover_018 - SoH on the display went down again, not urgent\" (ticket classifier reading: battery).",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A06",
+            "generator": "template",
+            "faithful": true,
+            "claims": 15,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "The unit Rover_018 is at an elevated risk of experiencing a qualifying fault within the next 72 hours due to several factors. The most significant indicators are: - A strong fault was noted in the operator's notes from 72 hours ago, with a classifier probability of 0.671, suggesting a high likelihood of a fault occurring. - The BMS-reported internal resistance has been consistently low at 0.0669 ohms over the past 72 hours, compared to 0.0527 ohms previously, indicating potential issues with the vehicle's electrical system. - Recent operator notes mentioning \"drivetrain\" have a time-decayed weight of 0.0619, which suggests ongoing concern about drivetrain-related",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A06",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 8,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A07",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A07",
+        "unit_id": "Rover_026",
+        "t": "2026-12-05 19:00",
+        "fold_id": "c1205_g2",
+        "risk": 0.04909090909090909,
+        "threshold": 0.04909090909090909,
+        "base_value": -10.349093253961588,
+        "raw_margin": -7.098388647474744,
+        "positive": [
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.0009204075010805,
+            "value_72h_ago": 1.0007868964245177,
+            "shap": 1.2065477776788325,
+            "note_class": null
+          },
+          {
+            "feature": "r_hat_temp_norm_24h",
+            "phrase": "temperature-corrected battery internal resistance (24 h)",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.04264626309370003,
+            "value_72h_ago": 0.044433075920607856,
+            "shap": 0.4529925805827668,
+            "note_class": null
+          },
+          {
+            "feature": "energy_ratio_to_expected_24h",
+            "phrase": "energy use relative to what terrain and ambient predict (24 h)",
+            "unit": "x expected",
+            "concept": "energy",
+            "value": 0.9515815890895176,
+            "value_72h_ago": 0.9514546592343118,
+            "shap": 0.450104438571841,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.49618727924979117,
+            "value_72h_ago": 0.30461729881594074,
+            "shap": 0.42932642401157795,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 0.5957757891667184,
+            "value_72h_ago": -0.3913101494117833,
+            "shap": 0.40114150253418374,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0003039648029521834,
+            "value_72h_ago": 0.0002595220335433081,
+            "shap": -0.9018333703214275,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "txt_decay_connectivity",
+            "phrase": "recent operator notes read as 'connectivity' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.01234148849336856,
+            "value_72h_ago": 0.0006519515070653129,
+            "shap": -0.3036448204961483,
+            "note_class": "connectivity"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00890",
+            "doc_type": "operator_note",
+            "age_hours": 0.5833333333333334,
+            "text": "Connection stable no dropoyts",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9855629616029603
+          },
+          {
+            "ticket_id": "T00825",
+            "doc_type": "operator_note",
+            "age_hours": 72.75,
+            "text": "rover_026 - visitors ased about the robot, no issues",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9981355527781679
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_026. Alert time: 2026-12-05 19:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 4.9 %. Alert threshold: 4.9 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level\n- temperature-corrected battery internal resistance (24 h) at 0.0426 ohm (0.0444 ohm 72 h earlier)\n- energy use relative to what terrain and ambient predict (24 h) at 0.952 x expected (0.951 x expected 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.000304 (0.000260 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 0.583 h before the alert: \"Connection stable no dropoyts\" (ticket classifier reading: no fault found)\n- 72.8 h before the alert: \"rover_026 - visitors ased about the robot, no issues\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_026 was flagged at 2026-12-05 19:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 4.9 %, against an alert threshold of 4.9 %. The score is pushed up mainly by terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level; temperature-corrected battery internal resistance (24 h) at 0.0426 ohm (0.0444 ohm 72 h earlier); and energy use relative to what terrain and ambient predict (24 h) at 0.952 x expected (0.951 x expected 72 h earlier). The unit has 2 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A07",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_026 is currently experiencing a low risk of a qualifying fault onset within the next 72 hours, with a risk of 4.9%. The risk is being pushed up by several factors, including high terrain-normalized energy use compared to its baseline, a slightly higher than expected battery internal resistance, and an energy use rate that exceeds expectations based on terrain and ambient conditions. However, the risk is also being mitigated by recent operator notes indicating stable connections and no reported issues.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A07",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 5,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "environment: The risk is being pushed up by several factors, including high terrain-normalised energy use compared to its baseline, a slightly higher than expected battery internal resistance, and an energy use rate that exceeds expectations based on terrain and ambient conditions.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              },
+              {
+                "kind": "notes",
+                "text": "However, the risk is also being mitigated by recent operator notes indicating stable connections and no reported issues.",
+                "supported": false,
+                "detail": "2 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A08",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A08",
+        "unit_id": "Rover_001",
+        "t": "2026-12-07 20:00",
+        "fold_id": "c1205_g4",
+        "risk": 0.16030534351145037,
+        "threshold": 0.16030534351145037,
+        "base_value": -10.839270385059962,
+        "raw_margin": -4.624239561277782,
+        "positive": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.19622322471459033,
+            "value_72h_ago": 0.0017874531692629227,
+            "shap": 2.7375946256969073,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.0022778208658856,
+            "value_72h_ago": null,
+            "shap": 1.183210526314541,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_connectivity",
+            "phrase": "recent operator notes read as 'connectivity' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.05649160942896617,
+            "value_72h_ago": 0.12065893897420592,
+            "shap": 0.8522739621710435,
+            "note_class": "connectivity"
+          },
+          {
+            "feature": "r_hat_temp_norm_24h",
+            "phrase": "temperature-corrected battery internal resistance (24 h)",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.0483029384386836,
+            "value_72h_ago": null,
+            "shap": 0.769291347182012,
+            "note_class": null
+          },
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.4422403521767856,
+            "value_72h_ago": 0.14935918630847916,
+            "shap": 0.6671951595004494,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 1.492757613686711,
+            "value_72h_ago": null,
+            "shap": -1.1743912982303364,
+            "note_class": null
+          },
+          {
+            "feature": "txt_service_count_7d",
+            "phrase": "service tickets in the last 7 days",
+            "unit": "",
+            "concept": "maintenance_history",
+            "value": 2.0,
+            "value_72h_ago": 0.0,
+            "shap": -0.5957272391571277,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00924",
+            "doc_type": "operator_note",
+            "age_hours": 9.65,
+            "text": "Evening shift batt door seal worn moisture warning - same as last shift",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9538558131272338
+          },
+          {
+            "ticket_id": "T00913",
+            "doc_type": "service_ticket",
+            "age_hours": 25.816666666666666,
+            "text": "Replaced front right wheel brg. Tets drive ok, vibratin back to nrml.",
+            "predicted_class": "drivetrain",
+            "predicted_probability": 0.959777397561003
+          },
+          {
+            "ticket_id": "T00891",
+            "doc_type": "service_ticket",
+            "age_hours": 49.35,
+            "text": "Wok order opened: vibration alarm on drivetrain. Check front right bearing plya.",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.5870856916829853
+          },
+          {
+            "ticket_id": "T00886",
+            "doc_type": "operator_note",
+            "age_hours": 51.2,
+            "text": "Note for maintenance not running right today not urgent",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.953600024829309
+          },
+          {
+            "ticket_id": "T00880",
+            "doc_type": "operator_note",
+            "age_hours": 55.166666666666664,
+            "text": "rattling spund from the drive unit at low speed needs a look asap",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.5050789234023483
+          },
+          {
+            "ticket_id": "T00862",
+            "doc_type": "operator_note",
+            "age_hours": 77.83333333333333,
+            "text": "Unit 1: comes back to dock earlier than it used to",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.5763475308865043
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_001. Alert time: 2026-12-07 20:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 16 %. Alert threshold: 16 %.\nFeatures pushing the risk UP (strongest first):\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.196 (0.00179 72 h earlier)\n- terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level\n- recent operator notes read as 'connectivity' (time-decayed weight) at 0.0565 (0.121 72 h earlier)\nFeatures pushing the risk DOWN:\n- motor temperature above the load/ambient model while active (24 h mean) at 1.49 deg C\nOperator notes for this unit in the previous 7 days (newest first):\n- 9.65 h before the alert: \"Evening shift batt door seal worn moisture warning - same as last shift\" (ticket classifier reading: no fault found)\n- 51.2 h before the alert: \"Note for maintenance not running right today not urgent\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_001 was flagged at 2026-12-07 20:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 16 %, against an alert threshold of 16 %. The score is pushed up mainly by recent operator notes read as 'drivetrain' (time-decayed weight) at 0.196 (0.00179 72 h earlier); terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level; and recent operator notes read as 'connectivity' (time-decayed weight) at 0.0565 (0.121 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A08",
+            "generator": "template",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_001 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to several factors. The most significant contributors are recent operator notes indicating drivetrain issues (weight factor 0.196, decaying over 72 hours), which have increased by 16% since the last assessment. Additionally, the unit's energy usage has remained relatively stable compared to its baseline, contributing only a slight increase (weight factor 0.0565). However, there are also indicators of potential problems, such as motor temperatures being slightly above normal levels (weight factor 1.49, decaying over 24 hours), which could be a cause for concern. Despite these risks, the unit's recent operator notes suggest that any",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A08",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 9,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "thermal: However, there are also indicators of potential problems, such as motor temperatures being slightly above normal levels (weight factor 1.49, decaying over 24 hours), which could be a cause for concern.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A09",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A09",
+        "unit_id": "Rover_050",
+        "t": "2026-12-08 12:00",
+        "fold_id": "c1205_g2",
+        "risk": 0.04909090909090909,
+        "threshold": 0.04909090909090909,
+        "base_value": -10.349093253961588,
+        "raw_margin": -5.923217702441066,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.2103145439765712,
+            "value_72h_ago": 1.1149256483428631,
+            "shap": 2.4773020593753925,
+            "note_class": null
+          },
+          {
+            "feature": "r_hat_temp_norm_24h",
+            "phrase": "temperature-corrected battery internal resistance (24 h)",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.04855847341572948,
+            "value_72h_ago": 0.04473141938598391,
+            "shap": 1.0917687267034437,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_thermal",
+            "phrase": "recent operator notes read as 'thermal' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 8.079777051858404e-05,
+            "value_72h_ago": 0.00022853060575378118,
+            "shap": 0.9735382423593825,
+            "note_class": "thermal"
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.00020841737953501398,
+            "value_72h_ago": 0.0005894933695453551,
+            "shap": 0.8393940185835818,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 0.05507039100206858,
+            "value_72h_ago": -0.002039909683785504,
+            "shap": 0.4085509790419111,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.00018835569750322447,
+            "value_72h_ago": 0.0005327503639186084,
+            "shap": -1.2192699687185184,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "hours_since_repair",
+            "phrase": "hours since the last completed repair",
+            "unit": "h",
+            "concept": "maintenance_history",
+            "value": 684.0,
+            "value_72h_ago": 612.0,
+            "shap": -0.25675762910233924,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00799",
+            "doc_type": "operator_note",
+            "age_hours": 162.61666666666667,
+            "text": "sent off the path onto wet grass wheels spinning had to be pushed - same as last shift",
+            "predicted_class": "user_or_operational_error",
+            "predicted_probability": 0.9937866265004934
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_050. Alert time: 2026-12-08 12:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 4.9 %. Alert threshold: 4.9 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.21 x baseline (1.11 x baseline 72 h earlier)\n- temperature-corrected battery internal resistance (24 h) at 0.0486 ohm (0.0447 ohm 72 h earlier)\n- recent operator notes read as 'thermal' (time-decayed weight) at 0.000081 (0.000229 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.000188 (0.000533 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 163 h before the alert: \"sent off the path onto wet grass wheels spinning had to be pushed - same as last shift\" (ticket classifier reading: user or operational error)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_050 was flagged at 2026-12-08 12:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 4.9 %, against an alert threshold of 4.9 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.21 x baseline (1.11 x baseline 72 h earlier); temperature-corrected battery internal resistance (24 h) at 0.0486 ohm (0.0447 ohm 72 h earlier); and recent operator notes read as 'thermal' (time-decayed weight) at 0.000081 (0.000229 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A09",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_050 is at risk of a qualifying fault onset within 72 hours due to an increased battery internal resistance compared to its baseline, which has risen from 0.0447 ohm to 0.0486 ohm over the past 24 hours. The temperature-corrected battery internal resistance also shows a slight increase from 0.0447 ohm to 0.0486 ohm, indicating potential thermal issues. Recent operator notes mentioning 'thermal' issues have a decaying weight of 0.000081, while 'drivetrain' issues have a decaying weight of 0.000188, suggesting these may be more relevant to the current condition.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A09",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 12,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "vibration: 'drivetrain' issues have a decaying weight of 0.000188, suggesting these may be more relevant to the current condition.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A10",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A10",
+        "unit_id": "Rover_032",
+        "t": "2026-12-08 16:00",
+        "fold_id": "c1205_g4",
+        "risk": 0.16030534351145037,
+        "threshold": 0.16030534351145037,
+        "base_value": -10.839270385059962,
+        "raw_margin": -3.3567428905913417,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.227300783646058,
+            "value_72h_ago": 1.2402263724947382,
+            "shap": 1.9212076823011666,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_battery",
+            "phrase": "recent operator notes read as 'battery' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 6.055659427895817e-06,
+            "value_72h_ago": 2.3762735276659505e-05,
+            "shap": 1.900697271825462,
+            "note_class": "battery"
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.1833504370599799,
+            "value_72h_ago": 0.8495842643273289,
+            "shap": 1.5538961232528565,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "txt_decay_sensor",
+            "phrase": "recent operator notes read as 'sensor' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 5.9141793702060905e-05,
+            "value_72h_ago": 0.0005894492638035151,
+            "shap": 0.9193165247519468,
+            "note_class": "sensor"
+          },
+          {
+            "feature": "energy_ratio_to_expected_24h",
+            "phrase": "energy use relative to what terrain and ambient predict (24 h)",
+            "unit": "x expected",
+            "concept": "energy",
+            "value": 0.9959272124114892,
+            "value_72h_ago": 0.9960319959944439,
+            "shap": 0.6604184536947438,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "vib_norm_mean_6h",
+            "phrase": "terrain-normalised vibration (6 h mean)",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.12067041370768548,
+            "value_72h_ago": 0.12081371993636929,
+            "shap": -0.848077482687922,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": 1.0006604509694392,
+            "value_72h_ago": 1.0024155668101686,
+            "shap": -0.22888880181010793,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00847",
+            "doc_type": "operator_note",
+            "age_hours": 117.01666666666667,
+            "text": "Heavy rain today, patrol completed as planned - logging for maintenance",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9934524571838362
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_032. Alert time: 2026-12-08 16:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 16 %. Alert threshold: 16 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.23 x baseline (1.24 x baseline 72 h earlier)\n- recent operator notes read as 'battery' (time-decayed weight) at 0.000006 (0.000024 72 h earlier)\n- recent operator notes read as 'no fault found' (time-decayed weight) at 0.183 (0.850 72 h earlier)\nFeatures pushing the risk DOWN:\n- terrain-normalised vibration (6 h mean) at 0.121 g\nOperator notes for this unit in the previous 7 days (newest first):\n- 117 h before the alert: \"Heavy rain today, patrol completed as planned - logging for maintenance\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_032 was flagged at 2026-12-08 16:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 16 %, against an alert threshold of 16 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.23 x baseline (1.24 x baseline 72 h earlier); recent operator notes read as 'battery' (time-decayed weight) at 0.000006 (0.000024 72 h earlier); and recent operator notes read as 'no fault found' (time-decayed weight) at 0.183 (0.850 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A10",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_032 is at high risk of a qualifying fault onset within the next 72 hours due to several factors. The battery's internal resistance has increased by 23% compared to its baseline, which is a strong indicator of potential issues. Recent operator notes mentioning 'battery' have a significant impact on the risk assessment, with a weight of 0.000006, indicating a substantial concern. Additionally, notes stating 'no fault found' have a lower but still notable weight of 0.183, suggesting ongoing operational challenges. On the other hand, the unit's recent vibration readings are within normal limits, with a mean value of 0.121 g, reducing the overall risk.",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A10",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 9,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A11",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A11",
+        "unit_id": "Rover_041",
+        "t": "2026-12-09 04:00",
+        "fold_id": "c1205_g0",
+        "risk": 0.13333333333333333,
+        "threshold": 0.11842105263157894,
+        "base_value": -10.655034817212762,
+        "raw_margin": -2.9757541754068324,
+        "positive": [
+          {
+            "feature": "vib_norm_mean_24h",
+            "phrase": "terrain-normalised vibration (24 h mean)",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.1423709384353568,
+            "value_72h_ago": 0.14285227428836264,
+            "shap": 1.062940254852335,
+            "note_class": null
+          },
+          {
+            "feature": "energy_ratio_to_expected_24h",
+            "phrase": "energy use relative to what terrain and ambient predict (24 h)",
+            "unit": "x expected",
+            "concept": "energy",
+            "value": 0.9858539904948881,
+            "value_72h_ago": 0.9857645054946641,
+            "shap": 0.699005037421615,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_thermal",
+            "phrase": "recent operator notes read as 'thermal' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.00014711482913126365,
+            "value_72h_ago": 0.0,
+            "shap": 0.6687215359040775,
+            "note_class": "thermal"
+          },
+          {
+            "feature": "ambient_min_24h",
+            "phrase": "24 h minimum of ambient temperature",
+            "unit": "deg C",
+            "concept": "environment",
+            "value": 17.74,
+            "value_72h_ago": 8.0,
+            "shap": 0.5561540427088026,
+            "note_class": null
+          },
+          {
+            "feature": "hours_since_repair",
+            "phrase": "hours since the last completed repair",
+            "unit": "h",
+            "concept": "maintenance_history",
+            "value": 1440.0,
+            "value_72h_ago": 1440.0,
+            "shap": 0.48646418808861336,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.4040538764278406,
+            "value_72h_ago": 0.0,
+            "shap": -0.4580603699222213,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.5255688994871923,
+            "value_72h_ago": 0.3153081483232815,
+            "shap": -0.43454754016965963,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T00904",
+            "doc_type": "operator_note",
+            "age_hours": 62.43333333333333,
+            "text": "Rover_041 - handover done, keys and charger in place. please check",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9953763566209302
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_041. Alert time: 2026-12-09 04:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 13 %. Alert threshold: 12 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised vibration (24 h mean) at 0.142 g (0.143 g 72 h earlier)\n- energy use relative to what terrain and ambient predict (24 h) at 0.986 x expected, i.e. essentially at the reference level\n- recent operator notes read as 'thermal' (time-decayed weight) at 0.000147 (0 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'no fault found' (time-decayed weight) at 0.404 (0 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 62.4 h before the alert: \"Rover_041 - handover done, keys and charger in place. please check\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_041 was flagged at 2026-12-09 04:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 13 %, against an alert threshold of 12 %. The score is pushed up mainly by terrain-normalised vibration (24 h mean) at 0.142 g (0.143 g 72 h earlier); energy use relative to what terrain and ambient predict (24 h) at 0.986 x expected, i.e. essentially at the reference level; and recent operator notes read as 'thermal' (time-decayed weight) at 0.000147 (0 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A11",
+            "generator": "template",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_041 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to several factors. The most significant indicators are: - A 24-hour mean terrain-normalized vibration level of 0.142 g, which is slightly above the threshold of 0.143 g observed 72 hours prior. - An energy use rate that is 0.986 times the expected value, indicating it's operating close to its baseline performance. - Recent operator notes suggesting a thermal issue, with a weight of 0.000147, which has decreased from 0.404, suggesting a potential improvement. However, there are also mitigating factors: - Recent operator notes indicate a \"no",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A11",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 10,
+            "unsupported": [
+              {
+                "kind": "notes",
+                "text": "However, there are also mitigating factors: - Recent operator notes indicate a \"no",
+                "supported": false,
+                "detail": "1 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A12",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A12",
+        "unit_id": "Rover_040",
+        "t": "2026-12-11 22:00",
+        "fold_id": "c1205_g2",
+        "risk": 0.04909090909090909,
+        "threshold": 0.04909090909090909,
+        "base_value": -10.349093253961588,
+        "raw_margin": -6.64586164945502,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.2194745167816405,
+            "value_72h_ago": 1.1502808717127482,
+            "shap": 2.4340932972981233,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_thermal",
+            "phrase": "recent operator notes read as 'thermal' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 6.551760320127314e-05,
+            "value_72h_ago": 0.00018691514558174228,
+            "shap": 1.0338303667788644,
+            "note_class": "thermal"
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.27124006209029905,
+            "value_72h_ago": 0.9585890214413431,
+            "shap": 0.816316900298838,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "r_hat_temp_norm_24h",
+            "phrase": "temperature-corrected battery internal resistance (24 h)",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.04696932174211864,
+            "value_72h_ago": 0.044304256967884655,
+            "shap": 0.6357292347609425,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_connectivity",
+            "phrase": "recent operator notes read as 'connectivity' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.6396850278266831,
+            "value_72h_ago": 0.1978084395244399,
+            "shap": 0.30045657067558973,
+            "note_class": "connectivity"
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0001162832246126124,
+            "value_72h_ago": 0.00017644665432165003,
+            "shap": -0.7097961848270445,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "txt_decay_user_or_operational_error",
+            "phrase": "recent operator notes read as 'user or operational error' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.00013169666369810688,
+            "value_72h_ago": 0.00032391862420338144,
+            "shap": -0.4682168029535548,
+            "note_class": "user_or_operational_error"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01003",
+            "doc_type": "operator_note",
+            "age_hours": 30.4,
+            "text": "Day shift data link unstable all morning reconnects every few mintues",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.9913907267234391
+          },
+          {
+            "ticket_id": "T00901",
+            "doc_type": "operator_note",
+            "age_hours": 131.1,
+            "text": "Morning shift: connection stable, no dropouts",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9961208009601831
+          },
+          {
+            "ticket_id": "T00887",
+            "doc_type": "operator_note",
+            "age_hours": 148.95,
+            "text": "after the morning round monthly inventory check, robot present and working",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.997772778508113
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_040. Alert time: 2026-12-11 22:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 4.9 %. Alert threshold: 4.9 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.22 x baseline (1.15 x baseline 72 h earlier)\n- recent operator notes read as 'thermal' (time-decayed weight) at 0.000066 (0.000187 72 h earlier)\n- recent operator notes read as 'no fault found' (time-decayed weight) at 0.271 (0.959 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.000116 (0.000176 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 30.4 h before the alert: \"Day shift data link unstable all morning reconnects every few mintues\" (ticket classifier reading: connectivity)\n- 131 h before the alert: \"Morning shift: connection stable, no dropouts\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_040 was flagged at 2026-12-11 22:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 4.9 %, against an alert threshold of 4.9 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.22 x baseline (1.15 x baseline 72 h earlier); recent operator notes read as 'thermal' (time-decayed weight) at 0.000066 (0.000187 72 h earlier); and recent operator notes read as 'no fault found' (time-decayed weight) at 0.271 (0.959 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A12",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_040 is at risk of a qualifying fault onset within 72 hours due to an increased battery internal resistance compared to its baseline, with a relative increase of 1.22 times. Recent operator notes indicate a thermal issue, which has a time-decayed weight of 0.000066, and a note stating \"no fault found\" has a weight of 0.271. The system also considers a drivetrain issue, with a weight of 0.000116, which is lower than the thermal issue. The risk is currently 4.9%, which is above the alert threshold of 4.9%.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A12",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 11,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "vibration: The system also considers a drivetrain issue, with a weight of 0.000116, which is lower than the thermal issue.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A13",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A13",
+        "unit_id": "Rover_015",
+        "t": "2026-12-15 03:00",
+        "fold_id": "c1215_g2",
+        "risk": 0.14309210526315788,
+        "threshold": 0.14309210526315788,
+        "base_value": -9.782951904159487,
+        "raw_margin": 0.24659748750716126,
+        "positive": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.6075018545839023,
+            "value_72h_ago": 0.0035640078664827555,
+            "shap": 2.1264004796449214,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.5381739486813226,
+            "value_72h_ago": 1.2781791407927359,
+            "shap": 1.127794609190858,
+            "note_class": null
+          },
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.9985193368705104,
+            "value_72h_ago": 0.0077852590344608215,
+            "shap": 1.0697891597258253,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_max_24h",
+            "phrase": "24 h maximum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.080395,
+            "value_72h_ago": 0.07355,
+            "shap": 0.8809736224750205,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_mean_24h",
+            "phrase": "24 h mean of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.07276808665269043,
+            "value_72h_ago": 0.06561187,
+            "shap": 0.6991683853782636,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "ambient_max_24h",
+            "phrase": "24 h maximum of ambient temperature",
+            "unit": "deg C",
+            "concept": "environment",
+            "value": 34.93,
+            "value_72h_ago": 37.99,
+            "shap": -0.3133135718971144,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_max_24h",
+            "phrase": "24 h maximum of motor temperature",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 48.78,
+            "value_72h_ago": 51.83,
+            "shap": -0.22040781843418814,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01120",
+            "doc_type": "operator_note",
+            "age_hours": 7.033333333333333,
+            "text": "Unit 15 - voltage sag warning popped up when it accelerated. needs a look asap",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.8721323815777751
+          },
+          {
+            "ticket_id": "T01084",
+            "doc_type": "operator_note",
+            "age_hours": 37.53333333333333,
+            "text": "fyi plastic wrap tangled around the axle",
+            "predicted_class": "drivetrain",
+            "predicted_probability": 0.997953171531798
+          },
+          {
+            "ticket_id": "T01059",
+            "doc_type": "operator_note",
+            "age_hours": 56.95,
+            "text": "during patrol nprmal patrol, no incidents",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9649929635027404
+          },
+          {
+            "ticket_id": "T01039",
+            "doc_type": "operator_note",
+            "age_hours": 72.03333333333333,
+            "text": "MISSED HEARTBEAT ALERTS FROM THE FLEET SERVER, UNUT KEPT IN SERVICE",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.9601968257618395
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_015. Alert time: 2026-12-15 03:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 14 %. Alert threshold: 14 %.\nFeatures pushing the risk UP (strongest first):\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.608 (0.00356 72 h earlier)\n- battery internal resistance relative to the unit's own baseline at 1.54 x baseline (1.28 x baseline 72 h earlier)\n- strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.999 (0.00779 72 h earlier)\nFeatures pushing the risk DOWN:\n- 24 h maximum of ambient temperature at 34.9 deg C (38.0 deg C 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 7.03 h before the alert: \"Unit 15 - voltage sag warning popped up when it accelerated. needs a look asap\" (ticket classifier reading: no fault found)\n- 37.5 h before the alert: \"fyi plastic wrap tangled around the axle\" (ticket classifier reading: drivetrain)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_015 was flagged at 2026-12-15 03:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 14 %, against an alert threshold of 14 %. The score is pushed up mainly by recent operator notes read as 'drivetrain' (time-decayed weight) at 0.608 (0.00356 72 h earlier); battery internal resistance relative to the unit's own baseline at 1.54 x baseline (1.28 x baseline 72 h earlier); and strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.999 (0.00779 72 h earlier). An operator note written 37.5 h before the alert feeds one of these drivers: \"fyi plastic wrap tangled around the axle\" (ticket classifier reading: drivetrain).",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A13",
+            "generator": "template",
+            "faithful": true,
+            "claims": 15,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_015 is at high risk of a qualifying fault onset within the next 72 hours due to several factors. Recent operator notes indicate a drivetrain issue (\"Unit 15 - voltage sag warning popped up when it accelerated. needs a look asap\") with a strong likelihood of a fault based on the classifier probability of 0.999. Additionally, the battery internal resistance has increased by 25% compared to its baseline, which could be indicative of a problem. The ambient temperature has also risen slightly from 38\u00b0C to 34.9\u00b0C over the past 72 hours, but this does not significantly impact the risk assessment.",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A13",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 9,
+            "unsupported": [
+              {
+                "kind": "number",
+                "text": "25",
+                "supported": false,
+                "detail": "no pack value rounds to this number"
+              },
+              {
+                "kind": "cause",
+                "text": "environment: The ambient temperature has also risen slightly from 38\u00b0C to 34.9\u00b0C over the past 72 hours",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A14",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A14",
+        "unit_id": "Rover_025",
+        "t": "2026-12-16 14:00",
+        "fold_id": "c1215_g2",
+        "risk": 0.14309210526315788,
+        "threshold": 0.14309210526315788,
+        "base_value": -9.782951904159487,
+        "raw_margin": -2.8975892944343578,
+        "positive": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.06237946071179316,
+            "value_72h_ago": 0.10627973637774794,
+            "shap": 1.6032281797878347,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "r_bms_max_24h",
+            "phrase": "24 h maximum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.063306,
+            "value_72h_ago": 0.064593,
+            "shap": 0.8985518982786043,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_mean_24h",
+            "phrase": "24 h mean of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.05490474301675978,
+            "value_72h_ago": 0.056376804181184674,
+            "shap": 0.768740343314084,
+            "note_class": null
+          },
+          {
+            "feature": "voltage_max_24h",
+            "phrase": "24 h maximum of battery voltage",
+            "unit": "V",
+            "concept": "battery",
+            "value": 50.649,
+            "value_72h_ago": 50.67,
+            "shap": 0.5868176335270341,
+            "note_class": null
+          },
+          {
+            "feature": "voltage_std_24h",
+            "phrase": "24 h variability (std) of battery voltage",
+            "unit": "V",
+            "concept": "battery",
+            "value": 1.2507970739796146,
+            "value_72h_ago": 1.2780036906525911,
+            "shap": 0.4979935029836048,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 2.6822641628014505,
+            "value_72h_ago": 1.2953781537675746,
+            "shap": -1.1957989980726675,
+            "note_class": "no_fault_found"
+          },
+          {
+            "feature": "txt_note_count_7d",
+            "phrase": "operator notes in the last 7 days",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 6.0,
+            "value_72h_ago": 3.0,
+            "shap": -0.5458788484236681,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01150",
+            "doc_type": "operator_note",
+            "age_hours": 3.1333333333333333,
+            "text": "Note for maintenance: dock area swept",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9716856151443504
+          },
+          {
+            "ticket_id": "T01143",
+            "doc_type": "operator_note",
+            "age_hours": 21.516666666666666,
+            "text": "FYI connection stable no dropouts",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9299686395348529
+          },
+          {
+            "ticket_id": "T01125",
+            "doc_type": "operator_note",
+            "age_hours": 31.416666666666668,
+            "text": "AFTER THE MORNING ROUND ROUTINE CHECK COMPETE BATTERY TEMPERATURES AND WHEELS FINE",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.966461288534363
+          },
+          {
+            "ticket_id": "T01074",
+            "doc_type": "operator_note",
+            "age_hours": 75.0,
+            "text": "Again toady nrml patrol, no incidents",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9484091016531985
+          },
+          {
+            "ticket_id": "T01010",
+            "doc_type": "service_ticket",
+            "age_hours": 129.73333333333332,
+            "text": "chkd noise and vib, everything within limits. no falt found.",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9874784601602655
+          },
+          {
+            "ticket_id": "T00981",
+            "doc_type": "operator_note",
+            "age_hours": 162.56666666666666,
+            "text": "note for maintenance thought drnoing sound from the drivetrain thhat was not there last week but it seemms fine now will monitor",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.5395455581465947
+          },
+          {
+            "ticket_id": "T00971",
+            "doc_type": "operator_note",
+            "age_hours": 167.03333333333333,
+            "text": "Connection stable, no dropouts, will monitor",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9517515268885234
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_025. Alert time: 2026-12-16 14:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 14 %. Alert threshold: 14 %.\nFeatures pushing the risk UP (strongest first):\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.0624 (0.106 72 h earlier)\n- 24 h maximum of BMS-reported internal resistance at 0.0633 ohm (0.0646 ohm 72 h earlier)\n- 24 h mean of BMS-reported internal resistance at 0.0549 ohm (0.0564 ohm 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'no fault found' (time-decayed weight) at 2.68 (1.30 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 3.13 h before the alert: \"Note for maintenance: dock area swept\" (ticket classifier reading: no fault found)\n- 21.5 h before the alert: \"FYI connection stable no dropouts\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_025 was flagged at 2026-12-16 14:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 14 %, against an alert threshold of 14 %. The score is pushed up mainly by recent operator notes read as 'drivetrain' (time-decayed weight) at 0.0624 (0.106 72 h earlier); 24 h maximum of BMS-reported internal resistance at 0.0633 ohm (0.0646 ohm 72 h earlier); and 24 h mean of BMS-reported internal resistance at 0.0549 ohm (0.0564 ohm 72 h earlier). One of these drivers is derived from the unit's operator notes as a whole rather than from a single quotable note.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A14",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_025 is at elevated risk of a qualifying fault onset within the next 72 hours due to several factors. Recent operator notes indicating drivetrain issues have increased the risk by 0.0624, while a high BMS-reported internal resistance of 0.0633 ohms has also pushed the risk up. The risk is further exacerbated by a 24-hour mean internal resistance of 0.0549 ohms compared to 0.0564 ohms previously. However, there are mitigating factors such as recent operator notes stating no fault was found, which slightly reduce the risk.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A14",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 9,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A15",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A15",
+        "unit_id": "Rover_021",
+        "t": "2026-12-16 16:00",
+        "fold_id": "c1215_g3",
+        "risk": 1.0,
+        "threshold": 0.15217391304347827,
+        "base_value": -9.065237097973464,
+        "raw_margin": 8.040673231261364,
+        "positive": [
+          {
+            "feature": "vib_norm_change_72h",
+            "phrase": "change in terrain-normalised vibration over 72 h",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.048225659838774165,
+            "value_72h_ago": 0.023305538520871638,
+            "shap": 4.899292624123796,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": 1.4119962938719528,
+            "value_72h_ago": 1.138880280025562,
+            "shap": 4.27759509602769,
+            "note_class": null
+          },
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.015289705554748,
+            "value_72h_ago": 1.005156878255134,
+            "shap": 3.8796670142522487,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_slope_24h",
+            "phrase": "trend of terrain-normalised vibration (24 h)",
+            "unit": "g/h",
+            "concept": "vibration",
+            "value": 0.0014603309882878402,
+            "value_72h_ago": 0.0003929008301378919,
+            "shap": 1.2729051001527956,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.03911074718901398,
+            "value_72h_ago": 0.006246115739818313,
+            "shap": 0.8834449689382892,
+            "note_class": "drivetrain"
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_battery",
+            "phrase": "recent operator notes read as 'battery' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.4007350506932347,
+            "value_72h_ago": 0.004952247323391421,
+            "shap": -0.30816228881052005,
+            "note_class": "battery"
+          },
+          {
+            "feature": "energy_ratio_to_expected_24h",
+            "phrase": "energy use relative to what terrain and ambient predict (24 h)",
+            "unit": "x expected",
+            "concept": "energy",
+            "value": 1.0220610882773025,
+            "value_72h_ago": 1.011860681003882,
+            "shap": -0.30528930958832423,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01132",
+            "doc_type": "operator_note",
+            "age_hours": 31.716666666666665,
+            "text": "unit 21: handover done, keys & charger in place",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.972385190484925
+          },
+          {
+            "ticket_id": "T01101",
+            "doc_type": "operator_note",
+            "age_hours": 54.766666666666666,
+            "text": "Acting weird again, no error cde shown",
+            "predicted_class": "battery",
+            "predicted_probability": 0.8700598135717845
+          },
+          {
+            "ticket_id": "T01098",
+            "doc_type": "operator_note",
+            "age_hours": 56.8,
+            "text": "R021: normal patrol, no incidents",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9769892495119418
+          },
+          {
+            "ticket_id": "T01054",
+            "doc_type": "operator_note",
+            "age_hours": 99.01666666666667,
+            "text": "Unit went offline near the warehouse corner and came back by itself",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.9883016073792066
+          },
+          {
+            "ticket_id": "T01042",
+            "doc_type": "operator_note",
+            "age_hours": 105.25,
+            "text": "service cover left open after insp needs a look asap",
+            "predicted_class": "user_or_operational_error",
+            "predicted_probability": 0.9680050121831925
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_021. Alert time: 2026-12-16 16:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 100 %. Alert threshold: 15 %.\nFeatures pushing the risk UP (strongest first):\n- change in terrain-normalised vibration over 72 h at 0.0482 g (0.0233 g 72 h earlier)\n- terrain-normalised vibration relative to the unit's own baseline at 1.41 x baseline (1.14 x baseline 72 h earlier)\n- terrain-normalised energy use relative to the unit's own baseline at 1.02 x baseline, i.e. essentially at the reference level (1.01 x baseline 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'battery' (time-decayed weight) at 0.401 (0.00495 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 31.7 h before the alert: \"unit 21: handover done, keys & charger in place\" (ticket classifier reading: no fault found)\n- 54.8 h before the alert: \"Acting weird again, no error cde shown\" (ticket classifier reading: battery)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_021 was flagged at 2026-12-16 16:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 100 %, against an alert threshold of 15 %. The score is pushed up mainly by change in terrain-normalised vibration over 72 h at 0.0482 g (0.0233 g 72 h earlier); terrain-normalised vibration relative to the unit's own baseline at 1.41 x baseline (1.14 x baseline 72 h earlier); and terrain-normalised energy use relative to the unit's own baseline at 1.02 x baseline, i.e. essentially at the reference level (1.01 x baseline 72 h earlier). The unit has 5 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A15",
+            "generator": "template",
+            "faithful": true,
+            "claims": 13,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_021 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to significant changes in its vibration levels and energy usage compared to its baseline. The unit has shown an increase in vibration by 48% over the past 72 hours, which is above the alert threshold of 15%. Additionally, the vibration relative to the unit's baseline has risen by 27%, also exceeding the threshold. These changes suggest potential issues with the vehicle's operation or environment. However, there are mitigating factors such as recent operator notes indicating normal operation and no recent battery-related issues.",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A15",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 8,
+            "unsupported": [
+              {
+                "kind": "number",
+                "text": "48",
+                "supported": false,
+                "detail": "no pack value rounds to this number"
+              },
+              {
+                "kind": "number",
+                "text": "27",
+                "supported": false,
+                "detail": "no pack value rounds to this number"
+              },
+              {
+                "kind": "notes",
+                "text": "However, there are mitigating factors such as recent operator notes indicating normal operation and no recent battery-related issues.",
+                "supported": false,
+                "detail": "5 linked operator note(s) exist"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A16",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A16",
+        "unit_id": "Rover_012",
+        "t": "2026-12-18 12:00",
+        "fold_id": "c1215_g1",
+        "risk": 0.5531914893617021,
+        "threshold": 0.5531914893617021,
+        "base_value": -10.249818793483747,
+        "raw_margin": -0.029212853886612322,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.23960622773642,
+            "value_72h_ago": 1.072414878215822,
+            "shap": 2.6246944467104054,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_max_24h",
+            "phrase": "24 h maximum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.074007,
+            "value_72h_ago": 0.069808,
+            "shap": 2.476709432661164,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_min_24h",
+            "phrase": "24 h minimum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.052936,
+            "value_72h_ago": 0.053281,
+            "shap": 1.1682836387638205,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_mean_24h",
+            "phrase": "24 h mean of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.06290956636553162,
+            "value_72h_ago": 0.06148420449754041,
+            "shap": 0.9767747329374826,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_max_24h",
+            "phrase": "24 h maximum of motor temperature",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 34.83,
+            "value_72h_ago": 28.5,
+            "shap": 0.7956745747983004,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "thermal_gain_ratio_24h",
+            "phrase": "motor heating per watt relative to the nominal model (24 h)",
+            "unit": "x nominal",
+            "concept": "thermal",
+            "value": 0.9233435920779336,
+            "value_72h_ago": 0.9367723422831679,
+            "shap": -0.8755238756292751,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": -0.9065280545818388,
+            "value_72h_ago": -0.7808069194650761,
+            "shap": -0.5225186264354625,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01180",
+            "doc_type": "operator_note",
+            "age_hours": 21.9,
+            "text": "Rover 12: no alarms during the night shift. logging for maintenance",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9960389286879875
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_012. Alert time: 2026-12-18 12:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 55 %. Alert threshold: 55 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.24 x baseline (1.07 x baseline 72 h earlier)\n- 24 h maximum of BMS-reported internal resistance at 0.0740 ohm (0.0698 ohm 72 h earlier)\n- 24 h minimum of BMS-reported internal resistance at 0.0529 ohm (0.0533 ohm 72 h earlier)\nFeatures pushing the risk DOWN:\n- motor heating per watt relative to the nominal model (24 h) at 0.923 x nominal (0.937 x nominal 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 21.9 h before the alert: \"Rover 12: no alarms during the night shift. logging for maintenance\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_012 was flagged at 2026-12-18 12:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 55 %, against an alert threshold of 55 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.24 x baseline (1.07 x baseline 72 h earlier); 24 h maximum of BMS-reported internal resistance at 0.0740 ohm (0.0698 ohm 72 h earlier); and 24 h minimum of BMS-reported internal resistance at 0.0529 ohm (0.0533 ohm 72 h earlier). The unit has 1 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A16",
+            "generator": "template",
+            "faithful": true,
+            "claims": 13,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_012 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to several factors. The battery internal resistance has increased by 24% compared to its baseline value, which is a strong indicator of potential issues. Additionally, the BMS-reported internal resistance has shown a significant drop from 0.0698 ohm to 0.0529 ohm over the past 24 hours, suggesting a decrease in resistance. These changes push the risk up to 55%, which is above the alert threshold of 55%. However, there are also mitigating factors such as lower motor heating rates, which could potentially reduce the overall risk. The operator should closely monitor the unit's performance and log any further changes",
+          "sentences": 6,
+          "check": {
+            "alert_id": "A16",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 8,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A17",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A17",
+        "unit_id": "Rover_049",
+        "t": "2026-12-18 23:00",
+        "fold_id": "c1215_g4",
+        "risk": 0.16666666666666666,
+        "threshold": 0.16666666666666666,
+        "base_value": -9.208545117239757,
+        "raw_margin": -2.9994969239629654,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.2779813821355717,
+            "value_72h_ago": 1.2966929801897993,
+            "shap": 3.8501285546234763,
+            "note_class": null
+          },
+          {
+            "feature": "thermal_gain_ratio_24h",
+            "phrase": "motor heating per watt relative to the nominal model (24 h)",
+            "unit": "x nominal",
+            "concept": "thermal",
+            "value": 0.9757717998020304,
+            "value_72h_ago": 0.9798715526221448,
+            "shap": 1.3405437640581062,
+            "note_class": null
+          },
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.9729731071973562,
+            "value_72h_ago": 0.017376508894580003,
+            "shap": 0.7765157817446308,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_battery",
+            "phrase": "recent operator notes read as 'battery' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.8887078204852585,
+            "value_72h_ago": 0.009779114414098317,
+            "shap": 0.6458901599229054,
+            "note_class": "battery"
+          },
+          {
+            "feature": "motor_temp_resid_patrol_mean_24h",
+            "phrase": "motor temperature above the load/ambient model while active (24 h mean)",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": -0.2843885976869389,
+            "value_72h_ago": -0.2363020334423799,
+            "shap": 0.5040802590407275,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "terrain_patrol_mean_24h",
+            "phrase": "mean terrain load while active (24 h)",
+            "unit": "",
+            "concept": "environment",
+            "value": 0.46947181628392487,
+            "value_72h_ago": 0.46747599164926934,
+            "shap": -0.5670024942707071,
+            "note_class": null
+          },
+          {
+            "feature": "ambient_mean_24h",
+            "phrase": "24 h mean of ambient temperature",
+            "unit": "deg C",
+            "concept": "environment",
+            "value": 31.61317770034843,
+            "value_72h_ago": 30.10622189992748,
+            "shap": -0.4717760552633407,
+            "note_class": null
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01208",
+            "doc_type": "operator_note",
+            "age_hours": 6.533333333333333,
+            "text": "charge contacts dirty, cleaned them & it charges again, needs a look asap",
+            "predicted_class": "battery",
+            "predicted_probability": 0.9672889032906518
+          },
+          {
+            "ticket_id": "T01196",
+            "doc_type": "operator_note",
+            "age_hours": 10.433333333333334,
+            "text": "Connection stable, no dropouts, reported by the guard on site",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.8946720816130979
+          },
+          {
+            "ticket_id": "T01122",
+            "doc_type": "operator_note",
+            "age_hours": 93.53333333333333,
+            "text": "Rover_049 no data uplink during patr of the patrol same as lst shift",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.8451154466645798
+          },
+          {
+            "ticket_id": "T01112",
+            "doc_type": "operator_note",
+            "age_hours": 104.45,
+            "text": "Rover_049: temps normal all day, second time this week",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9676134009790912
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_049. Alert time: 2026-12-18 23:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 17 %. Alert threshold: 17 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.28 x baseline (1.30 x baseline 72 h earlier)\n- motor heating per watt relative to the nominal model (24 h) at 0.976 x nominal (0.980 x nominal 72 h earlier)\n- strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.973 (0.0174 72 h earlier)\nFeatures pushing the risk DOWN:\n- mean terrain load while active (24 h) at 0.469 (0.467 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 6.53 h before the alert: \"charge contacts dirty, cleaned them & it charges again, needs a look asap\" (ticket classifier reading: battery)\n- 10.4 h before the alert: \"Connection stable, no dropouts, reported by the guard on site\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_049 was flagged at 2026-12-18 23:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 17 %, against an alert threshold of 17 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.28 x baseline (1.30 x baseline 72 h earlier); motor heating per watt relative to the nominal model (24 h) at 0.976 x nominal (0.980 x nominal 72 h earlier); and strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.973 (0.0174 72 h earlier). An operator note written 6.53 h before the alert feeds one of these drivers: \"charge contacts dirty, cleaned them & it charges again, needs a look asap\" (ticket classifier reading: battery).",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A17",
+            "generator": "template",
+            "faithful": true,
+            "claims": 15,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_049 is experiencing a high risk of a qualifying fault onset within the next 72 hours due to several factors. The battery internal resistance has increased by 28% compared to its baseline value, indicating potential degradation. Additionally, the motor heating has risen by 9.76%, which could be indicative of overheating issues. The most recent operator note mentions a faulty charge contact that was cleaned, but the ticket classifier reading indicates that the issue was resolved. However, the classifier probability for the strongest fault wording in the notes remains high at 97.3%. Despite some positive indicators, such as stable connections and no dropouts, the overall risk is elevated due to these factors.",
+          "sentences": 6,
+          "check": {
+            "alert_id": "A17",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 8,
+            "unsupported": [
+              {
+                "kind": "number",
+                "text": "9.76",
+                "supported": false,
+                "detail": "no pack value rounds to this number"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A18",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A18",
+        "unit_id": "Rover_011",
+        "t": "2026-12-20 05:00",
+        "fold_id": "c1215_g2",
+        "risk": 0.14309210526315788,
+        "threshold": 0.14309210526315788,
+        "base_value": -9.782951904159487,
+        "raw_margin": -4.332211856290142,
+        "positive": [
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.3172657440436693,
+            "value_72h_ago": 1.0913901819897562,
+            "shap": 2.056113029395037,
+            "note_class": null
+          },
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.9457038595683073,
+            "value_72h_ago": 0.02343841316168057,
+            "shap": 0.7508184421624987,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_max_24h",
+            "phrase": "24 h maximum of motor temperature",
+            "unit": "deg C",
+            "concept": "thermal",
+            "value": 41.47,
+            "value_72h_ago": 41.07,
+            "shap": 0.5369254713891902,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_mean_24h",
+            "phrase": "24 h mean of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.05273215550906554,
+            "value_72h_ago": 0.04771567712691771,
+            "shap": 0.5344174686735602,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_min_24h",
+            "phrase": "24 h minimum of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.046746,
+            "value_72h_ago": 0.041812,
+            "shap": 0.5280353650060104,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.007773343372327412,
+            "value_72h_ago": 0.01001952095428448,
+            "shap": -0.6226310479169824,
+            "note_class": "drivetrain"
+          },
+          {
+            "feature": "txt_decay_no_fault_found",
+            "phrase": "recent operator notes read as 'no fault found' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 1.3067751601494872,
+            "value_72h_ago": 0.8266203348085454,
+            "shap": -0.37042426815593615,
+            "note_class": "no_fault_found"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01206",
+            "doc_type": "operator_note",
+            "age_hours": 37.3,
+            "text": "Note for maint did not finish the full patrol loop low batt warning at 15%",
+            "predicted_class": "battery",
+            "predicted_probability": 0.9398060836123538
+          },
+          {
+            "ticket_id": "T01193",
+            "doc_type": "operator_note",
+            "age_hours": 42.0,
+            "text": "Again today charging normally and ran the full shift",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9211747756964951
+          },
+          {
+            "ticket_id": "T01189",
+            "doc_type": "operator_note",
+            "age_hours": 46.05,
+            "text": "temps normal all day",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9762098380216997
+          },
+          {
+            "ticket_id": "T01163",
+            "doc_type": "operator_note",
+            "age_hours": 82.5,
+            "text": "qyiet shift",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9606246156049979
+          },
+          {
+            "ticket_id": "T01087",
+            "doc_type": "operator_note",
+            "age_hours": 158.35,
+            "text": "r011 - pre-shift check was skipped & the patrol started late",
+            "predicted_class": "user_or_operational_error",
+            "predicted_probability": 0.9864180795042157
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_011. Alert time: 2026-12-20 05:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 14 %. Alert threshold: 14 %.\nFeatures pushing the risk UP (strongest first):\n- battery internal resistance relative to the unit's own baseline at 1.32 x baseline (1.09 x baseline 72 h earlier)\n- strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.946 (0.0234 72 h earlier)\n- 24 h maximum of motor temperature at 41.5 deg C (41.1 deg C 72 h earlier)\nFeatures pushing the risk DOWN:\n- recent operator notes read as 'drivetrain' (time-decayed weight) at 0.00777 (0.0100 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 37.3 h before the alert: \"Note for maint did not finish the full patrol loop low batt warning at 15%\" (ticket classifier reading: battery)\n- 42.0 h before the alert: \"Again today charging normally and ran the full shift\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_011 was flagged at 2026-12-20 05:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 14 %, against an alert threshold of 14 %. The score is pushed up mainly by battery internal resistance relative to the unit's own baseline at 1.32 x baseline (1.09 x baseline 72 h earlier); strongest fault wording in operator notes of the last 72 h (classifier probability) at 0.946 (0.0234 72 h earlier); and 24 h maximum of motor temperature at 41.5 deg C (41.1 deg C 72 h earlier). An operator note written 37.3 h before the alert feeds one of these drivers: \"Note for maint did not finish the full patrol loop low batt warning at 15%\" (ticket classifier reading: battery).",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A18",
+            "generator": "template",
+            "faithful": true,
+            "claims": 15,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_011 is at elevated risk of a qualifying fault onset within the next 72 hours due to several factors. The battery's internal resistance has increased by 32% compared to its baseline, which is a strong indicator of potential degradation. Additionally, the most recent operator note mentioning a drivetrain issue has a high classifier probability of 94.6%, suggesting a significant concern. Furthermore, the motor temperature reached 41.5 degrees Celsius, which is 0.4 degrees higher than 72 hours ago. These conditions, combined with the recent absence of any fault-related issues, indicate a heightened risk of a fault occurring.",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A18",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": false,
+            "claims": 8,
+            "unsupported": [
+              {
+                "kind": "cause",
+                "text": "vibration: Additionally, the most recent operator note mentioning a drivetrain issue has a high classifier probability of 94.6%, suggesting a significant concern.",
+                "supported": false,
+                "detail": "concept is not among the features raising the risk nor in a linked ticket"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A19",
+      "outcome": "false_alarm",
+      "evidence": {
+        "alert_id": "A19",
+        "unit_id": "Rover_036",
+        "t": "2026-12-20 15:00",
+        "fold_id": "c1215_g2",
+        "risk": 0.14309210526315788,
+        "threshold": 0.14309210526315788,
+        "base_value": -9.782951904159487,
+        "raw_margin": -4.33957293399461,
+        "positive": [
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.0008017320955038,
+            "value_72h_ago": 1.0006242521062474,
+            "shap": 1.5996572050771776,
+            "note_class": null
+          },
+          {
+            "feature": "vibration_max_24h",
+            "phrase": "24 h maximum of vibration",
+            "unit": "g",
+            "concept": "vibration",
+            "value": 0.239,
+            "value_72h_ago": 0.2498,
+            "shap": 0.6537159067914501,
+            "note_class": null
+          },
+          {
+            "feature": "r_bms_mean_24h",
+            "phrase": "24 h mean of BMS-reported internal resistance",
+            "unit": "ohm",
+            "concept": "battery",
+            "value": 0.05000869525801953,
+            "value_72h_ago": 0.048976533054975645,
+            "shap": 0.5212377029274805,
+            "note_class": null
+          },
+          {
+            "feature": "bms_soh_last",
+            "phrase": "latest BMS state-of-health estimate",
+            "unit": "%",
+            "concept": "battery",
+            "value": 97.552,
+            "value_72h_ago": 97.212,
+            "shap": 0.5062357996172211,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.2724644111650717,
+            "value_72h_ago": 0.2141922136248587,
+            "shap": 0.42509937918812885,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "txt_fault_max_72h",
+            "phrase": "strongest fault wording in operator notes of the last 72 h (classifier probability)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0,
+            "value_72h_ago": 0.05794455405661532,
+            "shap": -0.47168311750645947,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.007818489181134997,
+            "value_72h_ago": 0.02211402687445685,
+            "shap": -0.4334841258733787,
+            "note_class": "drivetrain"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01148",
+            "doc_type": "operator_note",
+            "age_hours": 102.33333333333333,
+            "text": "Handover done, keys & charger in place",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9836059936684418
+          },
+          {
+            "ticket_id": "T01134",
+            "doc_type": "operator_note",
+            "age_hours": 125.56666666666666,
+            "text": "Robot 36 IMU needs recalibration heading drifts while stationary",
+            "predicted_class": "sensor",
+            "predicted_probability": 0.8024416001887913
+          },
+          {
+            "ticket_id": "T01093",
+            "doc_type": "operator_note",
+            "age_hours": 159.46666666666667,
+            "text": "note for maiint: lte signal weak, commands delayed",
+            "predicted_class": "connectivity",
+            "predicted_probability": 0.9338358767261141
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_036. Alert time: 2026-12-20 15:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 14 %. Alert threshold: 14 %.\nFeatures pushing the risk UP (strongest first):\n- terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level\n- 24 h maximum of vibration at 0.239 g (0.250 g 72 h earlier)\n- 24 h mean of BMS-reported internal resistance at 0.0500 ohm (0.0490 ohm 72 h earlier)\nFeatures pushing the risk DOWN:\n- strongest fault wording in operator notes of the last 72 h (classifier probability) at 0 (0.0579 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 102 h before the alert: \"Handover done, keys & charger in place\" (ticket classifier reading: no fault found)\n- 126 h before the alert: \"Robot 36 IMU needs recalibration heading drifts while stationary\" (ticket classifier reading: sensor)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_036 was flagged at 2026-12-20 15:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 14 %, against an alert threshold of 14 %. The score is pushed up mainly by terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level; 24 h maximum of vibration at 0.239 g (0.250 g 72 h earlier); and 24 h mean of BMS-reported internal resistance at 0.0500 ohm (0.0490 ohm 72 h earlier). The unit has 3 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A19",
+            "generator": "template",
+            "faithful": true,
+            "claims": 12,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_036 is currently at a high risk of experiencing a qualifying fault within the next 72 hours due to several factors. The unit has shown signs of increased energy usage compared to its baseline, with a 1.00x increase in terrain-normalized energy use. Additionally, there have been two instances of high vibration levels, reaching 0.239g, which is 0.001g higher than the previous 72-hour period. Furthermore, the unit's internal resistance has dropped from 0.0490 ohms to 0.0500 ohms over the past 72 hours, indicating potential issues with battery health. Despite these indicators, the risk has been pushed up by the presence of strong fault words",
+          "sentences": 5,
+          "check": {
+            "alert_id": "A19",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 8,
+            "unsupported": []
+          }
+        }
+      }
+    },
+    {
+      "alert_id": "A20",
+      "outcome": "true_positive",
+      "evidence": {
+        "alert_id": "A20",
+        "unit_id": "Rover_016",
+        "t": "2026-12-21 10:00",
+        "fold_id": "c1215_g0",
+        "risk": 0.04739336492890995,
+        "threshold": 0.04739336492890995,
+        "base_value": -9.630693266293676,
+        "raw_margin": -4.691321170168883,
+        "positive": [
+          {
+            "feature": "vib_norm_slope_24h",
+            "phrase": "trend of terrain-normalised vibration (24 h)",
+            "unit": "g/h",
+            "concept": "vibration",
+            "value": 0.0011649953184132257,
+            "value_72h_ago": null,
+            "shap": 2.53559357394307,
+            "note_class": null
+          },
+          {
+            "feature": "energy_ratio_to_baseline",
+            "phrase": "terrain-normalised energy use relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "energy",
+            "value": 1.0014930200114376,
+            "value_72h_ago": 1.0000805916875342,
+            "shap": 2.0167365907158694,
+            "note_class": null
+          },
+          {
+            "feature": "vib_norm_ratio_to_baseline",
+            "phrase": "terrain-normalised vibration relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "vibration",
+            "value": 1.057219766771416,
+            "value_72h_ago": 0.9987003877878241,
+            "shap": 1.5988378365894453,
+            "note_class": null
+          },
+          {
+            "feature": "r_hat_ratio_to_baseline",
+            "phrase": "battery internal resistance relative to the unit's own baseline",
+            "unit": "x baseline",
+            "concept": "battery",
+            "value": 1.1410029643239623,
+            "value_72h_ago": 1.1489353529991706,
+            "shap": 0.703892682616979,
+            "note_class": null
+          },
+          {
+            "feature": "motor_temp_resid_dock_mean_24h",
+            "phrase": "docked motor-temperature offset from ambient (24 h mean)",
+            "unit": "deg C",
+            "concept": "sensor_drift",
+            "value": 0.18564094696768635,
+            "value_72h_ago": 0.11471712113484167,
+            "shap": 0.574176959591397,
+            "note_class": null
+          }
+        ],
+        "negative": [
+          {
+            "feature": "energy_ratio_to_expected_24h",
+            "phrase": "energy use relative to what terrain and ambient predict (24 h)",
+            "unit": "x expected",
+            "concept": "energy",
+            "value": 0.9895806111581785,
+            "value_72h_ago": 0.988184983174701,
+            "shap": -0.43975249163331737,
+            "note_class": null
+          },
+          {
+            "feature": "txt_decay_drivetrain",
+            "phrase": "recent operator notes read as 'drivetrain' (time-decayed weight)",
+            "unit": "",
+            "concept": "operator_notes",
+            "value": 0.0015588476929495295,
+            "value_72h_ago": 0.00014127746544099278,
+            "shap": -0.37864488245045164,
+            "note_class": "drivetrain"
+          }
+        ],
+        "tickets": [
+          {
+            "ticket_id": "T01245",
+            "doc_type": "service_ticket",
+            "age_hours": 15.95,
+            "text": "Bench test passed, all readings in spec. No fault found, RTS.",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9942696788811268
+          },
+          {
+            "ticket_id": "T01210",
+            "doc_type": "operator_note",
+            "age_hours": 64.75,
+            "text": "Customer reports pulls slightly to the front left on straight sections, not confirmed, reported by the guard on site",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.9533050790691137
+          },
+          {
+            "ticket_id": "T01207",
+            "doc_type": "operator_note",
+            "age_hours": 65.56666666666666,
+            "text": "Visitors asked about the robot, no issues",
+            "predicted_class": "no_fault_found",
+            "predicted_probability": 0.998650174584974
+          }
+        ]
+      },
+      "prompt": "EVIDENCE\nUnit: Rover_016. Alert time: 2026-12-21 10:00 UTC.\nModel risk of a qualifying fault onset within 72 h: 4.7 %. Alert threshold: 4.7 %.\nFeatures pushing the risk UP (strongest first):\n- trend of terrain-normalised vibration (24 h) at 0.00116 g/h\n- terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level\n- terrain-normalised vibration relative to the unit's own baseline at 1.06 x baseline (0.999 x baseline 72 h earlier)\nFeatures pushing the risk DOWN:\n- energy use relative to what terrain and ambient predict (24 h) at 0.990 x expected, i.e. essentially at the reference level (0.988 x expected 72 h earlier)\nOperator notes for this unit in the previous 7 days (newest first):\n- 64.8 h before the alert: \"Customer reports pulls slightly to the front left on straight sections, not confirmed, reported by the guard on site\" (ticket classifier reading: no fault found)\n- 65.6 h before the alert: \"Visitors asked about the robot, no issues\" (ticket classifier reading: no fault found)\nWrite the explanation now.",
+      "summaries": {
+        "template": {
+          "text": "Rover_016 was flagged at 2026-12-21 10:00 UTC: the model puts the chance of a qualifying fault onset within 72 h at 4.7 %, against an alert threshold of 4.7 %. The score is pushed up mainly by trend of terrain-normalised vibration (24 h) at 0.00116 g/h; terrain-normalised energy use relative to the unit's own baseline at 1.00 x baseline, i.e. essentially at the reference level; and terrain-normalised vibration relative to the unit's own baseline at 1.06 x baseline (0.999 x baseline 72 h earlier). The unit has 2 operator note(s) from the previous 7 days, but they are not among the main drivers of this score.",
+          "sentences": 4,
+          "check": {
+            "alert_id": "A20",
+            "generator": "template",
+            "faithful": true,
+            "claims": 11,
+            "unsupported": []
+          }
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "text": "Rover_016 is currently experiencing a high risk of a qualifying fault onset within the next 72 hours, with a risk of 4.7%. The risk is being pushed up by three main factors: a 24-hour trend of terrain-normalized vibration at 0.00116 g/h, indicating potential mechanical wear; a 24-hour terrain-normalized energy use relative to the unit's baseline at 1.00 times the reference level, suggesting inefficient operation; and a 24-hour terrain-normalized vibration relative to the unit's baseline at 1.06 times the reference level, which is 0.999 times its value 72 hours ago. These factors indicate potential mechanical issues that could lead to a fault",
+          "sentences": 3,
+          "check": {
+            "alert_id": "A20",
+            "generator": "local_llm[Qwen/Qwen2.5-1.5B-Instruct]",
+            "faithful": true,
+            "claims": 8,
+            "unsupported": []
+          }
+        }
+      }
+    }
+  ],
+  "mlflow_run_id": "b01f56c899314e2c94a1b12a3766eb2b",
+  "checker_history": [
+    {
+      "checker_version": 1,
+      "generators": {
+        "template": {
+          "alerts": 20,
+          "faithful": 20,
+          "faithfulness_rate": 1.0,
+          "claims_checked": 246,
+          "claims_supported": 246,
+          "unsupported_by_kind": {}
+        },
+        "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": {
+          "alerts": 20,
+          "faithful": 3,
+          "faithfulness_rate": 0.15,
+          "claims_checked": 183,
+          "claims_supported": 154,
+          "unsupported_by_kind": {
+            "cause": 14,
+            "notes": 8,
+            "number": 5,
+            "quote": 2
+          }
+        }
+      },
+      "negative_controls": {
+        "by_kind": {
+          "invented_cause": {
+            "built": 19,
+            "flagged": 19
+          },
+          "wrong_number": {
+            "built": 20,
+            "flagged": 20
+          },
+          "invented_quote": {
+            "built": 20,
+            "flagged": 20
+          },
+          "reversed_direction": {
+            "built": 20,
+            "flagged": 20
+          }
+        },
+        "built": 79,
+        "flagged": 79,
+        "detection_rate": 1.0
+      },
+      "faithful_per_alert": {
+        "A01": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A02": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A03": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": true
+        },
+        "A04": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A05": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A06": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A07": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A08": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A09": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A10": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": true
+        },
+        "A11": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A12": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A13": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A14": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A15": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A16": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": true
+        },
+        "A17": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A18": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A19": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        },
+        "A20": {
+          "template": true,
+          "local_llm[Qwen/Qwen2.5-1.5B-Instruct]": false
+        }
+      }
+    }
+  ],
+  "checker_version": 2,
+  "recheck_mlflow_run_id": "f89918c62fd14cd29166177b3f313efd"
+}

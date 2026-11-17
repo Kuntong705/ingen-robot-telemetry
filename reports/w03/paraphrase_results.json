@@ -1,0 +1,331 @@
+{
+  "synthetic_notice": "Originals are synthetic template tickets; rewrites come from a local open-weights model. No hosted LLM API was called.",
+  "llm": "Qwen/Qwen2.5-1.5B-Instruct",
+  "decoding": "greedy, max 64 new tokens, repetition_penalty 1.05",
+  "system_prompt": "You rewrite short maintenance notes written by robot operators and service technicians. Rewrite the note in different words, the way a different person might write it. Keep exactly the same meaning and level of detail. Do not add causes, parts, numbers or advice that are not in the note. Output only the rewritten note.",
+  "sample": {
+    "tickets": 210,
+    "per_class_max": 30,
+    "seed": 0,
+    "folds": 20
+  },
+  "reproduces_oof_selected_predictions": 1.0,
+  "token_jaccard_original_vs_paraphrase": {
+    "median": 0.25,
+    "mean": 0.26275740562202476
+  },
+  "identical_rewrites": 0,
+  "models": {
+    "tfidf_lr": {
+      "macro_f1_original": 0.8237209348222175,
+      "macro_f1_paraphrase": 0.8233654498242977,
+      "delta": -0.00035548499791981936,
+      "delta_ci95": [
+        -0.03890913539774622,
+        0.03537344315914027
+      ],
+      "prediction_unchanged_share": 0.8809523809523809
+    },
+    "embed_lr": {
+      "macro_f1_original": 0.8368414221590493,
+      "macro_f1_paraphrase": 0.8375810478999485,
+      "delta": 0.0007396257408991413,
+      "delta_ci95": [
+        -0.030612302498302615,
+        0.032779821550493776
+      ],
+      "prediction_unchanged_share": 0.8714285714285714
+    },
+    "tfidf_embed_lr": {
+      "macro_f1_original": 0.8453764559027718,
+      "macro_f1_paraphrase": 0.8550721050102605,
+      "delta": 0.009695649107488769,
+      "delta_ci95": [
+        -0.01852275225580002,
+        0.037680437902102196
+      ],
+      "prediction_unchanged_share": 0.9142857142857143
+    },
+    "selected": {
+      "macro_f1_original": 0.8483549588812748,
+      "macro_f1_paraphrase": 0.8505381984243704,
+      "delta": 0.0021832395430956275,
+      "delta_ci95": [
+        -0.025950277571259218,
+        0.03204193136492857
+      ],
+      "prediction_unchanged_share": 0.9
+    }
+  },
+  "per_class_selected": {
+    "battery": {
+      "n": 30,
+      "recall_original": 0.7666666666666667,
+      "recall_paraphrase": 0.8
+    },
+    "drivetrain": {
+      "n": 30,
+      "recall_original": 0.6666666666666666,
+      "recall_paraphrase": 0.6666666666666666
+    },
+    "thermal": {
+      "n": 30,
+      "recall_original": 0.7666666666666667,
+      "recall_paraphrase": 0.7
+    },
+    "sensor": {
+      "n": 30,
+      "recall_original": 0.7666666666666667,
+      "recall_paraphrase": 0.8
+    },
+    "connectivity": {
+      "n": 30,
+      "recall_original": 1.0,
+      "recall_paraphrase": 1.0
+    },
+    "user_or_operational_error": {
+      "n": 30,
+      "recall_original": 0.9,
+      "recall_paraphrase": 0.9333333333333333
+    },
+    "no_fault_found": {
+      "n": 30,
+      "recall_original": 1.0,
+      "recall_paraphrase": 1.0
+    }
+  },
+  "correct_then_wrong_examples": [
+    {
+      "ticket_id": "T00937",
+      "label": "battery",
+      "text": "Day shift did not finish the full patrol loop low battery warning at 25% please check",
+      "paraphrase": "The day shift team failed to complete the entire patrol loop due to a low battery warning at 25%. Please verify this issue.",
+      "para_selected": "no_fault_found"
+    },
+    {
+      "ticket_id": "T01366",
+      "label": "battery",
+      "text": "Did not chg fully, maybe it was not docked right. will monitor",
+      "paraphrase": "The change did not occur completely, possibly because it was not properly docked. I will keep an eye on it.",
+      "para_selected": "user_or_operational_error"
+    },
+    {
+      "ticket_id": "T00622",
+      "label": "drivetrain",
+      "text": "PLASTIC WRAP TAGNLED AROUND THE AXEL - SAME AS LAST SHIFT",
+      "paraphrase": "PLASTIC TAG ON AXLE END IS WEARING OUT - SAME AS PREVIOUS SHIFT",
+      "para_selected": "no_fault_found"
+    },
+    {
+      "ticket_id": "T01153",
+      "label": "drivetrain",
+      "text": "batt seems to drain faster runtime shorter than last week",
+      "paraphrase": "battery consumption appears to be increasing at a rate faster than usual during this period",
+      "para_selected": "battery"
+    },
+    {
+      "ticket_id": "T00604",
+      "label": "thermal",
+      "text": "HOT SMELL COMING FROM THE MOTOR BAY - PLS CHECK",
+      "paraphrase": "SMELL OF HOT AIR FROM ENGINE AREA - PLEASE INSPECT",
+      "para_selected": "no_fault_found"
+    },
+    {
+      "ticket_id": "T01061",
+      "label": "thermal",
+      "text": "Cooling fan swapped, heat sink cleaned, tempeeratures back in range.",
+      "paraphrase": "Fan replaced, heatsink serviced, temperatures within acceptable limits.",
+      "para_selected": "no_fault_found"
+    },
+    {
+      "ticket_id": "T01079",
+      "label": "user_or_operational_error",
+      "text": "left in mabual mode over the weekend, battery ran flat",
+      "paraphrase": "forgot to switch to normal mode during the weekend, resulting in depleted battery",
+      "para_selected": "no_fault_found"
+    }
+  ],
+  "pairs_for_manual_check": [
+    {
+      "ticket_id": "T01081",
+      "label": "battery",
+      "text": "work order opened: robot returns to dock early. check battery internal resistance.",
+      "paraphrase": "work order opened: robot departs from dock prematurely. verify battery internal resistance."
+    },
+    {
+      "ticket_id": "T01043",
+      "label": "thermal",
+      "text": "Air duct clip broken duct hanging loose unit kept in service",
+      "paraphrase": "Air duct clip malfunctioning, causing the duct to sag and the unit to remain operational."
+    },
+    {
+      "ticket_id": "T00782",
+      "label": "drivetrain",
+      "text": "Plastic wrap tangled around the axle",
+      "paraphrase": "The plastic wrap is entangled with the axle."
+    },
+    {
+      "ticket_id": "T00850",
+      "label": "battery",
+      "text": "Work order opened: reduced runtime and voltage sag under load. Suspect weak cell grroup in the batttery pack.",
+      "paraphrase": "Work order opened: battery pack is experiencing reduced runtime and voltage fluctuations under load. The issue may be related to a weak cell group within the battery pack."
+    },
+    {
+      "ticket_id": "T01121",
+      "label": "no_fault_found",
+      "text": "All good today - same as last shift",
+      "paraphrase": "Everything is running smoothly today, just like it did yesterday."
+    },
+    {
+      "ticket_id": "T01345",
+      "label": "thermal",
+      "text": "rover_048 - mtr temp number looks wrong probably a bad sensor",
+      "paraphrase": "The temperature reading for rover_048 seems incorrect; it may be due to a faulty sensor."
+    },
+    {
+      "ticket_id": "T00976",
+      "label": "sensor",
+      "text": "Lidar lens dirty false obstacle detections please check",
+      "paraphrase": "Lens on Lidar sensor is dirty, causing false obstacle detection reports. Please clean the lens."
+    },
+    {
+      "ticket_id": "T00645",
+      "label": "connectivity",
+      "text": "SIM not registering on the network after restart",
+      "paraphrase": "The SIM card is unable to connect to the network following a system reboot."
+    },
+    {
+      "ticket_id": "T00483",
+      "label": "sensor",
+      "text": "Thermistor offset confirmed with IR gun while docked. snsr flagged for replacement at next service.",
+      "paraphrase": "The thermistor offset was verified using an infrared gun while the device was docked. The system flagged it for replacement during the next scheduled service."
+    },
+    {
+      "ticket_id": "T00512",
+      "label": "user_or_operational_error",
+      "text": "During patrol new guard did not know how to release the brake, called support - not urgent",
+      "paraphrase": "The new guard failed to understand the procedure for releasing the brake during the patrol, which required assistance from the support team. This issue is currently not considered critical."
+    },
+    {
+      "ticket_id": "T00913",
+      "label": "drivetrain",
+      "text": "Replaced front right wheel brg. Tets drive ok, vibratin back to nrml.",
+      "paraphrase": "Front right wheel replaced. Drive function is normal, vibration has returned to normal."
+    },
+    {
+      "ticket_id": "T00550",
+      "label": "user_or_operational_error",
+      "text": "Gate was locked could not complete the loop",
+      "paraphrase": "The gate was inaccessible due to being locked, preventing the completion of the intended loop."
+    },
+    {
+      "ticket_id": "T01257",
+      "label": "drivetrain",
+      "text": "Rover 17 - comes back to dock earlier than it used to",
+      "paraphrase": "Rover 17 is arriving at the docking station sooner than it did previously."
+    },
+    {
+      "ticket_id": "T00935",
+      "label": "no_fault_found",
+      "text": "r012 - checked for sound and vib, nothing unusual",
+      "paraphrase": "r012 - confirmed all sounds and vibrations were normal"
+    },
+    {
+      "ticket_id": "T00518",
+      "label": "sensor",
+      "text": "note for mainteenance: dash says it is running hot. not urgent",
+      "paraphrase": "The system reports overheating. This issue requires attention but is not immediately critical."
+    },
+    {
+      "ticket_id": "T01240",
+      "label": "thermal",
+      "text": "Note for maintenance: sticker was covering the vent - no errror code shown",
+      "paraphrase": "Sticker obstructing the exhaust vent - no error message detected"
+    },
+    {
+      "ticket_id": "T00902",
+      "label": "no_fault_found",
+      "text": "Rover 23: normal patrol, no incidents. same as lqst shift",
+      "paraphrase": "Rover 23 is operating normally with no issues reported. It has been functioning identically to the last shift."
+    },
+    {
+      "ticket_id": "T00862",
+      "label": "drivetrain",
+      "text": "Unit 1: comes back to dock earlier than it used to",
+      "paraphrase": "Unit 1 is arriving at the dock earlier than it did previously."
+    },
+    {
+      "ticket_id": "T00521",
+      "label": "thermal",
+      "text": "DUST BUILD-UP ON THE HEAT SINK, BLOWN OUT, SAME AS LAST SHIFT",
+      "paraphrase": "HEAT SINK FILLED WITH DUST, NEED TO CLEAN. SAME AS LAST SHIFT"
+    },
+    {
+      "ticket_id": "T01332",
+      "label": "battery",
+      "text": "morning shift: soh on the diaplay went down again - unit kept in service",
+      "paraphrase": "morning shift: display malfunctioned again - equipment remains under repair"
+    },
+    {
+      "ticket_id": "T00963",
+      "label": "user_or_operational_error",
+      "text": "Evening shift gate was locked could not complete the loop robot kept in service",
+      "paraphrase": "The evening shift gate was inaccessible, preventing the completion of the loop robot's operation, which necessitated its removal from service."
+    },
+    {
+      "ticket_id": "T01133",
+      "label": "battery",
+      "text": "WORK ORDER OPENED: REDUCED RUNTIME AND VOLTAGE SAG UNDER LOAD. SUSPECT WEAK CELL GROUP IN THE BATTERY PAACK.",
+      "paraphrase": "WORK ORDER OPENED: REDUCED RUNTIME AND VOLTAGE SAG UNDER LOAD. SUSPECT WEAK CELL GROUP IN THE BATTERY PACK."
+    },
+    {
+      "ticket_id": "T00747",
+      "label": "battery",
+      "text": "Agqin tody chgr cable damaged near the plug - reproted by the guard on site",
+      "paraphrase": "The cable connected to the plug was damaged today - reported by the site guard."
+    },
+    {
+      "ticket_id": "T01337",
+      "label": "drivetrain",
+      "text": "BRG REPLACED AND AXLE REGREASED VIBRATION CHECK PASSED",
+      "paraphrase": "REPLACED BRACKET AND AXLE WAS REGREASED. VIBRATION TEST PASSED."
+    },
+    {
+      "ticket_id": "T00663",
+      "label": "sensor",
+      "text": "Note for maint: wheel encoder count jumps, odometry looks wrong on the map, no error code shown",
+      "paraphrase": "Issue with wheel encoder count causing incorrect odometry readings on the map, no error message present."
+    },
+    {
+      "ticket_id": "T01039",
+      "label": "connectivity",
+      "text": "MISSED HEARTBEAT ALERTS FROM THE FLEET SERVER, UNUT KEPT IN SERVICE",
+      "paraphrase": "HEARTBEAT ALERTS FROM THE FLEET SERVER STOPPED WORKING, BUT IT IS STILL IN USE."
+    },
+    {
+      "ticket_id": "T00611",
+      "label": "connectivity",
+      "text": "during patrol lost connection to the unit for abt 20 minutes",
+      "paraphrase": "the unit experienced intermittent connectivity issues lasting approximately 20 minutes during the patrol."
+    },
+    {
+      "ticket_id": "T00515",
+      "label": "connectivity",
+      "text": "R031 - unit went ofline near the main entrance and came back by itself. please check",
+      "paraphrase": "Unit disconnected from the system near the main entrance and then reconnected on its own. Please verify."
+    },
+    {
+      "ticket_id": "T00529",
+      "label": "user_or_operational_error",
+      "text": "Note for maintenance: pallet left on the route, unit stopped and waited - unit kept in service",
+      "paraphrase": "Pallet left on the route, causing the unit to stop and wait - unit remains operational."
+    },
+    {
+      "ticket_id": "T00671",
+      "label": "no_fault_found",
+      "text": "Evening shift all good today",
+      "paraphrase": "All shifts are functioning normally today."
+    }
+  ],
+  "mlflow_run_id": "794f0ed917eb490ab661e1dbd5fd3246"
+}

@@ -16,7 +16,7 @@ import numpy as np
 class FleetParams:
     unit_ids: list[str]
     site_index: np.ndarray          # (U,) int
-    shift_double: np.ndarray        # (U,) bool
+    shift_double: np.ndarray        # (U,) bool: double shift (patrol) / heavy user (sessions)
     route_initial: list[str]
     route_after: list[str]
     route_change_day: np.ndarray    # (U,) float, inf if never
@@ -84,10 +84,14 @@ def sample_fleet_params(
         rng.normal(0.0, float(var["fade_rate_log_std"]), n_units)
     )
 
+    # platform-conditional identity and duty intensity (Rover defaults keep v0.2 output unchanged)
+    prefix = str(config.get("unit_id_prefix", "Rover"))
+    intensive_fraction = float(duty.get("double_shift_fraction", duty.get("heavy_user_fraction", 0.0)))
+
     return FleetParams(
-        unit_ids=[f"Rover_{i + 1:03d}" for i in range(n_units)],
+        unit_ids=[f"{prefix}_{i + 1:03d}" for i in range(n_units)],
         site_index=rng.integers(0, len(config["sites"]), n_units),
-        shift_double=rng.random(n_units) < float(duty["double_shift_fraction"]),
+        shift_double=rng.random(n_units) < intensive_fraction,
         route_initial=route_initial,
         route_after=route_after,
         route_change_day=change_day,

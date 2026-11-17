@@ -1,0 +1,67 @@
+# Synthetic maintenance-log / operator-note corpus -- generator parameters (Week 3)
+# EVERYTHING HERE IS SYNTHETIC. No real InGen ticket, operator or customer text was used.
+# Each value is an explicit modelling assumption [asm]; none is an InGen statistic.
+# Fixed on 2026-11-11 before any fusion experiment was run (see weekly/W03_Progress.md, D3).
+
+corpus_version: "0.1"
+synthetic: true
+seed: 303
+
+taxonomy:                       # fixed label set (Plan v3.0, Week 3)
+  - battery
+  - drivetrain
+  - thermal
+  - sensor
+  - connectivity
+  - user_or_operational_error
+  - no_fault_found
+
+operator_hours_utc: [6, 20]     # [asm] operator notes are written during staffed hours only
+
+fault_notes:                    # operator symptom notes tied to a simulated P-F fault
+  slot_hours: 12                # one chance to write a note per unit per 12 h slot
+  notice_rate: 1.0              # [asm] P(note in slot) = notice_rate * severity ** notice_exponent
+  notice_exponent: 1.5          # [asm] people notice late: 3 % at severity 0.1, 16 % at 0.3, 46 % at 0.6
+  max_slot_probability: 0.9
+  vague_fraction: 0.25          # [asm] note carries no category wording ("acting weird again")
+  misattribution_fraction: 0.10 # [asm] symptom described with another subsystem's wording
+
+sensor_drift_notes:             # tied to simulated temperature-sensor drift (ground truth impairments)
+  slot_probability_at_peak: 0.10
+  thermal_wording_fraction: 0.30   # [asm] drift reported as "running hot" although the motor is fine
+  recalibration_delay_days: [1.0, 5.0]
+
+outage_tickets:                 # tied to simulated network outages
+  probability_per_hour_of_outage: 0.5   # P(ticket) = min(1, 0.5 * outage_minutes / 60)
+  report_delay_hours: [0.0, 6.0]
+
+background_rates_per_unit_day:  # events that exist only in text (not in telemetry)
+  minor_battery: 0.010          # dirty charge contacts, corroded dock pins
+  minor_drivetrain: 0.010       # worn tread, debris on axle
+  minor_thermal: 0.010          # clogged intake filter
+  minor_sensor: 0.012           # lidar lens, bumper switch, encoder, IMU
+  connectivity_misc: 0.008      # access-point handover, SIM registration
+  user_error: 0.035
+  nff_episode: 0.020            # complaint on a healthy unit + "no fault found" closure
+  routine_note: 0.250           # handover / cleaning / inspection notes unrelated to any fault
+
+nff:
+  hedged_fraction: 0.70         # complaint is worded with doubt; the rest reads like a real symptom
+  closure_delay_hours: [12.0, 72.0]
+
+triage_delay_hours:             # creation -> label confirmed (label_available_utc)
+  minor: [4.0, 48.0]
+  connectivity: [1.0, 24.0]
+  user_error: [1.0, 48.0]
+  routine: [0.0, 24.0]
+
+noise:
+  abbreviation_probability: 0.35   # per eligible word
+  typo_probability: 0.06           # per word of 4+ letters
+  lowercase_fraction: 0.25
+  uppercase_fraction: 0.05
+  drop_punctuation_fraction: 0.30
+  unit_mention_fraction: 0.30
+  suffix_fraction: 0.50
+
+unseen_phrase_holdout_fraction: 0.20   # share of core phrases reserved for the lexical-shift test
