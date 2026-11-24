@@ -26,7 +26,7 @@ These items must be done by the named people themselves, and none was drafted by
 | 7 | Model card and cost-benefit (`W04_Model_Card.docx`, `release/cost_benefit.py`, `configs/cost_assumptions.yaml`) | done: generated from `reports/w04/*.json` by `scripts/build_w04_docs.py` |
 | 8 | Release files: README, ADRs 0001–0007, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, CI | done; CI not run on GitHub (no push) |
 | 9 | Capstone deck (PDF), retrospective template, demo script | done: 10 slides with finding titles; the retrospective has facts only, and its reflection sections are blank for Kuntong |
-| 10 | Quality gates | done locally: ruff, mypy (71 files), pytest 142 passed (19 W04; coverage 58 %), uv lock, Docker build and smoke, Airflow DAG import, gitleaks (24 commits, no leaks); Airflow run, idempotency, backfill and missing partition in `docker_airflow_checks.json`; fresh-clone quickstart: see below |
+| 10 | Quality gates | done locally: ruff, mypy (71 files), pytest 142 passed (19 W04; coverage 58 %), uv lock, Docker build and smoke, Airflow DAG import, gitleaks (24 commits, no leaks); Airflow run, idempotency, backfill and missing partition in `docker_airflow_checks.json`; fresh-clone quickstart passed (README steps 2-7 in an empty directory; the first attempt found a warm-up-day bug, fixed in 362ae76) |
 
 ## Design decisions (made autonomously)
 
@@ -84,6 +84,23 @@ These items must be done by the named people themselves, and none was drafted by
   - Airflow backfill: 2 runs succeeded;
   - the dashboard container is healthy;
   - gitleaks found no leaks in 23 commits (before the Week 4 commit).
+
+## Quality gates (2026-11-24, local; `reports/w04/quality_gates.json`)
+
+| Gate | Result |
+|---|---|
+| ruff | pass |
+| mypy (`src/`, `fleet_simulator.py`) | pass, 71 files |
+| pytest + coverage | 142 passed at 7f031eb (coverage of `ingen_fleet_health` 58 %); after the warm-up fix (362ae76): **143 passed** (123 Weeks 1–3 + 20 Week 4) |
+| `uv lock --check` | pass |
+| Docker build (app + airflow) | pass |
+| App image smoke | pass |
+| Airflow DAG import (3.3.2) | pass, no import errors |
+| gitleaks v8.30.0 (full history) | pass, 24 commits, no leaks |
+| Airflow run: idempotency, missing partition, backfill | pass (`docker_airflow_checks.json`) |
+| Dashboard smoke | pass: AppTest in pytest, container health, viewed in the browser |
+| Fresh-directory quickstart | pass on the second attempt (`docker_airflow_checks.json` → `fresh_clone_readme_quickstart`) |
+| GitHub Actions CI | **not run**: nothing pushed |
 
 ## Not done / needs Kuntong
 

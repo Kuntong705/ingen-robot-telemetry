@@ -3,18 +3,48 @@
   "environment": "Docker Desktop 28.5.1 (WSL2 backend, 16 CPU) on the Windows development machine; images ingen-fleet-health:app (python:3.11.17-slim-bookworm + uv 0.13.6, uv.lock) and ingen-fleet-health:airflow (apache/airflow:3.3.2-python3.11, LocalExecutor, SQLite, airflow standalone)",
   "data": "Docker quickstart fleet (python -m ingen_fleet_health.release.quickstart --all inside the trainer container): 12 units x 40 days per platform, seeds 79 / 1098, scored from 2026-11-19 to 2026-12-04",
   "checks": {
-    "docker_compose_build": {"ok": true, "detail": "both images built; one transient BuildKit 'parent snapshot does not exist' error on a parallel rebuild, passed on retry (runs/w04_docker_build*.log)"},
-    "trainer_quickstart_in_container": {"ok": true, "detail": "simulate -> ingest -> features -> train + register fleet_early_warning v1 / fleet_soh_forecast v1 in the MLflow server (proxied artifacts) -> publish -> backfill 2026-10-26..2026-12-04; 6 min 29 s"},
-    "airflow_dag_import": {"ok": true, "detail": "airflow 3.3.2: dags list-import-errors -> 'No data found'; fleet_health_daily listed"},
-    "airflow_dags_test_idempotent_rerun": {"ok": true, "detail": "airflow dags test fleet_health_daily 2026-12-04 (processes 2026-12-03): 14/14 tasks success, DagRun success; the 12 parquet partitions of 2026-12-03 (validated, quarantine, features, predictions, alerts, drift x 2 platforms) were rewritten (mtime during the run) and are byte-identical (sha256) to before"},
-    "airflow_missing_partition": {"ok": true, "detail": "Fari landing partition 2026-12-02 removed; dags test 2026-12-03: fari.wait_landing rescheduled 4 times then AirflowSensorTimeout after 120 s (quickstart setting; production 6 h); fari downstream not run and its 2026-12-02 outputs untouched (mtime unchanged); aido_rover group ran; failure record runs/failures/2026-12-02__fari__wait_landing.json written; DagRun state failed (all_platforms_ok leaf). Partition restored afterwards."},
-    "airflow_backfill": {"ok": true, "detail": "airflow backfill create --dag-id fleet_health_daily --from-date 2026-11-21 --to-date 2026-11-23: backfill runs 2026-11-21 and 2026-11-22 success; the scheduled run 2026-11-24T02:00 also succeeded after unpausing. Airflow refuses backfills of future logical dates ('Backfill cannot be executed for future dates'), and the simulated fleets extend past the real current date, so later dates use 'airflow dags test' or the CLI backfill."},
-    "dashboard_container": {"ok": true, "detail": "dashboard service healthy (/_stcore/health -> ok); page renders pull list / drill-down / alert queue / health in the in-app browser; same alerts as the Windows run of the same seeds"},
-    "mlflow_server": {"ok": true, "detail": "mlflow server healthy; registered models created through the server from the trainer container"}
+    "docker_compose_build": {
+      "ok": true,
+      "detail": "both images built; one transient BuildKit 'parent snapshot does not exist' error on a parallel rebuild, passed on retry (runs/w04_docker_build*.log)"
+    },
+    "trainer_quickstart_in_container": {
+      "ok": true,
+      "detail": "simulate -> ingest -> features -> train + register fleet_early_warning v1 / fleet_soh_forecast v1 in the MLflow server (proxied artifacts) -> publish -> backfill 2026-10-26..2026-12-04; 6 min 29 s"
+    },
+    "airflow_dag_import": {
+      "ok": true,
+      "detail": "airflow 3.3.2: dags list-import-errors -> 'No data found'; fleet_health_daily listed"
+    },
+    "airflow_dags_test_idempotent_rerun": {
+      "ok": true,
+      "detail": "airflow dags test fleet_health_daily 2026-12-04 (processes 2026-12-03): 14/14 tasks success, DagRun success; the 12 parquet partitions of 2026-12-03 (validated, quarantine, features, predictions, alerts, drift x 2 platforms) were rewritten (mtime during the run) and are byte-identical (sha256) to before"
+    },
+    "airflow_missing_partition": {
+      "ok": true,
+      "detail": "Fari landing partition 2026-12-02 removed; dags test 2026-12-03: fari.wait_landing rescheduled 4 times then AirflowSensorTimeout after 120 s (quickstart setting; production 6 h); fari downstream not run and its 2026-12-02 outputs untouched (mtime unchanged); aido_rover group ran; failure record runs/failures/2026-12-02__fari__wait_landing.json written; DagRun state failed (all_platforms_ok leaf). Partition restored afterwards."
+    },
+    "airflow_backfill": {
+      "ok": true,
+      "detail": "airflow backfill create --dag-id fleet_health_daily --from-date 2026-11-21 --to-date 2026-11-23: backfill runs 2026-11-21 and 2026-11-22 success; the scheduled run 2026-11-24T02:00 also succeeded after unpausing. Airflow refuses backfills of future logical dates ('Backfill cannot be executed for future dates'), and the simulated fleets extend past the real current date, so later dates use 'airflow dags test' or the CLI backfill."
+    },
+    "dashboard_container": {
+      "ok": true,
+      "detail": "dashboard service healthy (/_stcore/health -> ok); page renders pull list / drill-down / alert queue / health in the in-app browser; same alerts as the Windows run of the same seeds"
+    },
+    "mlflow_server": {
+      "ok": true,
+      "detail": "mlflow server healthy; registered models created through the server from the trainer container"
+    },
+    "fresh_clone_readme_quickstart": {
+      "ok": true,
+      "detail": "git clone of branch week4 (commit 362ae76) into an empty directory; README quickstart steps 2-7 run verbatim under compose project 'fleetfresh' with its own empty volume: build (2 min, cached layers), mlflow healthy, trainer exit 0 in 4 min (fleet_early_warning v1 and fleet_soh_forecast v1 registered, backfill done 2026-10-26..2026-12-04), dashboard health ok, DAG listed, dags test 14/14 success / DagRun success, backfill + scheduled runs success. Torn down with 'down -v'.",
+      "first_attempt": "commit 7f031eb: trainer failed on the fleet's first day (empty warm-up chunk in the parallel feature build, KeyError 'unit_id'); fixed in 362ae76 with a regression test"
+    }
   },
   "defects_found_and_fixed": [
     "Volume ownership: the trainer wrote /data as root and Airflow (uid 50000) could not write -> added a volume-init service (chown 50000:0) and run app services as 50000:0",
     "DAG outcome: a failed platform was hidden because the only leaf (weekly_performance, trigger all_done) succeeded -> added all_platforms_ok (trigger all_success) so a missing partition fails the run",
-    "HOME=/tmp in the shared env anchor hid Airflow's user-site packages -> HOME set on app services only"
+    "HOME=/tmp in the shared env anchor hid Airflow's user-site packages -> HOME set on app services only",
+    "Parallel feature build failed on the fleet first day (24 h warm-up, all chunks empty) -> keep the schema and write an empty partition; regression test test_first_fleet_day_writes_an_empty_feature_partition (found only by the fresh-clone quickstart)"
   ]
 }

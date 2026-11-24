@@ -71,8 +71,8 @@ Every command runs from the repository root. The expected outcome follows each s
    - The DAG `fleet_health_daily` is listed and paused.
 6. **Run the DAG for one day.** `docker compose exec airflow airflow dags test fleet_health_daily 2026-12-05`
    - Outcome: both platform groups succeed for UTC day 2026-12-04. That date is already processed, so the re-run replaces its partitions with byte-identical files.
-7. **Backfill through Airflow (optional).** `docker compose exec airflow airflow dags unpause fleet_health_daily`, then `docker compose exec airflow airflow backfill create --dag-id fleet_health_daily --from-date 2026-11-21 --to-date 2026-11-22`
-   - Outcome: two backfill runs, executed one at a time; `airflow dags list-runs fleet_health_daily` shows them as `success`.
+7. **Backfill through Airflow (optional).** `docker compose exec airflow airflow dags unpause fleet_health_daily`, then `docker compose exec airflow airflow backfill create --dag-id fleet_health_daily --from-date 2026-11-21 --to-date 2026-11-23`
+   - Outcome: two backfill runs, for logical dates 2026-11-21 and 2026-11-22 at 02:00 UTC, executed one at a time. `airflow dags list-runs fleet_health_daily` shows them as `success`.
    - Airflow refuses backfills of logical dates in the future, and the simulated fleets run into December 2026. For dates after the real current date, use `airflow dags test` or the CLI backfill.
 
 The quickstart fleet is a plumbing demo with 12 robots per platform; its numbers are not an evaluation. To stop everything: `docker compose down` (add `-v` to delete the data volume).
