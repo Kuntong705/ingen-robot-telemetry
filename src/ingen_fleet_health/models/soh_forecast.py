@@ -67,8 +67,12 @@ def _rolling_ols(values: np.ndarray, window: int) -> tuple[np.ndarray, np.ndarra
     return level, slope
 
 
-def daily_table(features_hourly: pd.DataFrame, battery_truth: pd.DataFrame, horizons: list[int]) -> pd.DataFrame:
-    """One row per unit-day with as-of daily features and SoH targets."""
+def daily_features(features_hourly: pd.DataFrame) -> pd.DataFrame:
+    """One row per unit-day with the as-of daily features (no targets).
+
+    Row ``day`` d uses the hourly features at t = d + 1 day 00:00. The trailing
+    windows span at most 14 days, so 21 days of hourly rows reproduce the
+    values computed on the full history (used by the daily pipeline)."""
     day_rows = features_hourly[features_hourly["t"].dt.hour == 0].copy()
     day_rows["day"] = (day_rows["t"] - pd.Timedelta(days=1)).dt.normalize()
     keep = ["unit_id", "t", "day", "bms_soh_mean_24h", "ambient_mean_24h", "efc_24h", "efc_cum_nominal",
@@ -85,8 +89,12 @@ def daily_table(features_hourly: pd.DataFrame, battery_truth: pd.DataFrame, hori
         g["ambient_mean_7d"] = g["ambient_mean_24h"].rolling(7, min_periods=1).mean()
         g["efc_7d"] = g["efc_24h"].rolling(7, min_periods=1).sum()
         parts.append(g)
-    daily = pd.concat(parts, ignore_index=True)
+    return pd.concat(parts, ignore_index=True)
 
+
+def daily_table(features_hourly: pd.DataFrame, battery_truth: pd.DataFrame, horizons: list[int]) -> pd.DataFrame:
+    """One row per unit-day with as-of daily features and SoH targets."""
+    daily = daily_features(features_hourly)
     truth = battery_truth.copy()
     truth["day"] = pd.to_datetime(truth["date_utc"]).dt.tz_localize("UTC")
     truth = truth.sort_values(["unit_id", "day"])

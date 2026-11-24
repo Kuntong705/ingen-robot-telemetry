@@ -1,0 +1,23 @@
+# Cost-benefit assumptions for the Week 4 model card (W04_Model_Card.docx).
+#
+# !!! EVERY MONEY VALUE HERE IS AN ILLUSTRATIVE PLACEHOLDER, NOT AN INGEN FIGURE. !!!
+# No InGen service, labour or downtime cost was available. The values only make
+# the arithmetic concrete; the sensitivity table varies each of them, and the
+# result that does not depend on them is the break-even ratio:
+#   (failure cost - planned repair cost) / (cost of one false alarm)
+# above which acting on the alerts pays off. Replace with InGen figures before
+# any business use.
+currency: "illustrative USD (placeholder)"
+
+cost_unplanned_failure: 2000.0        # [asm] in-shift failure: emergency call-out, lost patrol coverage, secondary damage
+cost_planned_repair: 600.0            # [asm] the same repair done between shifts after an alert
+cost_false_alarm_inspection: 150.0    # [asm] technician inspection that finds nothing (about 1.5 h)
+cost_unnecessary_swap: 300.0          # [asm] spare-unit swap and logistics when an inspection is inconclusive
+swap_probability_on_false_alarm: 0.3  # [asm] share of false alarms that also lead to a swap
+repair_success_if_caught: 1.0         # [asm] an alert raised in time prevents the in-shift failure
+
+sensitivity:                          # multipliers / values applied one at a time to the values above
+  cost_unplanned_failure: [0.5, 1.0, 2.0, 4.0]
+  cost_false_alarm_inspection: [0.5, 1.0, 2.0]
+  swap_probability_on_false_alarm: [0.0, 0.3, 1.0]
+  repair_success_if_caught: [0.5, 0.75, 1.0]

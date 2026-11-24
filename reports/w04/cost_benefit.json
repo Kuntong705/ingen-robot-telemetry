@@ -1,0 +1,1107 @@
+{
+  "assumptions": {
+    "cost_unplanned_failure": 2000.0,
+    "cost_planned_repair": 600.0,
+    "cost_false_alarm_inspection": 150.0,
+    "cost_unnecessary_swap": 300.0,
+    "swap_probability_on_false_alarm": 0.3,
+    "repair_success_if_caught": 1.0,
+    "currency": "illustrative USD (placeholder)",
+    "false_alarm_cost": 240.0,
+    "saving_per_catch": 1400.0
+  },
+  "notice": "Money values are illustrative placeholders, not InGen figures. The break-even ratio uses measured counts only.",
+  "strategies": {
+    "w02_walk_forward:lgbm_selected": {
+      "alerts": 132.0,
+      "true_alerts": 15,
+      "false_alarms": 117.0,
+      "events": 31.0,
+      "events_detected": 13.0,
+      "unit_weeks": 249.82142857142858,
+      "savings_from_caught_failures": 18200.0,
+      "false_alarm_cost": 28080.0,
+      "net_benefit": -9880.0,
+      "net_benefit_per_unit_week": -39.548248749106506,
+      "run_to_failure_cost": 62000.0,
+      "break_even_ratio": 9.0,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w02_walk_forward:iforest": {
+      "alerts": 292.0,
+      "true_alerts": 27,
+      "false_alarms": 265.0,
+      "events": 31.0,
+      "events_detected": 25.0,
+      "unit_weeks": 249.82142857142858,
+      "savings_from_caught_failures": 35000.0,
+      "false_alarm_cost": 63600.0,
+      "net_benefit": -28600.0,
+      "net_benefit_per_unit_week": -114.48177269478198,
+      "run_to_failure_cost": 62000.0,
+      "break_even_ratio": 10.6,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w02_walk_forward:physics_rule": {
+      "alerts": 294.0,
+      "true_alerts": 27,
+      "false_alarms": 267.0,
+      "events": 31.0,
+      "events_detected": 27.0,
+      "unit_weeks": 249.82142857142858,
+      "savings_from_caught_failures": 37800.0,
+      "false_alarm_cost": 64080.0,
+      "net_benefit": -26280.0,
+      "net_benefit_per_unit_week": -105.1951393852752,
+      "run_to_failure_cost": 62000.0,
+      "break_even_ratio": 9.88888888888889,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:aido_rover:iforest_shadow": {
+      "alerts": 45.0,
+      "true_alerts": 6.0,
+      "false_alarms": 39.0,
+      "events": 6.0,
+      "events_detected": 6.0,
+      "unit_weeks": 46.761905,
+      "savings_from_caught_failures": 8400.0,
+      "false_alarm_cost": 9360.0,
+      "net_benefit": -960.0,
+      "net_benefit_per_unit_week": -20.529531463698923,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 6.5,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:aido_rover:physics_rule_shadow": {
+      "alerts": 64.0,
+      "true_alerts": 5.0,
+      "false_alarms": 59.0,
+      "events": 6.0,
+      "events_detected": 5.0,
+      "unit_weeks": 46.761905,
+      "savings_from_caught_failures": 7000.0,
+      "false_alarm_cost": 14160.0,
+      "net_benefit": -7160.0,
+      "net_benefit_per_unit_week": -153.11608883342114,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 11.8,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:aido_rover:champion": {
+      "alerts": 49.0,
+      "true_alerts": 5.0,
+      "false_alarms": 44.0,
+      "events": 6.0,
+      "events_detected": 5.0,
+      "unit_weeks": 46.761905,
+      "savings_from_caught_failures": 7000.0,
+      "false_alarm_cost": 10560.0,
+      "net_benefit": -3560.0,
+      "net_benefit_per_unit_week": -76.13034584455018,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 8.8,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:fari:iforest_shadow": {
+      "alerts": 99.0,
+      "true_alerts": 6.0,
+      "false_alarms": 93.0,
+      "events": 6.0,
+      "events_detected": 6.0,
+      "unit_weeks": 45.910714,
+      "savings_from_caught_failures": 8400.0,
+      "false_alarm_cost": 22320.0,
+      "net_benefit": -13920.0,
+      "net_benefit_per_unit_week": -303.1972014201304,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 15.5,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:fari:physics_rule_shadow": {
+      "alerts": 93.0,
+      "true_alerts": 6.0,
+      "false_alarms": 87.0,
+      "events": 6.0,
+      "events_detected": 6.0,
+      "unit_weeks": 45.910714,
+      "savings_from_caught_failures": 8400.0,
+      "false_alarm_cost": 20880.0,
+      "net_benefit": -12480.0,
+      "net_benefit_per_unit_week": -271.83197368701343,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 14.5,
+      "assumed_ratio": 5.833333333333333
+    },
+    "w04_operational:fari:champion": {
+      "alerts": 53.0,
+      "true_alerts": 5.0,
+      "false_alarms": 48.0,
+      "events": 6.0,
+      "events_detected": 5.0,
+      "unit_weeks": 45.910714,
+      "savings_from_caught_failures": 7000.0,
+      "false_alarm_cost": 11520.0,
+      "net_benefit": -4520.0,
+      "net_benefit_per_unit_week": -98.45196482895038,
+      "run_to_failure_cost": 12000.0,
+      "break_even_ratio": 9.6,
+      "assumed_ratio": 5.833333333333333
+    }
+  },
+  "sensitivity": {
+    "w02_walk_forward:lgbm_selected": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -22880.0,
+        "net_benefit_per_unit_week": -91.58541815582558,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -9880.0,
+        "net_benefit_per_unit_week": -39.548248749106506,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 16120.0,
+        "net_benefit_per_unit_week": 64.52609006433167,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 68120.0,
+        "net_benefit_per_unit_week": 272.674767691208,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -1105.0,
+        "net_benefit_per_unit_week": -4.423159399571122,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -9880.0,
+        "net_benefit_per_unit_week": -39.548248749106506,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -27430.0,
+        "net_benefit_per_unit_week": -109.79842744817726,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": 650.0,
+        "net_benefit_per_unit_week": 2.601858470335954,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -9880.0,
+        "net_benefit_per_unit_week": -39.548248749106506,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -34450.0,
+        "net_benefit_per_unit_week": -137.89849892780558,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 9.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -18980.0,
+        "net_benefit_per_unit_week": -75.97426733380986,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 18.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -14430.0,
+        "net_benefit_per_unit_week": -57.761258041458184,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 12.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -9880.0,
+        "net_benefit_per_unit_week": -39.548248749106506,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.0
+      }
+    ],
+    "w02_walk_forward:iforest": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -53600.0,
+        "net_benefit_per_unit_week": -214.55325232308792,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -28600.0,
+        "net_benefit_per_unit_week": -114.48177269478198,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 21400.0,
+        "net_benefit_per_unit_week": 85.66118656182988,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 121400.0,
+        "net_benefit_per_unit_week": 485.94710507505357,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -8725.0,
+        "net_benefit_per_unit_week": -34.92494639027877,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -28600.0,
+        "net_benefit_per_unit_week": -114.48177269478198,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -68350.0,
+        "net_benefit_per_unit_week": -273.59542530378843,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -4750.0,
+        "net_benefit_per_unit_week": -19.013581129378128,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -28600.0,
+        "net_benefit_per_unit_week": -114.48177269478198,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -84250.0,
+        "net_benefit_per_unit_week": -337.240886347391,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 10.6
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -46100.0,
+        "net_benefit_per_unit_week": -184.53180843459614,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 21.2
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -37350.0,
+        "net_benefit_per_unit_week": -149.50679056468906,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 14.133333333333333
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -28600.0,
+        "net_benefit_per_unit_week": -114.48177269478198,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 10.6
+      }
+    ],
+    "w02_walk_forward:physics_rule": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -53280.0,
+        "net_benefit_per_unit_week": -213.27233738384558,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -26280.0,
+        "net_benefit_per_unit_week": -105.1951393852752,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 27720.0,
+        "net_benefit_per_unit_week": 110.95925661186561,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 135720.0,
+        "net_benefit_per_unit_week": 543.2680486061472,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -6255.0,
+        "net_benefit_per_unit_week": -25.037884203002143,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -26280.0,
+        "net_benefit_per_unit_week": -105.1951393852752,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -66330.0,
+        "net_benefit_per_unit_week": -265.5096497498213,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -2250.0,
+        "net_benefit_per_unit_week": -9.006433166547534,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -26280.0,
+        "net_benefit_per_unit_week": -105.1951393852752,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -82350.0,
+        "net_benefit_per_unit_week": -329.6354538956397,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 9.88888888888889
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -45180.0,
+        "net_benefit_per_unit_week": -180.84917798427446,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 19.77777777777778
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -35730.0,
+        "net_benefit_per_unit_week": -143.02215868477484,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 13.185185185185185
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -26280.0,
+        "net_benefit_per_unit_week": -105.1951393852752,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.88888888888889
+      }
+    ],
+    "w04_operational:aido_rover:iforest_shadow": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -6960.0,
+        "net_benefit_per_unit_week": -148.8391031118172,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -960.0,
+        "net_benefit_per_unit_week": -20.529531463698923,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 11040.0,
+        "net_benefit_per_unit_week": 236.08961183253763,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 35040.0,
+        "net_benefit_per_unit_week": 749.3278984250107,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": 1965.0,
+        "net_benefit_per_unit_week": 42.02138471475873,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -960.0,
+        "net_benefit_per_unit_week": -20.529531463698923,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -6810.0,
+        "net_benefit_per_unit_week": -145.63136382061424,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": 2550.0,
+        "net_benefit_per_unit_week": 54.53156795045027,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -960.0,
+        "net_benefit_per_unit_week": -20.529531463698923,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -9150.0,
+        "net_benefit_per_unit_week": -195.67209676338038,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 6.5
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -5160.0,
+        "net_benefit_per_unit_week": -110.34623161738172,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 13.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -3060.0,
+        "net_benefit_per_unit_week": -65.43788154054032,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 8.666666666666666
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -960.0,
+        "net_benefit_per_unit_week": -20.529531463698923,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 6.5
+      }
+    ],
+    "w04_operational:aido_rover:physics_rule_shadow": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -12160.0,
+        "net_benefit_per_unit_week": -260.0407318735197,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -7160.0,
+        "net_benefit_per_unit_week": -153.11608883342114,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 2840.0,
+        "net_benefit_per_unit_week": 60.73319724677598,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 22840.0,
+        "net_benefit_per_unit_week": 488.43176940717024,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -2735.0,
+        "net_benefit_per_unit_week": -58.48777974293392,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -7160.0,
+        "net_benefit_per_unit_week": -153.11608883342114,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -16010.0,
+        "net_benefit_per_unit_week": -342.3727070143956,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -1850.0,
+        "net_benefit_per_unit_week": -39.56211792483647,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -7160.0,
+        "net_benefit_per_unit_week": -153.11608883342114,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -19550.0,
+        "net_benefit_per_unit_week": -418.0753542867854,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 11.8
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -10660.0,
+        "net_benefit_per_unit_week": -227.96333896149014,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 23.6
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -8910.0,
+        "net_benefit_per_unit_week": -190.53971389745564,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 15.733333333333333
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -7160.0,
+        "net_benefit_per_unit_week": -153.11608883342114,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 11.8
+      }
+    ],
+    "w04_operational:aido_rover:champion": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -8560.0,
+        "net_benefit_per_unit_week": -183.05498888464874,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -3560.0,
+        "net_benefit_per_unit_week": -76.13034584455018,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 6440.0,
+        "net_benefit_per_unit_week": 137.71894023564695,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 26440.0,
+        "net_benefit_per_unit_week": 565.4175123960412,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -260.0,
+        "net_benefit_per_unit_week": -5.560081438085125,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -3560.0,
+        "net_benefit_per_unit_week": -76.13034584455018,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -10160.0,
+        "net_benefit_per_unit_week": -217.27087465748028,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": 400.0,
+        "net_benefit_per_unit_week": 8.553971443207885,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -3560.0,
+        "net_benefit_per_unit_week": -76.13034584455018,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -12800.0,
+        "net_benefit_per_unit_week": -273.72708618265233,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 8.8
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -7060.0,
+        "net_benefit_per_unit_week": -150.97759597261916,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 17.6
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -5310.0,
+        "net_benefit_per_unit_week": -113.55397090858467,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 11.733333333333333
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -3560.0,
+        "net_benefit_per_unit_week": -76.13034584455018,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 8.8
+      }
+    ],
+    "w04_operational:fari:iforest_shadow": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -19920.0,
+        "net_benefit_per_unit_week": -433.88565030811765,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -13920.0,
+        "net_benefit_per_unit_week": -303.1972014201304,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": -1920.0,
+        "net_benefit_per_unit_week": -41.82030364415591,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 22080.0,
+        "net_benefit_per_unit_week": 480.93349190779304,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -6945.0,
+        "net_benefit_per_unit_week": -151.27187958784523,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -13920.0,
+        "net_benefit_per_unit_week": -303.1972014201304,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -27870.0,
+        "net_benefit_per_unit_week": -607.0478450847007,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -5550.0,
+        "net_benefit_per_unit_week": -120.88681522138819,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -13920.0,
+        "net_benefit_per_unit_week": -303.1972014201304,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -33450.0,
+        "net_benefit_per_unit_week": -728.5881025505289,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 15.5
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -18120.0,
+        "net_benefit_per_unit_week": -394.67911564172147,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 31.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -16020.0,
+        "net_benefit_per_unit_week": -348.93815853092593,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 20.666666666666668
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -13920.0,
+        "net_benefit_per_unit_week": -303.1972014201304,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 15.5
+      }
+    ],
+    "w04_operational:fari:physics_rule_shadow": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -18480.0,
+        "net_benefit_per_unit_week": -402.5204225750007,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -12480.0,
+        "net_benefit_per_unit_week": -271.83197368701343,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": -480.0,
+        "net_benefit_per_unit_week": -10.455075911038978,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 23520.0,
+        "net_benefit_per_unit_week": 512.29871964091,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -5955.0,
+        "net_benefit_per_unit_week": -129.70828552132733,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -12480.0,
+        "net_benefit_per_unit_week": -271.83197368701343,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -25530.0,
+        "net_benefit_per_unit_week": -556.0793500183858,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -4650.0,
+        "net_benefit_per_unit_week": -101.28354788819011,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -12480.0,
+        "net_benefit_per_unit_week": -271.83197368701343,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -30750.0,
+        "net_benefit_per_unit_week": -669.7783005509345,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 14.5
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -16680.0,
+        "net_benefit_per_unit_week": -363.3138879086045,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 29.0
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -14580.0,
+        "net_benefit_per_unit_week": -317.57293079780897,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 19.333333333333332
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -12480.0,
+        "net_benefit_per_unit_week": -271.83197368701343,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 14.5
+      }
+    ],
+    "w04_operational:fari:champion": [
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x0.5",
+        "net_benefit": -9520.0,
+        "net_benefit_per_unit_week": -207.35900556893975,
+        "assumed_ratio": 1.6666666666666667,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x1",
+        "net_benefit": -4520.0,
+        "net_benefit_per_unit_week": -98.45196482895038,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x2",
+        "net_benefit": 5480.0,
+        "net_benefit_per_unit_week": 119.36211665102834,
+        "assumed_ratio": 14.166666666666666,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_unplanned_failure",
+        "setting": "cost_unplanned_failure x4",
+        "net_benefit": 25480.0,
+        "net_benefit_per_unit_week": 554.9902796109858,
+        "assumed_ratio": 30.833333333333332,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x0.5",
+        "net_benefit": -920.0,
+        "net_benefit_per_unit_week": -20.038895496158045,
+        "assumed_ratio": 8.484848484848484,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x1",
+        "net_benefit": -4520.0,
+        "net_benefit_per_unit_week": -98.45196482895038,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "cost_false_alarm_inspection",
+        "setting": "cost_false_alarm_inspection x2",
+        "net_benefit": -11720.0,
+        "net_benefit_per_unit_week": -255.27810349453506,
+        "assumed_ratio": 3.58974358974359,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0",
+        "net_benefit": -200.0,
+        "net_benefit_per_unit_week": -4.356281629599574,
+        "assumed_ratio": 9.333333333333334,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 0.3",
+        "net_benefit": -4520.0,
+        "net_benefit_per_unit_week": -98.45196482895038,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "swap_probability_on_false_alarm",
+        "setting": "swap_probability_on_false_alarm = 1",
+        "net_benefit": -14600.0,
+        "net_benefit_per_unit_week": -318.00855896076894,
+        "assumed_ratio": 3.111111111111111,
+        "break_even_ratio": 9.6
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.5",
+        "net_benefit": -8020.0,
+        "net_benefit_per_unit_week": -174.68689334694295,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 19.2
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 0.75",
+        "net_benefit": -6270.0,
+        "net_benefit_per_unit_week": -136.56942908794667,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 12.8
+      },
+      {
+        "parameter": "repair_success_if_caught",
+        "setting": "repair_success_if_caught = 1",
+        "net_benefit": -4520.0,
+        "net_benefit_per_unit_week": -98.45196482895038,
+        "assumed_ratio": 5.833333333333333,
+        "break_even_ratio": 9.6
+      }
+    ]
+  }
+}

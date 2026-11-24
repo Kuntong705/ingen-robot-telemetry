@@ -1,0 +1,72 @@
+# Local stack: MLflow (tracking + model registry), Airflow (DAG), Streamlit dashboard.
+# Everything runs on synthetic data inside the named volume `fleet-data`; no cloud
+# resources, no credentials. See README "Quickstart".
+#
+#   docker compose build
+#   docker compose up -d mlflow
+#   docker compose run --rm trainer          # small synthetic fleet -> train + register v1 -> publish -> backfill
+#   docker compose up -d airflow dashboard   # Airflow http://localhost:8080 | dashboard http://localhost:8501
+
+x-fleet-env: &fleet-env
+  MLFLOW_TRACKING_URI: http://mlflow:5000
+  FLEET_PIPELINE_CONFIG: /data/quickstart/pipeline.yaml
+  FLEET_DAG_START_DATE: "2026-10-27"          # quickstart fleet starts 2026-10-26; the DAG processes logical date - 1 day
+
+services:
+  volume-init:                                # one-off: the shared volume belongs to uid 50000 / gid 0 (Airflow's user)
+    build: {context: ., target: app}
+    image: ingen-fleet-health:app
+    user: "0:0"
+    command: ["sh", "-c", "mkdir -p /data/mlflow && chown -R 50000:0 /data && chmod -R g+rwX /data"]
+    volumes: [fleet-data:/data]
+
+  mlflow:
+    image: ingen-fleet-health:app
+    user: "50000:0"
+    environment: {HOME: /tmp}
+    depends_on: {volume-init: {condition: service_completed_successfully}}
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////data/mlflow/mlflow.db
+      --artifacts-destination /data/mlflow/artifacts --serve-artifacts
+      --allowed-hosts "mlflow,mlflow:5000,localhost,localhost:5000,127.0.0.1,127.0.0.1:5000"
+    volumes: [fleet-data:/data]
+    ports: ["5000:5000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      retries: 12
+
+  trainer:
+    image: ingen-fleet-health:app
+    user: "50000:0"
+    profiles: [setup]
+    environment: {<<: *fleet-env, HOME: /tmp}   # app services run as uid 50000 (Airflow's user), not root
+    command: ["python", "-m", "ingen_fleet_health.release.quickstart", "--root", "/data/quickstart", "--all"]
+    volumes: [fleet-data:/data]
+    depends_on: {mlflow: {condition: service_healthy}}
+
+  airflow:
+    build: {context: ., target: airflow}
+    image: ingen-fleet-health:airflow
+    command: standalone
+    environment:
+      <<: *fleet-env
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "True"
+      FLEET_SENSOR_TIMEOUT_S: "120"            # quickstart: give up on a missing partition after 2 min (production: 6 h)
+      FLEET_SENSOR_POKE_S: "30"
+    volumes: [fleet-data:/data]
+    ports: ["8080:8080"]
+    depends_on: {mlflow: {condition: service_healthy}}
+
+  dashboard:
+    image: ingen-fleet-health:app
+    user: "50000:0"
+    environment: {<<: *fleet-env, HOME: /tmp}
+    volumes: [fleet-data:/data]
+    ports: ["8501:8501"]
+    depends_on: {mlflow: {condition: service_healthy}}
+
+volumes:
+  fleet-data:

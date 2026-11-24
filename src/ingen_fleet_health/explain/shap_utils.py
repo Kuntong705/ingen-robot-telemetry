@@ -34,6 +34,7 @@ CONCEPT_LABEL = {
     "maintenance_history": "time since the last repair",
     "operator_notes": "operator notes",
     "user_error": "user or operational error",
+    "platform": "robot platform",
 }
 CLASS_CONCEPT = {
     "battery": "battery",
@@ -89,6 +90,8 @@ _PHYSICS_PHRASE: dict[str, tuple[str, str, str]] = {
     "odometer_km": ("odometer", "km", "usage"),
     "hours_since_repair": ("hours since the last completed repair", "h", "maintenance_history"),
     "hour_of_day": ("hour of day", "h UTC", "usage"),
+    # Week 4 pooled production model: platform indicator (Aido Rover = 0, Fari = 1)
+    "platform_fari": ("platform indicator (Fari = 1, Aido Rover = 0)", "", "platform"),
     "txt_fault_max_72h": ("strongest fault wording in operator notes of the last 72 h (classifier probability)", "",
                           "operator_notes"),
     "txt_note_count_72h": ("operator notes in the last 72 h", "", "operator_notes"),

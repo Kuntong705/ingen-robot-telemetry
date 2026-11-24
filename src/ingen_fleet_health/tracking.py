@@ -45,9 +45,15 @@ def tracked_run(experiment: str, run_name: str, tags: dict[str, str] | None = No
     os.environ.setdefault("MLFLOW_DISABLE_AGENT_HINT", "1")
     import mlflow
 
-    mlflow.set_tracking_uri(tracking_uri())
+    uri = tracking_uri()
+    mlflow.set_tracking_uri(uri)
     if mlflow.get_experiment_by_name(experiment) is None:
-        mlflow.create_experiment(experiment, artifact_location=(REPO_ROOT / "mlruns" / experiment).as_uri())
+        if uri.startswith(("http://", "https://")):
+            location = None          # a tracking server stores artifacts itself (proxied, portable)
+        else:
+            root = Path(os.environ.get("MLFLOW_ARTIFACT_ROOT", REPO_ROOT / "mlruns"))
+            location = (root / experiment).as_uri()
+        mlflow.create_experiment(experiment, artifact_location=location)
     mlflow.set_experiment(experiment)
     with mlflow.start_run(run_name=run_name) as run:
         mlflow.set_tags({**git_state(), **(tags or {})})

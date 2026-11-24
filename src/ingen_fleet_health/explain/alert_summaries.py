@@ -188,6 +188,12 @@ class TemplateSummariser:
 
     name = "template"
 
+    def __init__(self, notes_ingested: bool = True) -> None:
+        # Week 4 production v1 is telemetry-only: no operator notes reach the
+        # model, so the summary must not say "no note was linked" (that would
+        # read as "the unit has no notes").
+        self.notes_ingested = notes_ingested
+
     def summarise(self, ev: Evidence) -> str:
         s1 = (f"{ev.unit_id} was flagged at {ev.t} UTC: the model puts the chance of a qualifying fault onset "
               f"within 72 h at {pct(ev.risk)} %, against an alert threshold of {pct(ev.threshold)} %.")
@@ -196,6 +202,9 @@ class TemplateSummariser:
             s2 = "The score is pushed up mainly by " + _join([describe_attribution(a) for a in drivers]) + "."
         else:
             s2 = "No single feature pushes this score up; it sits at the model's baseline."
+        if not self.notes_ingested:
+            return (f"{s1} {s2} Operator notes are not an input of this model version, "
+                    "so check the unit's recent tickets before acting.")
         notes = ev.notes
         text_driver = next((a for a in drivers if a.concept == "operator_notes"), None)
         source = note_behind(text_driver, ev) if text_driver is not None else None

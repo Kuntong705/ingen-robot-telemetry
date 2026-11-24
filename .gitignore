@@ -248,3 +248,10 @@ mlflow.db
 # Week 3 generated data (synthetic Fari fleet)
 /data/w03_fari/
 /data/w03_fari_small/
+
+# Local editor / assistant settings (may contain machine paths)
+/.claude/
+
+# Week 4 pipeline data and quickstart fleets
+/data/w04/
+/data/quickstart/

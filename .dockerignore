@@ -1,0 +1,17 @@
+# keep the build context small and free of local data, secrets and caches
+.git
+.venv
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+.env
+.env.*
+!.env.example
+data/
+mlruns/
+mlflow.db
+runs/
+media/
+*.mp4
+*.mkv

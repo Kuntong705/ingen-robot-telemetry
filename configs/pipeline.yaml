@@ -1,0 +1,40 @@
+# Week 4 daily fleet-health pipeline (ADR-0005 production recipe, ADR-0006 data behaviour).
+# Every value that an operator or reviewer may want to change lives here, not in code.
+# All fleets are SYNTHETIC (simulator v0.2); nothing here describes a real InGen deployment.
+
+data_root: data/w04                 # landing / validated / features / predictions / alerts / monitoring
+platforms:                          # platform -> simulator profile and the simulated fleet that "upstream" publishes
+  aido_rover:
+    config: configs/aido_rover_v0_2.yaml
+    source_dir: data/w02
+  fari:
+    config: configs/fari.yaml
+    source_dir: data/w03_fari
+
+models:                             # loaded from the MLflow model registry by name and pinned version
+  early_warning: {name: fleet_early_warning, version: 1}
+  soh_forecast: {name: fleet_soh_forecast, version: 1}
+
+release_training:                   # ADR-0005: how production v1 is trained
+  training_unit_fraction: 0.7       # per platform; the rest are held-out units never seen in training
+  cutoff_day: 30                    # training rows: prediction time <= start + cutoff_day - 72 h (embargo)
+  validation_days: 6                # last days before the embargoed end: calibration, selection, thresholds
+  soh_horizon_days: 7
+  seed: 0
+
+alerting:
+  budget_alerts_per_unit_week: 1.0  # per-platform thresholds are chosen on validation rows to meet this
+  refractory_hours: 72              # one alert per crossing; the unit is then muted for 72 h
+  min_data_fraction_24h: 0.5        # rows with >50 % of the last 24 h missing are "insufficient data", never alerts
+
+landing:                            # ADR-0006: late or missing upstream partitions
+  sensor_poke_minutes: 30           # Airflow sensor re-checks the landing partition every 30 min ...
+  sensor_timeout_hours: 6           # ... for up to 6 h; then the run fails and nothing downstream is written
+
+monitoring:
+  psi_top_features: 8               # PSI on the early-warning model's top features by gain
+  psi_bins: 10
+  psi_watch: 0.10                   # conventional PSI bands: < 0.10 stable, 0.10-0.25 watch, > 0.25 shift
+  psi_shift: 0.25
+  performance_weekday: 6            # Sunday (Mon=0): weekly check against newly confirmed faults
+  label_maturity_days: 7            # 72 h horizon + up to 96 h until a fault is confirmed at repair start (simulator)

@@ -1,13 +1,16 @@
-
 name: Python CI
 
 on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -30,5 +33,34 @@ jobs:
       - name: Type checking
         run: uv run --locked mypy src/ fleet_simulator.py
 
-      - name: Run automated tests
-        run: uv run --locked python -m pytest -q
+      - name: Run automated tests with coverage
+        run: uv run --locked python -m pytest -q --cov=ingen_fleet_health --cov-report=term --cov-report=xml
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Gitleaks (all commits)
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.0 git /repo --redact --verbose --exit-code 1
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build the app image
+        run: docker build --target app -t ingen-fleet-health:ci .
+
+      - name: Smoke test the image (package imports, pipeline CLI)
+        run: |
+          docker run --rm ingen-fleet-health:ci python -c "import ingen_fleet_health.pipeline.runner, ingen_fleet_health.release.train"
+          docker run --rm ingen-fleet-health:ci python -m ingen_fleet_health.pipeline --help
