@@ -23,10 +23,10 @@ These items must be done by the named people themselves, and none was drafted by
 | 4 | Monitoring: PSI and the weekly performance check (`monitoring/`) | done |
 | 5 | Airflow DAG and Docker Compose stack | done: built and run in Docker (see `reports/w04/docker_airflow_checks.json`) |
 | 6 | Streamlit + Plotly dashboard (ADR-0007) | done: smoke-tested (AppTest) and viewed in the browser (local and Docker) |
-| 7 | Model card and cost-benefit (`W04_Model_Card.docx`, `release/cost_benefit.py`, `configs/cost_assumptions.yaml`) | see session log |
+| 7 | Model card and cost-benefit (`W04_Model_Card.docx`, `release/cost_benefit.py`, `configs/cost_assumptions.yaml`) | done: generated from `reports/w04/*.json` by `scripts/build_w04_docs.py` |
 | 8 | Release files: README, ADRs 0001–0007, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, CI | done; CI not run on GitHub (no push) |
-| 9 | Capstone deck (PDF), retrospective template, demo script | see session log |
-| 10 | Quality gates | see `reports/w04/quality_gates.json` |
+| 9 | Capstone deck (PDF), retrospective template, demo script | done: 10 slides with finding titles; the retrospective has facts only, and its reflection sections are blank for Kuntong |
+| 10 | Quality gates | done locally: ruff, mypy (71 files), pytest 142 passed (19 W04; coverage 58 %), uv lock, Docker build and smoke, Airflow DAG import, gitleaks (24 commits, no leaks); Airflow run, idempotency, backfill and missing partition in `docker_airflow_checks.json`; fresh-clone quickstart: see below |
 
 ## Design decisions (made autonomously)
 
@@ -56,6 +56,34 @@ These items must be done by the named people themselves, and none was drafted by
 - Full-data run on `data/w04`:
   - history load 2026-10-26 → 2026-11-24 (ingest and features);
   - scoring 2026-11-25 → 2026-12-24 (both platforms, 50 + 50 robots).
+
+## Measured results (synthetic; `reports/w04/operational_results.json`, `cost_benefit.json`)
+
+- **Production training (MLflow `w04_release`).**
+  - The selection rule picked `lgbm_all`: validation PR-AUC 0.312 vs 0.186 for `lgbm_physics`.
+  - Calibration is isotonic.
+  - Both platform thresholds came out at 2.43 %, the same isotonic step.
+- **Operational period** (2026-11-25 → 2026-12-24; labels settled until 2026-12-18), held-out robots (15 per platform):
+  - **Aido Rover:** champion PR-AUC 0.370 [0.088, 0.646]; Isolation Forest shadow 0.534, physics rule 0.303.
+    - Champion − Isolation Forest: −0.164 [−0.409, 0.055] (not detectable).
+    - Alert queue: 5 of 6 onsets caught, precision 0.10, 0.94 false alarms per robot-week.
+  - **Fari:** champion 0.160 [0.029, 0.533]; Isolation Forest 0.075, rule 0.061.
+    - Alert queue: 5 of 6 onsets caught, precision 0.09, 1.05 false alarms per robot-week.
+- **SoH, 7 days, held-out robots:** model MAE 0.275 vs persistence 0.436 pp (Rover) and 0.314 vs 0.454 (Fari); both skill CIs are above 0.
+- **Template summaries:** 209/209 (Rover) and 223/223 (Fari) pass checker v2. The top driver is a battery feature in 80 % and 93 % of alerts.
+- **Drift:** 126/240 and 124/240 feature-days are in the "shift" band. The median PSI of `ambient_max_24h` is 4.0 and 3.4 (simulated seasonal cooling).
+- **Weekly checks:** 4 checks written (2026-11-29 to 2026-12-20). Several cohort-weeks are reported as "insufficient labels" (fewer than 3 onsets).
+- **Cost-benefit (placeholder costs).**
+  - Break-even ratio, held-out champion: Rover 8.8, Fari 9.6. W2 walk-forward: LightGBM 9.0, Isolation Forest 10.6, rule 9.9.
+  - The placeholder ratio is 5.8, so every strategy has a negative net at placeholder costs.
+- **Docker / Airflow** (`reports/w04/docker_airflow_checks.json`):
+  - images built; the quickstart ran inside the container in 6.5 min;
+  - DAG import is clean;
+  - `dags test` passed 14/14 tasks with byte-identical outputs;
+  - the missing Fari partition gave a sensor timeout, untouched outputs, a failure record and a failed run;
+  - Airflow backfill: 2 runs succeeded;
+  - the dashboard container is healthy;
+  - gitleaks found no leaks in 23 commits (before the Week 4 commit).
 
 ## Not done / needs Kuntong
 

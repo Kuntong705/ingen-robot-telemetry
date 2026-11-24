@@ -1,0 +1,60 @@
+{
+  "run_at_utc": "2026-11-24T08:25:37+00:00",
+  "git_head": "7f031eb463f8a40020c36705e5a047aa1a82bf90",
+  "ruff": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "All checks passed!",
+    "command": "C:\\Users\\roths\\Documents\\GitHub\\ingen-robot-telemetry\\.venv\\Scripts\\python.exe -m ruff check .",
+    "seconds": 0.2
+  },
+  "mypy": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "Success: no issues found in 71 source files",
+    "command": "C:\\Users\\roths\\Documents\\GitHub\\ingen-robot-telemetry\\.venv\\Scripts\\python.exe -m mypy src/ fleet_simulator.py",
+    "seconds": 9.7
+  },
+  "pytest": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "------------------------------------------------------------------------------- | TOTAL                                                        5689   2370    58% | 142 passed in 653.31s (0:10:53)",
+    "command": "C:\\Users\\roths\\Documents\\GitHub\\ingen-robot-telemetry\\.venv\\Scripts\\python.exe -m pytest -q -p no:warnings --cov=ingen_fleet_health --cov-report=term",
+    "seconds": 657.6
+  },
+  "uv_lock_check": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "Resolved 149 packages in 16ms",
+    "command": "py -3.11 -m uv lock --check",
+    "seconds": 0.3
+  },
+  "docker_build": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "#23 DONE 0.0s | ingen-fleet-health:airflow  Built | ingen-fleet-health:app  Built",
+    "command": "docker compose build",
+    "seconds": 221.5
+  },
+  "docker_app_smoke": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "-h, --help            show this help message and exit | --config CONFIG       pipeline YAML (default configs/pipeline.yaml) | --data-root DATA_ROOT",
+    "command": "docker run --rm ingen-fleet-health:app python -m ingen_fleet_health.pipeline --help",
+    "seconds": 15.3
+  },
+  "airflow_dag_import": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "No data found | fleet_health_daily | /opt/fleet/pipelines/airflow/dags/fleet_health_daily.py | fleet-analytics | True      | dags-folder | None",
+    "command": "docker run --rm -e FLEET_PIPELINE_CONFIG=/opt/fleet/configs/pipeline.yaml ingen-fleet-health:airflow bash -c airflow db migrate >/dev/null 2>&1; airflow dags reserialize >/dev/null 2>&1; airflow dags list-import-errors && airflow dags list | grep fleet_health_daily",
+    "seconds": 19.2
+  },
+  "gitleaks": {
+    "ok": true,
+    "exit_code": 0,
+    "summary": "8:24AM INF 24 commits scanned. | 8:24AM INF scanned ~2133140 bytes (2.13 MB) in 4.99s | 8:24AM INF no leaks found",
+    "command": "docker run --rm -v C:/Users/roths/Documents/GitHub/ingen-robot-telemetry:/repo zricethezav/gitleaks:v8.30.0 git /repo --redact --exit-code 1",
+    "seconds": 5.8
+  }
+}

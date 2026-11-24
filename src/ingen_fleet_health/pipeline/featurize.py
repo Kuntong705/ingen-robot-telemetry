@@ -99,8 +99,11 @@ def features_for_day(settings: Settings, platform: str, day: date) -> dict[str, 
             parts = list(pool.map(_build_chunk, jobs))
     else:
         parts = [_build_chunk(j) for j in jobs]
-    parts = [x for x in parts if len(x)]
-    table = pd.concat(parts, ignore_index=True) if parts else pd.DataFrame()
+    rows = [x for x in parts if len(x)]
+    if rows:
+        table = pd.concat(rows, ignore_index=True)
+    else:   # e.g. the fleet's first day: inside the 24 h warm-up, no prediction time yet
+        table = next((x for x in parts if len(x.columns)), pd.DataFrame(columns=["unit_id", "t"]))
     table = table.sort_values(["unit_id", "t"], kind="stable").reset_index(drop=True)
     table.insert(1, "platform", platform)
     table["history_missing_days"] = len(missing)

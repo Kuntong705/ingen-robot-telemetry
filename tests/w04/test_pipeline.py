@@ -57,6 +57,19 @@ def test_daily_features_equal_the_batch_feature_table(fleet, platform) -> None: 
     pd.testing.assert_frame_equal(daily[batch.columns].reset_index(drop=True), batch)
 
 
+def test_first_fleet_day_writes_an_empty_feature_partition(fleet) -> None:  # type: ignore[no-untyped-def]
+    """Day 0 lies inside the 24 h warm-up: no prediction time, but the step must succeed (regression:
+    the parallel build once failed on it, found by the fresh-clone quickstart)."""
+    from datetime import date
+
+    from ingen_fleet_health.pipeline.featurize import features_for_day
+
+    summary = features_for_day(fleet.settings, "aido_rover", date(2026, 10, 26))
+    assert summary["rows"] == 0
+    part = pd.read_parquet(fleet.settings.table_dir("features", "aido_rover", date(2026, 10, 26)) / "features.parquet")
+    assert len(part) == 0 and {"unit_id", "t"} <= set(part.columns)
+
+
 def test_rerunning_a_date_reproduces_identical_files(fleet) -> None:  # type: ignore[no-untyped-def]
     day = fleet.scoring_start + timedelta(days=2)
     before = {p: output_hashes(fleet.settings, p, day) for p in fleet.settings.platforms}

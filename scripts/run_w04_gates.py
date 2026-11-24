@@ -47,34 +47,42 @@ def run(name: str, cmd: list[str], timeout: int = 3600, cwd: Path = ROOT) -> dic
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-docker", action="store_true")
+    parser.add_argument("--only", nargs="*", help="re-run only these gates; the other recorded results are kept")
     args = parser.parse_args()
     gates: dict[str, object] = {"run_at_utc": datetime.now(UTC).isoformat(timespec="seconds")}
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=False)
     gates["git_head"] = head.stdout.strip()
-    gates["ruff"] = run("ruff", [PY, "-m", "ruff", "check", "."])
-    gates["mypy"] = run("mypy", [PY, "-m", "mypy", "src/", "fleet_simulator.py"])
-    gates["pytest"] = run("pytest", [PY, "-m", "pytest", "-q", "-p", "no:warnings", "--cov=ingen_fleet_health",
-                                     "--cov-report=term"], timeout=5400)
-    gates["uv_lock_check"] = run("uv lock --check", [*UV, "lock", "--check"])
+    specs: dict[str, tuple[str, list[str], int]] = {
+        "ruff": ("ruff", [PY, "-m", "ruff", "check", "."], 3600),
+        "mypy": ("mypy", [PY, "-m", "mypy", "src/", "fleet_simulator.py"], 3600),
+        "pytest": ("pytest", [PY, "-m", "pytest", "-q", "-p", "no:warnings", "--cov=ingen_fleet_health",
+                              "--cov-report=term"], 5400),
+        "uv_lock_check": ("uv lock --check", [*UV, "lock", "--check"], 3600),
+    }
     docker = shutil.which("docker") is not None and not args.no_docker
     if docker:
-        gates["docker_build"] = run("docker compose build", ["docker", "compose", "build"], timeout=5400)
-        gates["docker_app_smoke"] = run("app smoke", ["docker", "run", "--rm", "ingen-fleet-health:app", "python", "-m",
-                                                      "ingen_fleet_health.pipeline", "--help"])
-        gates["airflow_dag_import"] = run("airflow DAG import", [
+        specs["docker_build"] = ("docker compose build", ["docker", "compose", "build"], 5400)
+        specs["docker_app_smoke"] = ("app smoke", ["docker", "run", "--rm", "ingen-fleet-health:app", "python", "-m",
+                                                   "ingen_fleet_health.pipeline", "--help"], 3600)
+        specs["airflow_dag_import"] = ("airflow DAG import", [
             "docker", "run", "--rm", "-e", "FLEET_PIPELINE_CONFIG=/opt/fleet/configs/pipeline.yaml",
             "ingen-fleet-health:airflow", "bash", "-c",
-            "airflow db migrate >/dev/null 2>&1; airflow dags list-import-errors && airflow dags list | grep fleet_health_daily"])
-        gates["gitleaks"] = run("gitleaks", ["docker", "run", "--rm", "-v", f"{ROOT.as_posix()}:/repo", GITLEAKS_IMAGE,
-                                             "git", "/repo", "--redact", "--exit-code", "1"])
-    else:
-        for g in ("docker_build", "docker_app_smoke", "airflow_dag_import", "gitleaks"):
-            gates[g] = {"ok": None, "summary": "skipped (no Docker)"}
+            ("airflow db migrate >/dev/null 2>&1; airflow dags reserialize >/dev/null 2>&1; "
+            "airflow dags list-import-errors && airflow dags list | grep fleet_health_daily")], 3600)
+        specs["gitleaks"] = ("gitleaks", ["docker", "run", "--rm", "-v", f"{ROOT.as_posix()}:/repo", GITLEAKS_IMAGE,
+                                          "git", "/repo", "--redact", "--exit-code", "1"], 3600)
     out = ROOT / "reports" / "w04" / "quality_gates.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     existing = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
-    keep = {k: v for k, v in existing.items() if k.startswith("manual_")}   # results of the Docker/Airflow runbook
-    out.write_text(json.dumps({**gates, **keep}, indent=2), encoding="utf-8")
+    if args.only:
+        gates = {**existing, **gates}
+    for key, (name, cmd, timeout) in specs.items():
+        if not args.only or key in args.only:
+            gates[key] = run(name, cmd, timeout=timeout)
+    if not docker:
+        for g in ("docker_build", "docker_app_smoke", "airflow_dag_import", "gitleaks"):
+            gates.setdefault(g, {"ok": None, "summary": "skipped (no Docker)"})
+    out.write_text(json.dumps(gates, indent=2), encoding="utf-8")
     print(f"wrote {out}")
 
 
