@@ -751,7 +751,7 @@ def build_deck(ev: Evidence) -> Path:
     out = DOCS / "W04_Capstone_Deck.pdf"
     w2_figs = DOCS / "figures" / "w02"
     w3_figs = DOCS / "figures" / "w03"
-    with PdfPages(out) as pdf:
+    with PdfPages(out, metadata={"CreationDate": None}) as pdf:  # no timestamp: rebuilds are byte-stable
         slide(pdf, 1, "ingen_fleet_health v1.0: a reproducible fleet-health package that is honest about what "
                       "synthetic data can show", [
             "Four weeks, one question: which robots should be pulled before the next shift, and why?",
