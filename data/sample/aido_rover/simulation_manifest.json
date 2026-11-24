@@ -1,0 +1,17 @@
+{
+  "simulator_version": "0.2",
+  "platform": "aido_rover",
+  "config_sha256": "6eb4d556b93e869027011a737ed90622b184888e2db15f6c0b1c16c0dddd079b",
+  "units": 2,
+  "days": 1,
+  "seed": 7,
+  "start_utc": "2026-10-26T00:00:00+00:00",
+  "end_utc": "2026-10-27T00:00:00+00:00",
+  "telemetry_rows_generated": 2880,
+  "telemetry_rows_written": 2874,
+  "fault_events": 0,
+  "fault_events_with_onset_in_run": 0,
+  "units_without_faults": 2,
+  "sensor_drift_events": 0,
+  "network_outages": 0
+}

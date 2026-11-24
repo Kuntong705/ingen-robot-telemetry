@@ -1,0 +1,3 @@
+unit_id,date_utc,soh_true_pct,resistance_true_ohm,efc_cumulative
+Rover_001,2026-10-26,99.91097,0.036302,0.8899
+Rover_002,2026-10-26,99.91162,0.038453,0.945

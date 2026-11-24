@@ -38,7 +38,8 @@ def run(name: str, cmd: list[str], timeout: int = 3600, cwd: Path = ROOT) -> dic
         out = {"ok": res.returncode == 0, "exit_code": res.returncode, "summary": last_lines(res.stdout + "\n" + res.stderr)}
     except (OSError, subprocess.TimeoutExpired) as exc:
         out = {"ok": False, "exit_code": None, "summary": f"{type(exc).__name__}: {exc}"}
-    out["command"] = " ".join(cmd)
+    # record a portable command line: no interpreter path or absolute repository path (no user names)
+    out["command"] = " ".join(cmd).replace(PY, "python").replace(ROOT.as_posix(), ".").replace(str(ROOT), ".")
     out["seconds"] = round((datetime.now(UTC) - started).total_seconds(), 1)
     print(f"{name}: {'PASS' if out['ok'] else 'FAIL'} ({out['seconds']} s) {out['summary'][:200]}", flush=True)
     return out
@@ -51,7 +52,12 @@ def main() -> None:
     args = parser.parse_args()
     gates: dict[str, object] = {"run_at_utc": datetime.now(UTC).isoformat(timespec="seconds")}
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=False)
+    dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=False)
     gates["git_head"] = head.stdout.strip()
+    # the gates test the working tree; they describe git_head only when the tree is clean
+    gates["git_worktree_clean"] = dirty.stdout.strip() == ""
+    if not gates["git_worktree_clean"]:
+        print("WARNING: uncommitted changes; this record does not describe a commit", flush=True)
     specs: dict[str, tuple[str, list[str], int]] = {
         "ruff": ("ruff", [PY, "-m", "ruff", "check", "."], 3600),
         "mypy": ("mypy", [PY, "-m", "mypy", "src/", "fleet_simulator.py"], 3600),
@@ -75,6 +81,8 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     existing = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
     if args.only:
+        if existing.get("git_head") != gates["git_head"]:
+            raise SystemExit("--only would mix results from two commits; run all gates instead")
         gates = {**existing, **gates}
     for key, (name, cmd, timeout) in specs.items():
         if not args.only or key in args.only:

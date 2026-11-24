@@ -1,0 +1,1 @@
+fault_id,unit_id,fault_type,ramp_shape,initiation_utc,onset_utc,failure_utc,repair_start_utc,repair_end_utc,precursor_days,onset_within_run

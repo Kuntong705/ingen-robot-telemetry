@@ -1,8 +1,9 @@
 """Model-card evidence from the Week 4 pipeline run (operational period, production v1).
 
 Reads only pipeline outputs (predictions, alert queue, drift, weekly checks),
-the published fault confirmations and maintenance records, and the registered
-bundles. Writes ``reports/w04/operational_results.json``.
+the published fault confirmations and maintenance records, the registered
+bundles, and the simulator ground truth (SoH targets; fault onsets inside the
+training window). Writes ``reports/w04/operational_results.json``.
 
 Protocol (ADR-0005): one time cut (training rows end 72 h before day 30), one
 unit split (30 % of each platform's robots never seen in training). The
@@ -10,6 +11,12 @@ operational period is every scored date; predictions whose labels are not yet
 settled at the end of the data (last 7 days) are excluded. 95 % CIs resample
 whole robots (unit bootstrap). This is a different, smaller protocol than the
 Week 2 walk-forward folds, so its numbers are reported next to them, not instead.
+
+Diagnostics added after the Week 4 audit (2026-11-24) are descriptive and do
+not change any reported result or the model choice: the reliability of the
+calibrated risk (with how many rows share one calibrated value), the fault
+onsets inside the training window, and a post-hoc PR-AUC of the uncalibrated
+margin (``post_hoc_diagnostics``), which is a direction for v2 only.
 
     python scripts/build_w04_evidence.py
 """
@@ -69,10 +76,62 @@ def paired_ci(frame: pd.DataFrame, a: str, b: str) -> tuple[float, float, float]
     return stat(frame), lo, hi
 
 
+def tie_stats(risk: pd.Series, threshold: float) -> dict[str, Any]:
+    """How coarse the calibrated risk is. ``modal_value_share`` counts rows exactly
+    equal to the most common calibrated value; ``below_threshold_share`` counts rows
+    under the alert threshold, which can span several calibrated values."""
+    counts = risk.round(12).value_counts()
+    return {"rows": len(risk), "distinct_values": int(counts.size), "modal_value": float(counts.index[0]),
+            "modal_value_share": float(counts.iloc[0] / len(risk)),
+            "below_threshold_share": float((risk < threshold).mean()),
+            "at_threshold_value_share": float((risk.round(12) == round(float(threshold), 12)).mean())}
+
+
+def reliability(frame: pd.DataFrame, threshold: float) -> dict[str, Any]:
+    """Observed onset rate per calibrated-risk bin, with a unit-bootstrap CI for bins of >= 20 rows."""
+    # the exact threshold is a bin edge: it is itself a step of the isotonic map, and rows on it do alert
+    edges = sorted({0.0, 0.01, float(threshold), 0.05, 0.1, 0.25, 0.5, 0.9, 1.000001})
+    binned = frame.assign(bin=pd.cut(frame["risk"], edges, right=False))
+    rows = []
+    for b, g in binned.groupby("bin", observed=True):
+        r: dict[str, Any] = {"bin": f"[{b.left:.4g}, {min(b.right, 1.0):.4g}{']' if b.right > 1 else ')'}",
+                             "rows": len(g), "units": int(g["unit_id"].nunique()),
+                             "mean_risk": float(g["risk"].mean()), "observed_rate": float(g["y"].mean())}
+        if len(g) >= 20 and g["unit_id"].nunique() > 1:
+            r["observed_rate_ci95"] = unit_cluster_bootstrap(g, lambda s: float(s["y"].mean()), n_boot=N_BOOT, seed=3)
+        rows.append(r)
+    return {"bins": rows, "brier": float(((frame["risk"] - frame["y"]) ** 2).mean()),
+            "mean_risk": float(frame["risk"].mean()), "base_rate": float(frame["y"].mean())}
+
+
+def training_window(settings: Any, platform: str, ew: Any) -> dict[str, Any]:
+    """Fault onsets the production model could learn from (training units, onset before the cut-off)."""
+    from ingen_fleet_health.pipeline.featurize import fleet_start
+
+    ps = settings.platforms[platform]
+    rel = settings.release
+    start = fleet_start(settings, platform)
+    cutoff = start + pd.Timedelta(days=float(rel["cutoff_day"]))
+    horizon = pd.Timedelta(hours=float(ps.config["labels"]["horizon_hours"]))
+    val_start = cutoff - horizon - pd.Timedelta(days=float(rel["validation_days"]))
+    ev = pd.read_csv(ps.source_dir / "ground_truth" / "fault_events.csv")
+    ev["onset_utc"] = pd.to_datetime(ev["onset_utc"], utc=True)
+    tr = ev[ev["unit_id"].isin(set(ew.training_units[platform]))]
+    val = ew.info.get("validation", {}).get(platform, {})
+    return {"cutoff_utc": cutoff.isoformat(), "validation_slice_start_utc": val_start.isoformat(),
+            "training_unit_onsets_before_cutoff": int((tr["onset_utc"] < cutoff).sum()),
+            "training_unit_onsets_in_validation_slice": int(((tr["onset_utc"] >= val_start)
+                                                             & (tr["onset_utc"] < cutoff)).sum()),
+            "all_unit_onsets_before_cutoff": int((ev["onset_utc"] < cutoff).sum()),
+            "fault_onsets_total": len(ev),
+            "fit_positive_rows": val.get("fit_positives"), "validation_positive_rows": val.get("val_positives"),
+            "validation_rows": val.get("val_rows")}
+
+
 def main() -> None:
     settings = load_settings()
     ew, _soh, versions = models(settings)
-    result: dict[str, Any] = {"protocol": __doc__.split("\n\n")[1].replace("\n", " "), "models": versions,
+    result: dict[str, Any] = {"protocol": __doc__.split("\n\n")[2].replace("\n", " "), "models": versions,
                               "champion_variant": ew.variant, "thresholds": ew.thresholds,
                               "shadow_thresholds": ew.shadow_thresholds, "platforms": {}, "cost_counts": {}}
     refractory = float(settings.alerting["refractory_hours"])
@@ -115,6 +174,15 @@ def main() -> None:
             for other in ("iforest", "physics_rule"):
                 d, lo, hi = paired_ci(sc, "risk", other)
                 c[f"champion_minus_{other}"] = {"delta": d, "ci95": [lo, hi]}
+            thr = float(ew.thresholds[platform])
+            c["calibration"] = {**reliability(sc, thr), "ties": tie_stats(sc["risk"], thr)}
+            # post hoc (added after the audit, on the same test rows): NOT a result and not used to
+            # choose a model; it only shows how much ranking the coarse isotonic map removes.
+            d, lo, hi = paired_ci(sc, "raw_margin", "risk")
+            c["post_hoc_diagnostics"] = {
+                "note": "post hoc on the evaluation rows; direction for v2, not a result",
+                "pr_auc_uncalibrated_margin": pr_auc(sc["y"].to_numpy(), sc["raw_margin"].to_numpy()),
+                "margin_minus_calibrated_risk": {"delta": d, "ci95": [lo, hi]}}
             # champion alerts = the real alert queue; shadow alerts at their own budget thresholds
             hit = sc.set_index(["unit_id", "t"])["y"]
             q = al[["unit_id", "t"]] if len(al) else pd.DataFrame(columns=["unit_id", "t"])
@@ -201,6 +269,10 @@ def main() -> None:
         entry["data_quality"] = {"days": len(qd), "rejected_rows": int(qd["rejected_rows"].sum()),
                                  "accepted_rows": int(qd["accepted_rows"].sum()),
                                  "unit_days_missing": int(qd["units_missing"].sum())}
+        entry["training_window"] = training_window(settings, platform, ew)
+        # tie statistics on every scored row (all units, labels settled or not), for comparison with
+        # the evaluated held-out rows above
+        entry["risk_ties_all_scored_rows"] = tie_stats(preds["risk"], float(ew.thresholds[platform]))
         entry["insufficient_data_rows"] = int(preds["insufficient_data"].sum())
         entry["prediction_rows"] = len(preds)
         result["platforms"][platform] = entry

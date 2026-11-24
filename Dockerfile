@@ -13,8 +13,10 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends libgomp1 \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /uvx /bin/
+# UV_NO_CACHE: do not leave uv's download cache (about 2 GB) in the image layers
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
+    UV_NO_CACHE=1 \
     UV_PYTHON_DOWNLOADS=never \
     UV_PROJECT_ENVIRONMENT=/opt/fleet/.venv \
     MLFLOW_DISABLE_AGENT_HINT=1 \

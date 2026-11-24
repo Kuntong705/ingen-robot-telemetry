@@ -115,7 +115,9 @@ uv run python -m ingen_fleet_health.pipeline.publish                  # landing 
 uv run python -m ingen_fleet_health.pipeline backfill --start 2026-10-26 --end 2026-11-24 --steps ingest,features
 uv run python -m ingen_fleet_health.pipeline backfill --start 2026-11-25 --end 2026-12-24
 uv run python scripts/build_w04_evidence.py && uv run python -m ingen_fleet_health.release.cost_benefit
-uv run python scripts/build_w04_docs.py
+uv run python scripts/check_w04_retrain.py      # retrains in memory and compares with the registered v1 (no registration)
+uv run python scripts/capture_w04_dashboard.py  # dashboard screenshot for the deck (needs Edge or Chrome)
+uv run python scripts/build_w04_docs.py         # model card (.docx + .pdf via headless Edge/Chrome), deck, README block
 uv run mlflow ui --backend-store-uri sqlite:///mlflow.db               # every run and registered model
 ```
 
@@ -175,9 +177,10 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 | Fari | 0.160 [0.029, 0.533] (base rate 0.056) | 0.075 / 0.061 | +0.085 [-0.016, 0.382] | 5/6, 0.09, 1.05 | 0.314 vs 0.454 |
 
 - **Explanations.** Every production alert carries a template summary, and the checker found every statement supported in Aido Rover 209/209, Fari 223/223.
-- **Cost-benefit (model card §8).** Acting on alerts pays off only if (failure cost - planned repair) / false-alarm cost exceeds the break-even ratio of Aido Rover 8.8, Fari 9.6 for held-out robots. At the placeholder costs the ratio is 5.8, so the net is negative. InGen's real costs decide this.
+- **Cost-benefit (model card §8).** Acting on alerts pays off only if (failure cost - planned repair) / false-alarm cost exceeds the break-even ratio of Aido Rover 8.8, Fari 9.6 for held-out robots. At the placeholder costs the ratio is 5.8, so the net is negative. InGen's real costs decide this. On Rover the shadow Isolation Forest has the better ratio (6.5, 6/6 caught); on Fari it is worse (15.5). These are point comparisons on 6 onsets, not significance tests; none of the champion-vs-shadow PR-AUC differences is significant.
+- **Calibration (model card §4e).** The isotonic map has few steps. On Fari the top-tier risk (about 1.00) was followed by an onset 36% of the time; on Rover 99%. Read the risk as a ranking.
 - **Drift.** Most feature-days are in the 'shift' band (simulated seasonal cooling); see the model card §5.
-- **Quality gates.** See `reports/w04/quality_gates.json` and `reports/w04/docker_airflow_checks.json`.
+- **Quality gates.** See `reports/w04/quality_gates.json` (records the tested commit) and `reports/w04/docker_airflow_checks.json`.
 <!-- /W04_RESULTS -->
 
 ## Known limitations
@@ -185,9 +188,10 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 - **Synthetic only.** Simulator physics, fault mix, noise, the Fari profile, the operator-note rate and all costs are assumptions. The conclusions need re-validation on real InGen telemetry and confirmed tickets.
 - **Early warning is weak, and the champion is not the best ranker on Rover.**
   - LightGBM does not beat the physics rule on Rover (Week 2).
-  - The Isolation Forest, kept as a shadow model, ranks better on Rover.
-  - The champion was kept for its explanations and its Fari transfer (ADR-0005).
-- **Few faults, wide intervals.** About 40 onsets per 50 robots in 60 days. Weekly checks usually say "insufficient labels".
+  - In the Week 2 walk-forward the Isolation Forest ranked **significantly** better than LightGBM on Rover. In operation the shadow Isolation Forest again has the higher PR-AUC and the better break-even ratio on Rover, but that difference is **not significant**.
+  - The champion was kept for its tree-SHAP explanations and its higher point estimate on Fari (not significant) (ADR-0005, revision 2026-11-24).
+- **Very few faults to learn from, wide intervals.** About 40 onsets per 50 robots in 60 days, but only 8 per platform fall on training robots before the cut-off, and 3 in the validation slice. About a third of the weekly cohort checks have "insufficient labels".
+- **Calibration of v1 is coarse.** The isotonic map has few steps; on Fari the top-tier risk (about 1.00) was followed by an onset only about a third of the time. Read the risk as a ranking (model card §4e).
 - **Text adds nothing detectable** at the assumed note rate. The local LLM was not faithful (0/20), so production uses template explanations only.
 - **Calibration is overconfident** at the top end. Read the risk as a ranking.
 - **Drift.** The simulated weather cools over the period, and the PSI shows drift on several top features.
@@ -197,7 +201,7 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 
 1. **Re-validate on real InGen data.** Use 3–6 months of Aido Rover telemetry and confirmed tickets; measure real note coverage and the fault mix; re-run the Week 2 protocol.
 2. **Champion–challenger decision with real costs.** Use the weekly checks to choose the alerting model per platform: the Isolation Forest shadow vs the LightGBM champion.
-3. **Pilot the alert queue with a Sentinel Prime AI operations team**, with an agreed alert budget and false-alarm cost. Then extend the data contract to Aido Humanoid joint telemetry.
+3. **Pilot the alert queue with one security-patrol operations team**, with an agreed alert budget and false-alarm cost. Then extend the data contract to a further robot platform.
 
 ## Documentation
 
@@ -206,7 +210,7 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 | 1 | `docs/W01_Fleet_Data_Brief.docx`, `docs/W01_Data_Contract.md`, `docs/W01_Simulator_Assumptions.md`, `reports/W01_Data_Quality_Report.json`, `weekly/Wk-01-Log.md` |
 | 2 | `docs/W02_Feature_Registry.md`, `docs/W02_Evaluation_Protocol.docx`, `docs/W02_Model_Results.docx`, `weekly/Wk-02-Log.md` |
 | 3 | `docs/W03_Report.docx`, `docs/W03_Log_Corpus.md`, `docs/W03_Fusion_Results.docx`, `docs/W03_Alert_Explanations.md`, `docs/W03_Fari_Gap_Analysis.docx`, `weekly/Wk-03-Log.md`, `reports/w03/llm_faithfulness_review.json` (AI-assisted evidence review) |
-| 4 | `docs/W04_Model_Card.docx`, `docs/W04_Capstone_Deck.pdf`, `docs/W04_Retrospective.docx` (reflection sections left for the intern), `docs/W04_Demo_Script.md`, `reports/w04/*.json`, `weekly/Wk-04-Log.md` |
+| 4 | `docs/W04_Model_Card.docx` and `docs/W04_Model_Card.pdf` (same content), `docs/W04_Capstone_Deck.pdf`, `docs/W04_Retrospective.docx` (reflection sections left for the intern), `docs/W04_Demo_Script.md`, `reports/w04/*.json`, `weekly/Wk-04-Log.md` |
 
 **Architecture decision records** (`docs/adr/`; originals are preserved, and revisions are dated at the end of each file):
 
@@ -216,7 +220,7 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 | 0002 | Wide telemetry table | Week 4 addendum: partitioned by platform and date |
 | 0003 | Label: qualifying fault onset within 72 h | rev1 (Week 2): P-F timeline, exclusions; Week 4: unchanged |
 | 0004 | Leakage-safe evaluation protocol | — |
-| 0005 | Production recipe: pooled LightGBM champion, shadow models, registry | new in Week 4 |
+| 0005 | Production recipe: pooled LightGBM champion, shadow models, registry | new in Week 4; 2026-11-24 audit revision: evidence wording, training onsets, provenance |
 | 0006 | Daily pipeline: partitions, idempotency, backfill, late and missing data, monitoring | new in Week 4 |
 | 0007 | Dashboard technology: Streamlit + Plotly | new in Week 4 |
 
@@ -224,8 +228,12 @@ Progress logs and hand-over notes: `weekly/W02_Progress.md`, `weekly/W03_Progres
 
 ## Quality gates
 
-CI (`.github/workflows/ci.yml`) runs ruff, mypy, pytest with coverage, a gitleaks scan of the full history, and a Docker image build with a smoke test. `python scripts/run_w04_gates.py` runs the same gates locally and records the results in `reports/w04/quality_gates.json`.
+CI (`.github/workflows/ci.yml`) runs ruff, mypy, pytest with coverage, a gitleaks scan of the full history, and a Docker image build with a smoke test. `python scripts/run_w04_gates.py` runs the same gates locally and records the results in `reports/w04/quality_gates.json`, together with the commit it tested and whether the working tree was clean (a gate run on uncommitted changes is marked as such).
 
 ## Data governance and licence
 
-Synthetic code, documentation, tests and approved demonstration artefacts only. Generated data, MLflow stores and videos are git-ignored. No credentials are needed; `.env.example` lists the optional settings. MIT licence (`LICENSE`); third-party data, models and software are attributed in `NOTICE`. Contribution rules are in `CONTRIBUTING.md`.
+Synthetic code, documentation, tests and approved demonstration artefacts only. `data/sample/` holds a small committed synthetic sample (2 robots × 1 day per platform, regenerated by `scripts/make_data_sample.py`); all other generated data, MLflow stores and videos are git-ignored. No credentials are needed; `.env.example` lists the optional settings. MIT licence (`LICENSE`); the licence holder and IP ownership are pending confirmation with InGen. Third-party data, models and software are attributed in `NOTICE`. Contribution rules are in `CONTRIBUTING.md`.
+
+## AI assistance
+
+The code, tests, configuration and the generated documents (model card, capstone deck, README results) were written with an AI coding assistant (Claude Code) working under the intern's direction; commits made with it carry a `Co-Authored-By` trailer. The Week 3 faithfulness verdicts on local-LLM summaries came from an AI-assisted evidence review, not an independent human review (`reports/w03/llm_faithfulness_review.json`). Every reported number is produced by a re-runnable script and read from its JSON report. Whether this use fits InGen's AI-use policy is pending confirmation by the supervisor.

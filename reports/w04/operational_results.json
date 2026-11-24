@@ -1,5 +1,5 @@
 {
-  "protocol": "Reads only pipeline outputs (predictions, alert queue, drift, weekly checks), the published fault confirmations and maintenance records, and the registered bundles. Writes ``reports/w04/operational_results.json``.",
+  "protocol": "Protocol (ADR-0005): one time cut (training rows end 72 h before day 30), one unit split (30 % of each platform's robots never seen in training). The operational period is every scored date; predictions whose labels are not yet settled at the end of the data (last 7 days) are excluded. 95 % CIs resample whole robots (unit bootstrap). This is a different, smaller protocol than the Week 2 walk-forward folds, so its numbers are reported next to them, not instead.",
   "models": {
     "early_warning": "fleet_early_warning/1",
     "soh_forecast": "fleet_soh_forecast/1"
@@ -61,6 +61,105 @@
               -0.012801,
               0.139857
             ]
+          },
+          "calibration": {
+            "bins": [
+              {
+                "bin": "[0, 0.01)",
+                "rows": 21,
+                "units": 2,
+                "mean_risk": 0.0,
+                "observed_rate": 0.0,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "bin": "[0.01, 0.0243)",
+                "rows": 6891,
+                "units": 15,
+                "mean_risk": 0.022719,
+                "observed_rate": 0.028443,
+                "observed_rate_ci95": [
+                  0.00744,
+                  0.056112
+                ]
+              },
+              {
+                "bin": "[0.0243, 0.05)",
+                "rows": 669,
+                "units": 11,
+                "mean_risk": 0.026089,
+                "observed_rate": 0.12855,
+                "observed_rate_ci95": [
+                  0.030738,
+                  0.268737
+                ]
+              },
+              {
+                "bin": "[0.1, 0.25)",
+                "rows": 100,
+                "units": 10,
+                "mean_risk": 0.177419,
+                "observed_rate": 0.08,
+                "observed_rate_ci95": [
+                  0.010497,
+                  0.329375
+                ]
+              },
+              {
+                "bin": "[0.25, 0.5)",
+                "rows": 56,
+                "units": 7,
+                "mean_risk": 0.308079,
+                "observed_rate": 0.071429,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.666667
+                ]
+              },
+              {
+                "bin": "[0.5, 0.9)",
+                "rows": 17,
+                "units": 4,
+                "mean_risk": 0.78532,
+                "observed_rate": 0.529412
+              },
+              {
+                "bin": "[0.9, 1)",
+                "rows": 102,
+                "units": 4,
+                "mean_risk": 1.0,
+                "observed_rate": 0.990196,
+                "observed_rate_ci95": [
+                  0.8,
+                  1.0
+                ]
+              }
+            ],
+            "brier": 0.037375,
+            "mean_risk": 0.041288,
+            "base_rate": 0.051426,
+            "ties": {
+              "rows": 7856,
+              "distinct_values": 21,
+              "modal_value": 0.022804,
+              "modal_value_share": 0.857052,
+              "below_threshold_share": 0.879837,
+              "at_threshold_value_share": 0.067337
+            }
+          },
+          "post_hoc_diagnostics": {
+            "note": "post hoc on the evaluation rows; direction for v2, not a result",
+            "pr_auc_uncalibrated_margin": 0.42304,
+            "margin_minus_calibrated_risk": {
+              "delta": 0.052588,
+              "ci95": [
+                0.021211,
+                0.0958
+              ]
+            }
           },
           "alert_queue": {
             "alerts": 49,
@@ -174,6 +273,116 @@
               -0.18173,
               0.127451
             ]
+          },
+          "calibration": {
+            "bins": [
+              {
+                "bin": "[0, 0.01)",
+                "rows": 28,
+                "units": 5,
+                "mean_risk": 0.0,
+                "observed_rate": 0.035714,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.181818
+                ]
+              },
+              {
+                "bin": "[0.01, 0.0243)",
+                "rows": 15447,
+                "units": 35,
+                "mean_risk": 0.022722,
+                "observed_rate": 0.039166,
+                "observed_rate_ci95": [
+                  0.020485,
+                  0.059112
+                ]
+              },
+              {
+                "bin": "[0.0243, 0.05)",
+                "rows": 1976,
+                "units": 25,
+                "mean_risk": 0.026615,
+                "observed_rate": 0.114879,
+                "observed_rate_ci95": [
+                  0.050955,
+                  0.209497
+                ]
+              },
+              {
+                "bin": "[0.05, 0.1)",
+                "rows": 1,
+                "units": 1,
+                "mean_risk": 0.095778,
+                "observed_rate": 0.0
+              },
+              {
+                "bin": "[0.1, 0.25)",
+                "rows": 286,
+                "units": 13,
+                "mean_risk": 0.177301,
+                "observed_rate": 0.115385,
+                "observed_rate_ci95": [
+                  0.030303,
+                  0.24009
+                ]
+              },
+              {
+                "bin": "[0.25, 0.5)",
+                "rows": 252,
+                "units": 12,
+                "mean_risk": 0.306471,
+                "observed_rate": 0.202381,
+                "observed_rate_ci95": [
+                  0.08448,
+                  0.372728
+                ]
+              },
+              {
+                "bin": "[0.5, 0.9)",
+                "rows": 57,
+                "units": 9,
+                "mean_risk": 0.766144,
+                "observed_rate": 0.649123,
+                "observed_rate_ci95": [
+                  0.456322,
+                  0.945226
+                ]
+              },
+              {
+                "bin": "[0.9, 1)",
+                "rows": 163,
+                "units": 7,
+                "mean_risk": 0.999202,
+                "observed_rate": 0.828221,
+                "observed_rate_ci95": [
+                  0.560667,
+                  0.95244
+                ]
+              }
+            ],
+            "brier": 0.050391,
+            "mean_risk": 0.040536,
+            "base_rate": 0.059802,
+            "ties": {
+              "rows": 18210,
+              "distinct_values": 46,
+              "modal_value": 0.022804,
+              "modal_value_share": 0.82927,
+              "below_threshold_share": 0.849808,
+              "at_threshold_value_share": 0.079572
+            }
+          },
+          "post_hoc_diagnostics": {
+            "note": "post hoc on the evaluation rows; direction for v2, not a result",
+            "pr_auc_uncalibrated_margin": 0.29064,
+            "margin_minus_calibrated_risk": {
+              "delta": 0.051859,
+              "ci95": [
+                0.021544,
+                0.074233
+              ]
+            }
           },
           "alert_queue": {
             "alerts": 108,
@@ -339,6 +548,25 @@
         "accepted_rows": 2148369,
         "unit_days_missing": 0
       },
+      "training_window": {
+        "cutoff_utc": "2026-11-25T00:00:00+00:00",
+        "validation_slice_start_utc": "2026-11-16T00:00:00+00:00",
+        "training_unit_onsets_before_cutoff": 8,
+        "training_unit_onsets_in_validation_slice": 3,
+        "all_unit_onsets_before_cutoff": 10,
+        "fault_onsets_total": 45,
+        "fit_positive_rows": 299,
+        "validation_positive_rows": 149,
+        "validation_rows": 4798
+      },
+      "risk_ties_all_scored_rows": {
+        "rows": 36000,
+        "distinct_values": 93,
+        "modal_value": 0.022804,
+        "modal_value_share": 0.796472,
+        "below_threshold_share": 0.817861,
+        "at_threshold_value_share": 0.078528
+      },
       "insufficient_data_rows": 0,
       "prediction_rows": 36000
     },
@@ -383,6 +611,98 @@
               -0.015289,
               0.386544
             ]
+          },
+          "calibration": {
+            "bins": [
+              {
+                "bin": "[0.01, 0.0243)",
+                "rows": 5593,
+                "units": 15,
+                "mean_risk": 0.022795,
+                "observed_rate": 0.025568,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.061511
+                ]
+              },
+              {
+                "bin": "[0.0243, 0.05)",
+                "rows": 1215,
+                "units": 12,
+                "mean_risk": 0.027527,
+                "observed_rate": 0.128395,
+                "observed_rate_ci95": [
+                  0.013208,
+                  0.279419
+                ]
+              },
+              {
+                "bin": "[0.1, 0.25)",
+                "rows": 221,
+                "units": 8,
+                "mean_risk": 0.177419,
+                "observed_rate": 0.058824,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.157895
+                ]
+              },
+              {
+                "bin": "[0.25, 0.5)",
+                "rows": 292,
+                "units": 6,
+                "mean_risk": 0.307985,
+                "observed_rate": 0.085616,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.416176
+                ]
+              },
+              {
+                "bin": "[0.5, 0.9)",
+                "rows": 186,
+                "units": 3,
+                "mean_risk": 0.778407,
+                "observed_rate": 0.112903,
+                "observed_rate_ci95": [
+                  0.0,
+                  1.0
+                ]
+              },
+              {
+                "bin": "[0.9, 1)",
+                "rows": 206,
+                "units": 3,
+                "mean_risk": 0.997905,
+                "observed_rate": 0.359223,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.926111
+                ]
+              }
+            ],
+            "brier": 0.074385,
+            "mean_risk": 0.083033,
+            "base_rate": 0.056009,
+            "ties": {
+              "rows": 7713,
+              "distinct_values": 71,
+              "modal_value": 0.022804,
+              "modal_value_share": 0.723065,
+              "below_threshold_share": 0.725139,
+              "at_threshold_value_share": 0.098016
+            }
+          },
+          "post_hoc_diagnostics": {
+            "note": "post hoc on the evaluation rows; direction for v2, not a result",
+            "pr_auc_uncalibrated_margin": 0.272422,
+            "margin_minus_calibrated_risk": {
+              "delta": 0.112736,
+              "ci95": [
+                -0.005662,
+                0.246593
+              ]
+            }
           },
           "alert_queue": {
             "alerts": 53,
@@ -496,6 +816,109 @@
               -0.178419,
               0.290543
             ]
+          },
+          "calibration": {
+            "bins": [
+              {
+                "bin": "[0, 0.01)",
+                "rows": 25,
+                "units": 2,
+                "mean_risk": 0.000238,
+                "observed_rate": 0.0,
+                "observed_rate_ci95": [
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "bin": "[0.01, 0.0243)",
+                "rows": 14268,
+                "units": 35,
+                "mean_risk": 0.022773,
+                "observed_rate": 0.031329,
+                "observed_rate_ci95": [
+                  0.016587,
+                  0.049871
+                ]
+              },
+              {
+                "bin": "[0.0243, 0.05)",
+                "rows": 2017,
+                "units": 24,
+                "mean_risk": 0.027039,
+                "observed_rate": 0.125434,
+                "observed_rate_ci95": [
+                  0.06055,
+                  0.231859
+                ]
+              },
+              {
+                "bin": "[0.1, 0.25)",
+                "rows": 569,
+                "units": 15,
+                "mean_risk": 0.177402,
+                "observed_rate": 0.057996,
+                "observed_rate_ci95": [
+                  0.016481,
+                  0.176677
+                ]
+              },
+              {
+                "bin": "[0.25, 0.5)",
+                "rows": 655,
+                "units": 12,
+                "mean_risk": 0.307415,
+                "observed_rate": 0.158779,
+                "observed_rate_ci95": [
+                  0.018669,
+                  0.504381
+                ]
+              },
+              {
+                "bin": "[0.5, 0.9)",
+                "rows": 102,
+                "units": 7,
+                "mean_risk": 0.776954,
+                "observed_rate": 0.196078,
+                "observed_rate_ci95": [
+                  0.02044,
+                  0.716079
+                ]
+              },
+              {
+                "bin": "[0.9, 1)",
+                "rows": 372,
+                "units": 5,
+                "mean_risk": 0.998755,
+                "observed_rate": 0.69086,
+                "observed_rate_ci95": [
+                  0.466019,
+                  0.836735
+                ]
+              }
+            ],
+            "brier": 0.054414,
+            "mean_risk": 0.062892,
+            "base_rate": 0.061861,
+            "ties": {
+              "rows": 18008,
+              "distinct_values": 68,
+              "modal_value": 0.022804,
+              "modal_value_share": 0.785595,
+              "below_threshold_share": 0.793703,
+              "at_threshold_value_share": 0.075911
+            }
+          },
+          "post_hoc_diagnostics": {
+            "note": "post hoc on the evaluation rows; direction for v2, not a result",
+            "pr_auc_uncalibrated_margin": 0.388946,
+            "margin_minus_calibrated_risk": {
+              "delta": 0.106015,
+              "ci95": [
+                0.043194,
+                0.149122
+              ]
+            }
           },
           "alert_queue": {
             "alerts": 107,
@@ -630,6 +1053,25 @@
         "rejected_rows": 0,
         "accepted_rows": 2148475,
         "unit_days_missing": 0
+      },
+      "training_window": {
+        "cutoff_utc": "2026-11-25T00:00:00+00:00",
+        "validation_slice_start_utc": "2026-11-16T00:00:00+00:00",
+        "training_unit_onsets_before_cutoff": 8,
+        "training_unit_onsets_in_validation_slice": 3,
+        "all_unit_onsets_before_cutoff": 10,
+        "fault_onsets_total": 42,
+        "fit_positive_rows": 296,
+        "validation_positive_rows": 174,
+        "validation_rows": 4702
+      },
+      "risk_ties_all_scored_rows": {
+        "rows": 36000,
+        "distinct_values": 189,
+        "modal_value": 0.022804,
+        "modal_value_share": 0.715306,
+        "below_threshold_share": 0.720333,
+        "at_threshold_value_share": 0.091361
       },
       "insufficient_data_rows": 0,
       "prediction_rows": 36000

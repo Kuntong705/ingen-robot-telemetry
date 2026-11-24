@@ -1,0 +1,3 @@
+unit_id,site,shift_pattern,route_initial,route_after_change,route_change_day,capacity_wh,cycle_fade_pct_per_efc,base_resistance_ohm,heating_coefficient_c_per_w,thermal_time_constant_min,vibration_baseline_g,baseline_power_w,bms_soh_bias_pct
+Rover_001,site_mild,double,flat_paved,hilly_campus,41.06475430050706,5938.418127591994,0.04735524891831104,0.03569236318941364,0.029174615002262302,37.53657719139118,0.1662468832279349,403.6442531849463,0.0734453155850442
+Rover_002,site_mild,double,hilly_campus,hilly_campus,,6054.3305056852,0.04299117121903691,0.03786979955311669,0.024234759160964982,45.94799937470083,0.11550432579154087,399.5074336562714,0.09997512974841384

@@ -1,0 +1,3 @@
+unit_id,platform,firmware_version,site,shift_pattern
+Fari_001,fari,fari-fw-0.0.0-synthetic,care_home,heavy
+Fari_002,fari,fari-fw-0.0.0-synthetic,care_home,heavy
