@@ -77,7 +77,23 @@ No reported result, model, threshold or evaluation protocol was changed. Every e
 
 ## Quality gates
 
-To be filled from `reports/w04/quality_gates.json` after the gates run on the final commit.
+All gates ran on commit **f21f2ee** with a clean working tree (`reports/w04/quality_gates.json` records the commit and `git_worktree_clean: true`). The commit that adds these records changes only `reports/w04/quality_gates.json`, `reports/w04/docker_airflow_checks.json` and this file.
+
+| Gate | Result |
+|---|---|
+| ruff | pass |
+| mypy (`src/`, `fleet_simulator.py`) | pass, 71 files |
+| pytest + coverage | **148 passed** (123 Weeks 1–3 + 25 Week 4, including 5 new `data/sample` tests), coverage of `ingen_fleet_health` 58 % |
+| `uv lock --check` | pass |
+| Docker build (app + airflow) | pass; app image 3.55 GB (6.19 GB before `UV_NO_CACHE`) |
+| App image smoke | pass |
+| Airflow DAG import (3.3.2) | pass, no import errors |
+| gitleaks v8.30.0 (full history) | pass, 28 commits, no leaks |
+| Fresh-clone README quickstart at f21f2ee | pass: build, MLflow, trainer (144 s), dashboard, DAG import, idempotent re-run (12/12 partitions identical), missing partition (sensor timeout, outputs untouched, failure record, run failed), backfill (`docker_airflow_checks.json`) |
+| v1 retrain reproducibility | identical at 5bea8fc, clean tree (`retrain_reproducibility.json`) |
+| GitHub Actions CI | **not run**: nothing pushed |
+
+**Week 4 demo video: not finished.** `media/W04_demo_draft.mp4` (54 s, git-ignored) is a draft of a real recorded run: Airflow is shown in the host's Chinese locale and local time zone, captions overlap at two scene boundaries, and static pages are held without a "static" label. Later takes that fixed this stalled on static pages; that recorder is kept in `git stash` (not committed). Kuntong decides how to finish it.
 
 ## Not done / needs Kuntong or the supervisor
 
