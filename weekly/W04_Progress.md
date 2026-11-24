@@ -93,10 +93,11 @@ All gates ran on commit **f21f2ee** with a clean working tree (`reports/w04/qual
 | v1 retrain reproducibility | identical at 5bea8fc, clean tree (`retrain_reproducibility.json`) |
 | GitHub Actions CI | **not run**: nothing pushed |
 
-**Week 4 demo video: not finished.** `media/W04_demo_draft.mp4` (54 s, git-ignored) is a draft of a real recorded run: Airflow is shown in the host's Chinese locale and local time zone, captions overlap at two scene boundaries, and static pages are held without a "static" label. Later takes that fixed this stalled on static pages; that recorder is kept in `git stash` (not committed). Kuntong decides how to finish it.
+**Week 4 demo video:** `media/W04_demo.mp4` (57.0 s, 1920x1080, git-ignored), built by `scripts/build_w04_demo.py` from real screenshots of the running stack at f21f2ee (English UI, UTC). One real DAG run is shown at 4x (28.8 s real) and labelled; every other scene is labelled STATIC SCREENSHOT; title cards are labelled. Scenes: DAG run and success, pull list, unit drill-down, alert explanation with its evidence check, the missing-partition failed run, MLflow v1. The earlier 54 s draft `media/W04_demo_draft.mp4` is kept unchanged.
 
 ## Not done / needs Kuntong or the supervisor
 
+- **Week 4 demo video:** Kuntong to review `media/W04_demo.mp4` before it is shared; whether AI assistance may produce it depends on the AI-use policy.
 - **Push, PR, GitHub Release v1.0.0:** not done (needs approval). CI and its badge have not run on GitHub.
 - **InGen AI-use policy:** confirm it.
 - **LICENSE holder and IP:** `LICENSE` names "Kuntong Li" (MIT). Not changed; awaiting InGen's answer.

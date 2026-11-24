@@ -43,8 +43,33 @@
     }
   },
   "demo_recording": {
-    "ok": false,
-    "detail": "A ~55 s automatic recording of this stack was attempted (headless Edge over CDP). The best take, media/W04_demo_draft.mp4 (54 s, git-ignored), is a DRAFT: the Airflow UI was rendered in the host's Chinese locale and local time zone, and scene captions overlap at scene boundaries (seen at 36 s and 45 s), and static pages are held as single frames without a "static" label. Later takes that fixed these stalled on static pages. Not a release deliverable until reviewed."
+    "ok": true,
+    "video": "media/W04_demo.mp4 (git-ignored; 57.0 s, 1920x1080, 25 fps)",
+    "method": "scripts/build_w04_demo.py: real screenshots of the running stack at f21f2ee in a headless Edge with an English UI and UTC clocks, every wait bounded; one real DAG run screenshotted about every 2.5 s and shown at 4x (28.8 s real, labelled); all other scenes labelled STATIC SCREENSHOT; captions drawn on the frames; 0.4 s cross-fades",
+    "triggered_run": {
+      "dag_run_id": "w04_demo__20261124T233606",
+      "logical_date": "2026-11-21T02:05:00+00:00",
+      "final_state": "success",
+      "processed_date": "2026-11-20"
+    },
+    "missing_partition_run": {
+      "dag_run_id": "manual__2026-11-24T23:21:49.243281+00:00",
+      "state": "failed",
+      "run_after": "2026-11-24T23:21:49.243281Z"
+    },
+    "scenes": [
+      "0.0-3.0 s TITLE CARD: Week 4: daily scoring pipeline, dashboard and model registry",
+      "3.0-11.21 s REAL RUN - 4x SPEED (real 29 s): Airflow: a real daily DAG run, both platforms",
+      "11.21-15.11 s STATIC SCREENSHOT: Airflow: run finished - success, all tasks green",
+      "15.11-23.51 s STATIC SCREENSHOT: Dashboard: which robots to pull before the next shift, and why",
+      "23.51-30.91 s STATIC SCREENSHOT: Unit drill-down: risk against the alert level",
+      "30.91-39.31 s STATIC SCREENSHOT: Alert queue: template explanation + automatic evidence check",
+      "39.31-48.71 s STATIC SCREENSHOT: Missing Fari partition: sensor timed out, run failed, nothing written",
+      "48.71-54.11 s STATIC SCREENSHOT: MLflow registry: fleet_early_warning v1, pinned by the pipeline",
+      "54.11-57.01 s TITLE CARD: All data synthetic - not a real deployment"
+    ],
+    "draft_kept": "media/W04_demo_draft.mp4 (earlier 54 s screencast take: Chinese Airflow UI, overlapping captions) is kept unchanged",
+    "not_shown": "the fari.wait_landing log page did not show the AirflowSensorTimeout text within 45 s, so the missing-partition scene shows the failed run page; the timeout itself is in the dags test output of that run"
   },
   "previous_runs": {
     "commit_7f031eb_and_362ae76": "see git history of this file: the first fresh-clone attempt (7f031eb) found the warm-up-day bug fixed in 362ae76; all checks passed at 362ae76"

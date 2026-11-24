@@ -49,7 +49,8 @@ class Browser:
         self.profile = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
         self.proc = subprocess.Popen(
             [find_browser(), "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
-             "--hide-scrollbars", f"--remote-debugging-port={self.port}", f"--user-data-dir={self.profile.name}",
+             "--hide-scrollbars", "--lang=en-US", f"--remote-debugging-port={self.port}",
+             f"--user-data-dir={self.profile.name}",
              f"--window-size={width},{height}", "about:blank"],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         ws_url = self._page_ws()
@@ -57,9 +58,13 @@ class Browser:
         self._id = 0
         self.width, self.height = width, height
         self.send("Page.enable")
-        self.send("Runtime.enable")
         self.send("Emulation.setDeviceMetricsOverride",
                   {"width": width, "height": height, "deviceScaleFactor": scale, "mobile": False})
+        # English UI and UTC clocks whatever the host's locale and time zone (deliverables are in English, UTC)
+        self.send("Emulation.setLocaleOverride", {"locale": "en-US"})
+        self.send("Emulation.setTimezoneOverride", {"timezoneId": "UTC"})
+        self.send("Network.setUserAgentOverride", {"userAgent": self.eval("navigator.userAgent"),
+                                                   "acceptLanguage": "en-US,en"})
 
     def _page_ws(self) -> str:
         deadline = time.time() + 30
@@ -74,16 +79,32 @@ class Browser:
             time.sleep(0.3)
         raise TimeoutError("browser did not expose a page target")
 
-    def send(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+    def send(self, method: str, params: dict[str, Any] | None = None, timeout: float = 120) -> dict[str, Any]:
+        """Send a command and wait for its reply, at most ``timeout`` seconds in total (never forever)."""
         self._id += 1
         my_id = self._id
         self.ws.send(json.dumps({"id": my_id, "method": method, "params": params or {}}))
+        deadline = time.time() + timeout
         while True:
-            msg = json.loads(self.ws.recv(timeout=120))
+            left = deadline - time.time()
+            if left <= 0:
+                raise TimeoutError(f"{method}: no reply within {timeout} s")
+            msg = json.loads(self.ws.recv(timeout=left))
             if msg.get("id") == my_id:
                 if "error" in msg:
                     raise RuntimeError(f"{method}: {msg['error']}")
                 return dict(msg.get("result", {}))
+
+    def post(self, method: str, params: dict[str, Any] | None = None) -> None:
+        """Send a command without waiting for its reply (``send`` skips such replies later)."""
+        self._id += 1
+        self.ws.send(json.dumps({"id": self._id, "method": method, "params": params or {}}))
+
+    def next_message(self, timeout: float) -> dict[str, Any] | None:
+        try:
+            return dict(json.loads(self.ws.recv(timeout=timeout)))
+        except TimeoutError:
+            return None
 
     def navigate(self, url: str) -> None:
         self.send("Page.navigate", {"url": url})
@@ -128,13 +149,13 @@ class Browser:
             self.send("Input.dispatchKeyEvent", {"type": kind, "key": "Enter", "code": "Enter",
                                                  "windowsVirtualKeyCode": 13, "text": "\r" if kind == "keyDown" else ""})
 
-    def screenshot(self, clip: dict[str, float] | None = None, fmt: str = "png") -> bytes:
+    def screenshot(self, clip: dict[str, float] | None = None, fmt: str = "png", timeout: float = 120) -> bytes:
         params: dict[str, Any] = {"format": fmt, "captureBeyondViewport": clip is not None}
         if fmt == "jpeg":
             params["quality"] = 88
         if clip:
             params["clip"] = {**clip, "scale": 1}
-        return base64.b64decode(self.send("Page.captureScreenshot", params)["data"])
+        return base64.b64decode(self.send("Page.captureScreenshot", params, timeout=timeout)["data"])
 
     def close(self) -> None:
         try:
