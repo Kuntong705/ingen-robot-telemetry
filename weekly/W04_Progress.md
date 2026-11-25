@@ -10,8 +10,9 @@ No written AI-use policy was found in the local programme materials (Plan v3.0, 
 
 What AI assistance did (recorded, not hidden): the code, tests, configuration, ADR texts, README, model card, deck, demo script and these progress notes were written with Claude Code under Kuntong's direction; commits carry a `Co-Authored-By` trailer (kept). The Week 3 LLM-summary faithfulness verdicts are an AI-assisted evidence review. The README and the model card (§11) say so.
 
+The personal reflection in `W04_Retrospective.docx` is Kuntong's: their own experience and views, prepared with AI writing assistance and reviewed and approved by Kuntong. It was copied into the retrospective verbatim on 2026-11-24 at their request (the generator never overwrites that file).
+
 These items must be done by the named people themselves, and none was drafted by the assistant:
-- the personal reflection in `W04_Retrospective.docx`: written by Kuntong in a personal draft and copied into the retrospective verbatim on 2026-11-24 at their request (the assistant changed only the section titles to Kuntong's own and the intro sentence; the generator never overwrites that file);
 - the signed final evaluation rubric and the career note (supervisor);
 - the readout delivery and the Q&A.
 
@@ -27,7 +28,7 @@ These items must be done by the named people themselves, and none was drafted by
 | 6 | Streamlit + Plotly dashboard (ADR-0007) | done: AppTest, browser, container |
 | 7 | Model card and cost-benefit (`W04_Model_Card.docx` and `.pdf`, `release/cost_benefit.py`, `configs/cost_assumptions.yaml`) | done: generated from `reports/w04/*.json` by `scripts/build_w04_docs.py` |
 | 8 | Release files: README, ADRs 0001–0007, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, CI, `data/sample/` | done; CI not run on GitHub (no push); licence holder pending |
-| 9 | Capstone deck (PDF), retrospective, demo script, demo video | done; reflection written by Kuntong |
+| 9 | Capstone deck (PDF), retrospective, demo script, demo video | done; reflection by Kuntong (AI writing assistance, see above) |
 | 10 | Quality gates on the final code commit | done: d661557, see "Quality gates" below |
 | 11 | Final audit fixes (2026-11-24) | done, see below |
 
@@ -108,13 +109,14 @@ Final run (2026-11-25 00:59 UTC) on commit **d661557**, the last commit that cha
 | W04 Dashboard (overview, drill-down, alert queue with summaries, platform and date filters, one command) | done |
 | `W04_Model_Card.docx` / `.pdf` with cost-benefit and sensitivity table | done |
 | `W04_Capstone_Deck.pdf` (10 slides, finding titles) | done |
-| `W04_Retrospective.docx` (one page) | done; reflection written by Kuntong |
+| `W04_Retrospective.docx` (one page) | done; reflection by Kuntong (AI writing assistance, see above) |
 | Wk-04 log (300–500 words) | done (499 words); drafted by the AI assistant, see below |
 | Weekly demo recording (30–60 s) | done: `media/W04_demo.mp4`, 57 s, git-ignored; Kuntong to review |
 | Repository: README, ADRs with revisions, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, `data/sample/`, gitleaks | done; licence holder pending |
 | CI green with badge | done on `week4`: GitHub Actions run #15 at 4144da4 passed (test, secret-scan, docker). The README badge shows `main`, which turns to the Week 4 workflow only after the merge |
 | GitHub Release v1.0.0 | **not done**: needs Kuntong's approval after the merge to `main` |
-| §7 PDF copies of `W01_Fleet_Data_Brief`, `W02_Evaluation_Protocol`, `W03_Fusion_Results`, `W03_Fari_Gap_Analysis` | **not done**: the .docx files are committed; Word could not be started from automation on this machine, so Kuntong exports them (File → Save As → PDF) |
+| §7 PDF copies of `W02_Evaluation_Protocol`, `W03_Fusion_Results`, `W03_Fari_Gap_Analysis` | done: exported from the committed .docx by Microsoft Word (PDF export), layout checked page by page; the .docx files are unchanged |
+| §7 PDF copy of `W01_Fleet_Data_Brief` | exported locally, **not committed**: the brief names three further InGen platforms that are not yet confirmed as publishable (the .docx itself has been on `main` since 2026-11-01); commit the PDF once the names are confirmed |
 | §7 `notebooks/` | not used: no result depends on a notebook; every number comes from a script |
 | Final readout, live demo, Q&A | Kuntong |
 | Signed mid-point and final evaluation rubrics, career note | supervisor |
@@ -137,7 +139,8 @@ Squash merges would rewrite the shared history and make the next PR re-apply ear
 - **InGen AI-use policy:** confirm it with the supervisor; the demo video and the documents were produced with AI assistance.
 - **LICENSE holder and IP:** `LICENSE` names "Kuntong Li" (MIT). Not changed; awaiting InGen's answer.
 - **Product names:** confirm whether further InGen product names may be published before adding them back.
-- **PDF exports** of the four Week 1–3 documents listed in Plan v3.0 §7.
+- **`W01_Fleet_Data_Brief.pdf`:** confirm the platform names, then commit it (and decide whether the .docx on `main` needs the same generalisation).
+- **Page length:** `W03_Fari_Gap_Analysis` prints on 3 pages; Plan v3.0 asks for 1–2. Left unchanged (Week 3 deliverable).
 - **`weekly/Wk-04-Log.md`:** drafted by the AI assistant in the first person; Kuntong to review or rewrite it in their own words if the policy requires.
 - **Signed rubric and career note:** supervisor.
 - **Real cost figures:** `configs/cost_assumptions.yaml` holds placeholders.
