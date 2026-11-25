@@ -207,7 +207,7 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 
 | Week | Deliverables |
 |---|---|
-| 1 | `docs/W01_Fleet_Data_Brief.docx`, `docs/W01_Data_Contract.md`, `docs/W01_Simulator_Assumptions.md`, `reports/W01_Data_Quality_Report.json`, `weekly/Wk-01-Log.md` |
+| 1 | `docs/W01_Fleet_Data_Brief.docx` (and `.pdf`), `docs/W01_Data_Contract.md`, `docs/W01_Simulator_Assumptions.md`, `reports/W01_Data_Quality_Report.json`, `weekly/Wk-01-Log.md` |
 | 2 | `docs/W02_Feature_Registry.md`, `docs/W02_Evaluation_Protocol.docx` (and `.pdf`), `docs/W02_Model_Results.docx`, `weekly/Wk-02-Log.md` |
 | 3 | `docs/W03_Report.docx`, `docs/W03_Log_Corpus.md`, `docs/W03_Fusion_Results.docx` (and `.pdf`), `docs/W03_Alert_Explanations.md`, `docs/W03_Fari_Gap_Analysis.docx` (and `.pdf`), `weekly/Wk-03-Log.md`, `reports/w03/llm_faithfulness_review.json` (AI-assisted evidence review) |
 | 4 | `docs/W04_Model_Card.docx` and `docs/W04_Model_Card.pdf` (same content), `docs/W04_Capstone_Deck.pdf`, `docs/W04_Retrospective.docx` (facts generated from the repository; the reflection is the intern's own, prepared with AI writing assistance), `docs/W04_Demo_Script.md`, `reports/w04/*.json`, `weekly/Wk-04-Log.md` |
