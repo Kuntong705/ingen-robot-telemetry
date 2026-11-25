@@ -91,7 +91,7 @@ Final run (2026-11-25 00:59 UTC) on commit **d661557**, the last commit that cha
 | gitleaks v8.30.0 (all refs) | pass, 31 commits, no leaks |
 | Fresh-clone README quickstart at f21f2ee | pass: build, MLflow, trainer (144 s), dashboard, DAG import, idempotent re-run (12/12 partitions identical), missing partition (sensor timeout, outputs untouched, failure record, run failed), backfill (`docker_airflow_checks.json`). Not repeated at d661557: the commits after f21f2ee change only `scripts/build_w04_demo.py`, `scripts/cdp_edge.py`, records and documents |
 | v1 retrain reproducibility | identical at 5bea8fc, clean tree (`retrain_reproducibility.json`) |
-| GitHub Actions CI | see "Final delivery" below |
+| GitHub Actions CI | pass: run #15 on `week4` at 4144da4 (pushed 2026-11-25), jobs test, secret-scan and docker |
 
 **Week 4 demo video:** `media/W04_demo.mp4` (57.0 s, 1920x1080, git-ignored), built by `scripts/build_w04_demo.py` from real screenshots of the running stack at f21f2ee (English UI, UTC). One real DAG run is shown at 4x (28.8 s real) and labelled; every other scene is labelled STATIC SCREENSHOT; title cards are labelled. Scenes: DAG run and success, pull list, unit drill-down, alert explanation with its evidence check, the missing-partition failed run, MLflow v1. The earlier 54 s draft `media/W04_demo_draft.mp4` is kept unchanged.
 
@@ -112,7 +112,7 @@ Final run (2026-11-25 00:59 UTC) on commit **d661557**, the last commit that cha
 | Wk-04 log (300–500 words) | done (499 words); drafted by the AI assistant, see below |
 | Weekly demo recording (30–60 s) | done: `media/W04_demo.mp4`, 57 s, git-ignored; Kuntong to review |
 | Repository: README, ADRs with revisions, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, `data/sample/`, gitleaks | done; licence holder pending |
-| CI green with badge | after the `week4` push, see below |
+| CI green with badge | done on `week4`: GitHub Actions run #15 at 4144da4 passed (test, secret-scan, docker). The README badge shows `main`, which turns to the Week 4 workflow only after the merge |
 | GitHub Release v1.0.0 | **not done**: needs Kuntong's approval after the merge to `main` |
 | §7 PDF copies of `W01_Fleet_Data_Brief`, `W02_Evaluation_Protocol`, `W03_Fusion_Results`, `W03_Fari_Gap_Analysis` | **not done**: the .docx files are committed; Word could not be started from automation on this machine, so Kuntong exports them (File → Save As → PDF) |
 | §7 `notebooks/` | not used: no result depends on a notebook; every number comes from a script |
