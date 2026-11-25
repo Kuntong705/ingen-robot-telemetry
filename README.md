@@ -210,7 +210,7 @@ Production v1 (`fleet_early_warning` v1, `fleet_soh_forecast` v1) scored by the 
 | 1 | `docs/W01_Fleet_Data_Brief.docx`, `docs/W01_Data_Contract.md`, `docs/W01_Simulator_Assumptions.md`, `reports/W01_Data_Quality_Report.json`, `weekly/Wk-01-Log.md` |
 | 2 | `docs/W02_Feature_Registry.md`, `docs/W02_Evaluation_Protocol.docx`, `docs/W02_Model_Results.docx`, `weekly/Wk-02-Log.md` |
 | 3 | `docs/W03_Report.docx`, `docs/W03_Log_Corpus.md`, `docs/W03_Fusion_Results.docx`, `docs/W03_Alert_Explanations.md`, `docs/W03_Fari_Gap_Analysis.docx`, `weekly/Wk-03-Log.md`, `reports/w03/llm_faithfulness_review.json` (AI-assisted evidence review) |
-| 4 | `docs/W04_Model_Card.docx` and `docs/W04_Model_Card.pdf` (same content), `docs/W04_Capstone_Deck.pdf`, `docs/W04_Retrospective.docx` (reflection sections left for the intern), `docs/W04_Demo_Script.md`, `reports/w04/*.json`, `weekly/Wk-04-Log.md` |
+| 4 | `docs/W04_Model_Card.docx` and `docs/W04_Model_Card.pdf` (same content), `docs/W04_Capstone_Deck.pdf`, `docs/W04_Retrospective.docx` (facts generated from the repository; the reflection is the intern's own text), `docs/W04_Demo_Script.md`, `reports/w04/*.json`, `weekly/Wk-04-Log.md` |
 
 **Architecture decision records** (`docs/adr/`; originals are preserved, and revisions are dated at the end of each file):
 
@@ -236,4 +236,4 @@ Synthetic code, documentation, tests and approved demonstration artefacts only. 
 
 ## AI assistance
 
-The code, tests, configuration and the generated documents (model card, capstone deck, README results) were written with an AI coding assistant (Claude Code) working under the intern's direction; commits made with it carry a `Co-Authored-By` trailer. The Week 3 faithfulness verdicts on local-LLM summaries came from an AI-assisted evidence review, not an independent human review (`reports/w03/llm_faithfulness_review.json`). Every reported number is produced by a re-runnable script and read from its JSON report. Whether this use fits InGen's AI-use policy is pending confirmation by the supervisor.
+The code, tests, configuration and the generated documents (model card, capstone deck, README results) were written with an AI coding assistant (Claude Code) working under the intern's direction; commits made with it carry a `Co-Authored-By` trailer. The Week 3 faithfulness verdicts on local-LLM summaries came from an AI-assisted evidence review, not an independent human review (`reports/w03/llm_faithfulness_review.json`). The personal reflection in `docs/W04_Retrospective.docx` was written by the intern, not by the assistant. Every reported number is produced by a re-runnable script and read from its JSON report. Whether this use fits InGen's AI-use policy is pending confirmation by the supervisor.

@@ -1,6 +1,6 @@
 {
-  "run_at_utc": "2026-11-24T21:39:10+00:00",
-  "git_head": "f21f2eea1286560e44fc4a201867400d056b283b",
+  "run_at_utc": "2026-11-25T00:59:47+00:00",
+  "git_head": "d6615575962be64f8c07abac5688229d279b9f3e",
   "git_worktree_clean": true,
   "ruff": {
     "ok": true,
@@ -14,48 +14,48 @@
     "exit_code": 0,
     "summary": "Success: no issues found in 71 source files",
     "command": "python -m mypy src/ fleet_simulator.py",
-    "seconds": 2.3
+    "seconds": 2.4
   },
   "pytest": {
     "ok": true,
     "exit_code": 0,
-    "summary": "------------------------------------------------------------------------------- | TOTAL                                                        5691   2370    58% | 148 passed in 532.61s (0:08:52)",
+    "summary": "------------------------------------------------------------------------------- | TOTAL                                                        5691   2370    58% | 148 passed in 368.49s (0:06:08)",
     "command": "python -m pytest -q -p no:warnings --cov=ingen_fleet_health --cov-report=term",
-    "seconds": 536.2
+    "seconds": 373.3
   },
   "uv_lock_check": {
     "ok": true,
     "exit_code": 0,
     "summary": "Resolved 149 packages in 1ms",
     "command": "py -3.11 -m uv lock --check",
-    "seconds": 0.2
+    "seconds": 0.3
   },
   "docker_build": {
     "ok": true,
     "exit_code": 0,
-    "summary": "#23 DONE 0.0s | ingen-fleet-health:app  Built | ingen-fleet-health:airflow  Built",
+    "summary": "#23 DONE 0.0s | ingen-fleet-health:airflow  Built | ingen-fleet-health:app  Built",
     "command": "docker compose build",
-    "seconds": 245.8
+    "seconds": 160.7
   },
   "docker_app_smoke": {
     "ok": true,
     "exit_code": 0,
     "summary": "-h, --help            show this help message and exit | --config CONFIG       pipeline YAML (default configs/pipeline.yaml) | --data-root DATA_ROOT",
     "command": "docker run --rm ingen-fleet-health:app python -m ingen_fleet_health.pipeline --help",
-    "seconds": 39.9
+    "seconds": 9.7
   },
   "airflow_dag_import": {
     "ok": true,
     "exit_code": 0,
     "summary": "No data found | fleet_health_daily | /opt/fleet/pipelines/airflow/dags/fleet_health_daily.py | fleet-analytics | True      | dags-folder | None",
     "command": "docker run --rm -e FLEET_PIPELINE_CONFIG=/opt/fleet/configs/pipeline.yaml ingen-fleet-health:airflow bash -c airflow db migrate >/dev/null 2>&1; airflow dags reserialize >/dev/null 2>&1; airflow dags list-import-errors && airflow dags list | grep fleet_health_daily",
-    "seconds": 15.1
+    "seconds": 15.2
   },
   "gitleaks": {
     "ok": true,
     "exit_code": 0,
-    "summary": "9:53PM INF 28 commits scanned. | 9:53PM INF scanned ~2880622 bytes (2.88 MB) in 5.73s | 9:53PM INF no leaks found",
+    "summary": "1:09AM INF 31 commits scanned. | 1:09AM INF scanned ~2925995 bytes (2.93 MB) in 4.89s | 1:09AM INF no leaks found",
     "command": "docker run --rm -v .:/repo zricethezav/gitleaks:v8.30.0 git /repo --redact --exit-code 1",
-    "seconds": 6.3
+    "seconds": 5.6
   }
 }

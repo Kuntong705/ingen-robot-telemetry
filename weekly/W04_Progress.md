@@ -1,6 +1,6 @@
 # Week 4 Progress Tracker (living file — read this first in a new session)
 
-**Branch:** `week4`, created on 2026-11-24 from `week3` at 64fdd3d. Week 3 is pushed and open as PR #1 (`week3` -> `week2`, not merged). Local commits only: no push, merge, PR or GitHub Release without Kuntong's approval.  
+**Branch:** `week4`, created on 2026-11-24 from `week3` at 64fdd3d. Week 3 is pushed and open as PR #1 (`week3` -> `week2`, not merged). On 2026-11-24 Kuntong approved pushing the `week4` branch; no PR, merge or GitHub Release without their further approval.  
 **Plan:** Internship Plan v3.0 (`Kuntong_Li_Internship_Plan_.pdf`, 4-week version), Week 4: Orchestration, Fleet Health Dashboard, Model Card & Capstone.  
 **Source-of-truth check (2026-11-24):** Week 4 requirements were read from Plan v3.0 §3 Week 4, §4 Deliverables Index, §5.3 Quality Standards and §7 Repository Structure. v2.0 (the 8-week plan) is not used.
 
@@ -11,7 +11,7 @@ No written AI-use policy was found in the local programme materials (Plan v3.0, 
 What AI assistance did (recorded, not hidden): the code, tests, configuration, ADR texts, README, model card, deck, demo script and these progress notes were written with Claude Code under Kuntong's direction; commits carry a `Co-Authored-By` trailer (kept). The Week 3 LLM-summary faithfulness verdicts are an AI-assisted evidence review. The README and the model card (§11) say so.
 
 These items must be done by the named people themselves, and none was drafted by the assistant:
-- the personal reflection in `W04_Retrospective.docx` (the generator no longer overwrites that file);
+- the personal reflection in `W04_Retrospective.docx`: written by Kuntong in a personal draft and copied into the retrospective verbatim on 2026-11-24 at their request (the assistant changed only the section titles to Kuntong's own and the intro sentence; the generator never overwrites that file);
 - the signed final evaluation rubric and the career note (supervisor);
 - the readout delivery and the Q&A.
 
@@ -27,8 +27,8 @@ These items must be done by the named people themselves, and none was drafted by
 | 6 | Streamlit + Plotly dashboard (ADR-0007) | done: AppTest, browser, container |
 | 7 | Model card and cost-benefit (`W04_Model_Card.docx` and `.pdf`, `release/cost_benefit.py`, `configs/cost_assumptions.yaml`) | done: generated from `reports/w04/*.json` by `scripts/build_w04_docs.py` |
 | 8 | Release files: README, ADRs 0001–0007, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, CI, `data/sample/` | done; CI not run on GitHub (no push); licence holder pending |
-| 9 | Capstone deck (PDF), retrospective template, demo script | done |
-| 10 | Quality gates on the final commit | see "Quality gates" below |
+| 9 | Capstone deck (PDF), retrospective, demo script, demo video | done; reflection written by Kuntong |
+| 10 | Quality gates on the final code commit | done: d661557, see "Quality gates" below |
 | 11 | Final audit fixes (2026-11-24) | done, see below |
 
 ## Final audit fixes (2026-11-24)
@@ -77,31 +77,68 @@ No reported result, model, threshold or evaluation protocol was changed. Every e
 
 ## Quality gates
 
-All gates ran on commit **f21f2ee** with a clean working tree (`reports/w04/quality_gates.json` records the commit and `git_worktree_clean: true`). The commit that adds these records changes only `reports/w04/quality_gates.json`, `reports/w04/docker_airflow_checks.json` and this file.
+Final run (2026-11-25 00:59 UTC) on commit **d661557**, the last commit that changes code or scripts, with a clean working tree (`reports/w04/quality_gates.json` records the commit and `git_worktree_clean: true`). During the run only documentation was edited (this file, `README.md`, `weekly/Wk-04-Log.md`, `docs/W04_Retrospective.docx`); none of them is read by a test or a gate. The commit that adds these records changes only those files and `reports/w04/quality_gates.json`.
 
 | Gate | Result |
 |---|---|
 | ruff | pass |
 | mypy (`src/`, `fleet_simulator.py`) | pass, 71 files |
-| pytest + coverage | **148 passed** (123 Weeks 1–3 + 25 Week 4, including 5 new `data/sample` tests), coverage of `ingen_fleet_health` 58 % |
+| pytest + coverage | **148 passed** in 368 s (123 Weeks 1–3 + 25 Week 4), coverage of `ingen_fleet_health` 58 % |
 | `uv lock --check` | pass |
-| Docker build (app + airflow) | pass; app image 3.55 GB (6.19 GB before `UV_NO_CACHE`) |
+| Docker build (app + airflow) | pass (161 s); app image 3.55 GB at f21f2ee (6.19 GB before `UV_NO_CACHE`) |
 | App image smoke | pass |
 | Airflow DAG import (3.3.2) | pass, no import errors |
-| gitleaks v8.30.0 (full history) | pass, 28 commits, no leaks |
-| Fresh-clone README quickstart at f21f2ee | pass: build, MLflow, trainer (144 s), dashboard, DAG import, idempotent re-run (12/12 partitions identical), missing partition (sensor timeout, outputs untouched, failure record, run failed), backfill (`docker_airflow_checks.json`) |
+| gitleaks v8.30.0 (all refs) | pass, 31 commits, no leaks |
+| Fresh-clone README quickstart at f21f2ee | pass: build, MLflow, trainer (144 s), dashboard, DAG import, idempotent re-run (12/12 partitions identical), missing partition (sensor timeout, outputs untouched, failure record, run failed), backfill (`docker_airflow_checks.json`). Not repeated at d661557: the commits after f21f2ee change only `scripts/build_w04_demo.py`, `scripts/cdp_edge.py`, records and documents |
 | v1 retrain reproducibility | identical at 5bea8fc, clean tree (`retrain_reproducibility.json`) |
-| GitHub Actions CI | **not run**: nothing pushed |
+| GitHub Actions CI | see "Final delivery" below |
 
 **Week 4 demo video:** `media/W04_demo.mp4` (57.0 s, 1920x1080, git-ignored), built by `scripts/build_w04_demo.py` from real screenshots of the running stack at f21f2ee (English UI, UTC). One real DAG run is shown at 4x (28.8 s real) and labelled; every other scene is labelled STATIC SCREENSHOT; title cards are labelled. Scenes: DAG run and success, pull list, unit drill-down, alert explanation with its evidence check, the missing-partition failed run, MLflow v1. The earlier 54 s draft `media/W04_demo_draft.mp4` is kept unchanged.
 
+## Final delivery (2026-11-24)
+
+### Plan v3.0 deliverables (§3 Week 4, §4 Deliverables Index, §7 Repository Structure)
+
+| Deliverable | Status |
+|---|---|
+| W01 Fleet Data Brief, Data Contract, simulator and pipeline, data quality report, Wk-01 log | done (on `main`) |
+| W02 Feature Registry, Evaluation Protocol, health models and Model Results, Wk-02 log | done (`week2`, pushed; CI run #12 green) |
+| W03 log corpus and classifiers, Fusion Results, Alert Explanations, Fari Gap Analysis, Wk-03 log | done (`week3`, pushed, PR #1; CI runs #13 and #14 green) |
+| W04 Pipeline (Airflow DAG, idempotent runs, backfill, missing-partition behaviour, MLflow-versioned models, PSI and weekly performance monitoring, Compose stack) | done |
+| W04 Dashboard (overview, drill-down, alert queue with summaries, platform and date filters, one command) | done |
+| `W04_Model_Card.docx` / `.pdf` with cost-benefit and sensitivity table | done |
+| `W04_Capstone_Deck.pdf` (10 slides, finding titles) | done |
+| `W04_Retrospective.docx` (one page) | done; reflection written by Kuntong |
+| Wk-04 log (300–500 words) | done (499 words); drafted by the AI assistant, see below |
+| Weekly demo recording (30–60 s) | done: `media/W04_demo.mp4`, 57 s, git-ignored; Kuntong to review |
+| Repository: README, ADRs with revisions, Dockerfile, compose, LICENSE, NOTICE, CONTRIBUTING, `.env.example`, `data/sample/`, gitleaks | done; licence holder pending |
+| CI green with badge | after the `week4` push, see below |
+| GitHub Release v1.0.0 | **not done**: needs Kuntong's approval after the merge to `main` |
+| §7 PDF copies of `W01_Fleet_Data_Brief`, `W02_Evaluation_Protocol`, `W03_Fusion_Results`, `W03_Fari_Gap_Analysis` | **not done**: the .docx files are committed; Word could not be started from automation on this machine, so Kuntong exports them (File → Save As → PDF) |
+| §7 `notebooks/` | not used: no result depends on a notebook; every number comes from a script |
+| Final readout, live demo, Q&A | Kuntong |
+| Signed mid-point and final evaluation rubrics, career note | supervisor |
+
+### Branches and merge order
+
+History is linear: `main` (c97eae5, Week 1) → `week2` (382bdee) → `week3` (64fdd3d, adds b92e728 and the Week 3 commits) → `week4` (7 commits on top of `week3`, plus the record commits). Each branch contains all earlier weeks, so no week can be lost by merging in order. Proposed order (each step only with Kuntong's approval):
+
+1. Open PR `week2` → `main` and merge it with a merge commit (no squash, no rebase).
+2. Retarget PR #1 (`week3` → `week2`) to `main`, check CI, merge with a merge commit.
+3. Open PR `week4` → `main`, check CI, merge with a merge commit.
+4. Tag `v1.0.0` on the merge commit in `main` and publish the GitHub Release.
+
+Squash merges would rewrite the shared history and make the next PR re-apply earlier weeks, so they should not be used. Merging `week4` → `main` alone would also be correct (fast-forwardable) but loses the per-week review trail.
+
 ## Not done / needs Kuntong or the supervisor
 
-- **Week 4 demo video:** Kuntong to review `media/W04_demo.mp4` before it is shared; whether AI assistance may produce it depends on the AI-use policy.
-- **Push, PR, GitHub Release v1.0.0:** not done (needs approval). CI and its badge have not run on GitHub.
-- **InGen AI-use policy:** confirm it.
+- **Review before sharing:** `media/W04_demo.mp4` and the generated documents.
+- **PR, merge and GitHub Release v1.0.0:** not done; follow the order above after approval.
+- **InGen AI-use policy:** confirm it with the supervisor; the demo video and the documents were produced with AI assistance.
 - **LICENSE holder and IP:** `LICENSE` names "Kuntong Li" (MIT). Not changed; awaiting InGen's answer.
 - **Product names:** confirm whether further InGen product names may be published before adding them back.
-- **Retrospective reflection, signed rubric, career note:** for the named people to complete.
+- **PDF exports** of the four Week 1–3 documents listed in Plan v3.0 §7.
 - **`weekly/Wk-04-Log.md`:** drafted by the AI assistant in the first person; Kuntong to review or rewrite it in their own words if the policy requires.
+- **Signed rubric and career note:** supervisor.
 - **Real cost figures:** `configs/cost_assumptions.yaml` holds placeholders.
+- **Local stash** `stash@{0}` holds the abandoned screencast recorder; it was never pushed and can be dropped.
