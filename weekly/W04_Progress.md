@@ -118,7 +118,7 @@ Final run (2026-11-25 00:59 UTC) on commit **d661557**, the last commit that cha
 | §7 PDF copies of `W02_Evaluation_Protocol`, `W03_Fusion_Results`, `W03_Fari_Gap_Analysis` | done: exported from the committed .docx by Microsoft Word (PDF export), layout checked page by page; the .docx files are unchanged |
 | §7 PDF copy of `W01_Fleet_Data_Brief` | done: Kuntong confirmed on 2026-11-24 that the three further platform names in the brief are shown publicly on the InGen website; the text was checked for other non-public content (none: public context and stated assumptions only). Exported by Word from a copy whose author metadata was cleared; the committed .docx is unchanged |
 | §7 `notebooks/` | not used: no result depends on a notebook; every number comes from a script |
-| Final readout, live demo, Q&A | Kuntong |
+| Final readout, live demo, Q&A | done by Kuntong; the supervisor requested no further changes (recorded 2026-11-25) |
 | Signed mid-point and final evaluation rubrics, career note | supervisor |
 
 ### Branches and merge order
